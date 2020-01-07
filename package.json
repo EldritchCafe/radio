@@ -1,0 +1,27 @@
+{
+  "name": "eldritch-cafe-radio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "parcel": "^1.12.4",
+    "parcel-plugin-svelte": "^4.0.5",
+    "svelte": "^3.16.7"
+  },
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.7.7",
+    "get-urls": "^9.2.0"
+  },
+  "browserslist": [
+    "last 1 chrome versions"
+  ]
+}
