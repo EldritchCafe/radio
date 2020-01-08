@@ -7,7 +7,8 @@
 
     <section class="player">
         {#if selectedEntry}
-            Playing <a href={selectedEntry.url}>{selectedEntry.url}</a>
+            Playing <a href={selectedEntry.url}>{selectedEntry.id}</a>
+            <YoutubeViewer bind:videoId={selectedEntry.id}></YoutubeViewer>
         {:else}
             Loading ...
         {/if}
@@ -19,8 +20,8 @@
         {:then entries}
             <ul>
                 {#each entries as entry}
-                    <li>
-                        <a href={entry.url}>{entry.url}</a>
+                    <li class="entry" class:active={entry === selectedEntry} on:click={selectEntry(entry)}>
+                        <b>{entry.status.account.acct}</b>
                         <small>{entry.tags}</small>
                     </li>
                 {/each}
@@ -37,14 +38,19 @@
 
 
 <script>
-    import { onMount } from 'svelte';
+    import { onMount } from 'svelte'
     import { fetchEntries } from './util.js'
+    import YoutubeViewer from './YoutubeViewer.svelte'
 
     export let domain
     export let hashtags
 
     let entriesPromise = new Promise(() => {})
     let selectedEntry = null
+
+    const selectEntry = entry => {
+        selectedEntry = entry
+    }
 
     onMount(() => {
         entriesPromise = fetchEntries(domain, hashtags)
@@ -88,5 +94,13 @@
                 "header queue"
                 "player queue"
         }
+    }
+
+    .entry {
+        cursor: pointer;
+    }
+
+    .entry.active {
+        background-color: plum;
     }
 </style>

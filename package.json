@@ -19,7 +19,9 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.7.7",
-    "get-urls": "^9.2.0"
+    "get-urls": "^9.2.0",
+    "get-youtube-id": "^1.0.1",
+    "yt-player": "^3.4.3"
   },
   "browserslist": [
     "last 1 chrome versions"
