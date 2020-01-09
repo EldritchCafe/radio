@@ -15,23 +15,29 @@
     </section>
 
     <section class="queue">
-        {#await entriesPromise}
-            Loading radio please wait
-        {:then entries}
-            <ul>
-                {#each entries as entry}
-                    <li class="entry" class:active={entry === selectedEntry} on:click={selectEntry(entry)}>
-                        <b>{entry.status.account.acct}</b>
-                        <small>{entry.tags}</small>
-                    </li>
-                {/each}
-            </ul>
-        {:catch error}
-            Oops, something went wrong : {error}
-        {/await}
+        {#if $entries}
+            {#await $entries}
+                Loading radio please wait
+            {:then entries}
+                <ul>
+                    {#each entries as entry}
+                        <li class="entry" class:active={entry === selectedEntry} on:click={selectEntry(entry)}>
+                            <b>{entry.status.account.acct}</b>
+                            <small>{entry.tags}</small>
+                        </li>
+                    {/each}
+                </ul>
+            {:catch error}
+                Oops, something went wrong : {error}
+            {/await}
+        {:else}
+            Your queue
+        {/if}
 
         <header>
-            <a href="https://{domain}/">{domain}</a> - {@html hashtags.map(hashtag => `<a href="https://${domain}/tags/${hashtag}">#${hashtag}</a>`)}
+            <a href="https://{$domain}/">{$domain}</a> - {@html $hashtags.map(hashtag => `<a href="https://${$domain}/tags/${hashtag}">#${hashtag}</a>`)}
+
+            <button on:click={() => entries.load()}>LOAD MOAR</button>
         </header>
     </section>
 </main>
@@ -39,13 +45,9 @@
 
 <script>
     import { onMount } from 'svelte'
-    import { fetchEntries } from './util.js'
     import YoutubeViewer from './YoutubeViewer.svelte'
+    import { domain, hashtags, entries } from './store.js'
 
-    export let domain
-    export let hashtags
-
-    let entriesPromise = new Promise(() => {})
     let selectedEntry = null
 
     const selectEntry = entry => {
@@ -53,11 +55,7 @@
     }
 
     onMount(() => {
-        entriesPromise = fetchEntries(domain, hashtags)
-
-        entriesPromise.then(entries => {
-            [selectedEntry] = entries
-        })
+        entries.load()
     })
 </script>
 

@@ -1,5 +1,7 @@
 <div>
     <div bind:this={element}></div>
+
+    <button on:click={player.play()}>PLAY UWU</button>
 </div>
 
 <script>
@@ -12,16 +14,13 @@
     let player
 
     $: if (player && videoId) {
-        console.log(`loada ${videoId}`)
         player.load(videoId, true)
     }
 
     onMount(() => {
         player = new YoutubePlayer(element, {
-            width: 200,
-            height: 200,
             autoplay: true,
-            controls: false, // debug only
+            controls: true, // debug only
             keyboard: false,
             fullscreen: false,
             modestBranding: true,
