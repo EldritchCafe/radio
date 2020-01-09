@@ -9,6 +9,7 @@
     import YoutubePlayer from 'yt-player'
 
     export let videoId
+    export let playing
 
     let element
     let player
@@ -17,9 +18,17 @@
         player.load(videoId, true)
     }
 
+    $: if (player) {
+        if (playing) {
+            player.play()
+        } else {
+            player.pause()
+        }
+    }
+
     onMount(() => {
         player = new YoutubePlayer(element, {
-            autoplay: true,
+            autoplay: playing,
             controls: true, // debug only
             keyboard: false,
             fullscreen: false,

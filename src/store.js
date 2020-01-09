@@ -1,5 +1,5 @@
 import { writable, get } from 'svelte/store'
-import { getUrls, getYoutubeId, isSupportedUrl, intersection } from './util.js'
+import * as util from './util.js'
 
 export const domain = writable('eldritch.cafe')
 
@@ -10,62 +10,91 @@ export const hashtags = writable([
     'pouetradio'
 ])
 
-export const entries = entriesStore()
+export const playing = writable(true)
 
-function entriesStore() {
-    let loading = false
-    let next = `https://eldritch.cafe/api/v1/timelines/tag/np`
+export const loading = writable(false)
 
+export const entries = entriesStore(loading)
+
+export const entry = entryStore(entries)
+
+
+
+
+
+function entryStore(entries) {
     const store = writable(null)
-    const { set, subscribe } = store
+    const { set, update, subscribe } = store
 
-    const load = async () => {
-        if (loading) {
+    const next = async () => {
+        const entriesList = await get(entries)
+
+        update(oldEntry => {
+            if (entriesList.length === 0) {
+                return null
+            }
+
+            const index = entriesList.indexOf(oldEntry)
+
+            if (index === -1) {
+                return null
+            }
+
+            const nextIndex = index + 1
+
+            if (nextIndex === entriesList.length - 1) {
+                entries.load(1)
+            }
+
+
+            return entriesList[nextIndex]
+        })
+    }
+
+    return { subscribe, set, next }
+}
+
+async function* loader(loading) {
+    loading.set(true)
+    let { statuses, nextLink, previousLink } = await util.fetchTimeline('https://eldritch.cafe/api/v1/timelines/tag/np')
+    loading.set(false)
+
+    yield* util.statusesToEntries(statuses)
+
+    while (true) {
+        loading.set(true)
+        const timeline = await util.fetchTimeline(nextLink)
+        loading.set(false)
+
+        nextLink = timeline.nextLink
+
+        yield* util.statusesToEntries(timeline.statuses)
+    }
+}
+
+
+function entriesStore(loading) {
+    const entriesSteam = loader(loading)
+
+    const store = writable([])
+    const { update, subscribe } = store
+
+    const load = async (number) => {
+        if (get(loading)) {
             return
         }
 
-        loading = true
+        for (let i = 0; i < number; i++) {
+            const iteratorResult = await entriesSteam.next()
 
-        const responseP = fetch(next)
-
-        responseP.then(response => {
-            next = Array.from(getUrls(response.headers.get('link')))[0] // need to better parse that
-        })
-
-        const entriesP = responseP
-            .then(response => response.json())
-            .then(statuses => {
-                return statuses
-                    .map(status => {
-                        const [url] = Array.from(getUrls(status.content)).filter(isSupportedUrl)
-
-                        return { status, url }
-                    })
-                    .filter(entry => entry.url != null)
-                    .map(({ status, url }) => {
-                        const id = getYoutubeId(url)
-                        const tags = intersection(status.tags.map(tag => tag.name), [
-                            'np',
-                            'nowplaying',
-                            'tootradio',
-                            'pouetradio'
-                        ])
-
-                        return { status, url, id, tags }
-                    })
-            })
-
-        const previousEntriesP = get(store)
-
-        if (previousEntriesP) {
-            const [previousEntries, entries] = await Promise.all([previousEntriesP, entriesP])
-            set(Promise.resolve([...previousEntries, ...entries]))
-        } else {
-            set(entriesP)
+            if (iteratorResult.value) {
+                update(entries => [...entries, iteratorResult.value])
+            } else {
+                break
+            }
         }
-
-        loading = false
     }
 
     return { subscribe, load }
 }
+
