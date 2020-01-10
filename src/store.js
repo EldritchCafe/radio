@@ -11,8 +11,8 @@ export const hashtags = writable([
 ])
 
 export const playing = writable(true)
-export const muted = writable(false)
-export const volume = writable(100)
+export const muted = writableLocalStorage('muted', false)
+export const volume = writableLocalStorage('volume', 100)
 
 export const entries = entriesStore()
 export const entry = entryStore(entries)
@@ -20,6 +20,12 @@ export const entry = entryStore(entries)
 
 
 
+function writableLocalStorage(key, value) {
+    const item = JSON.parse(localStorage.getItem(key))
+    const store = writable(item === null ? value : item)
+    const unsubscribe = store.subscribe(x => localStorage.setItem(key, x))
+    return store
+}
 
 function entryStore(entries) {
     const store = writable(null)

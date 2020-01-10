@@ -6,15 +6,15 @@
     import { onMount } from 'svelte'
     import { get } from 'svelte/store'
     import YoutubePlayer from 'yt-player'
-    import { entry, playing, volume, muted } from '/store.js'
+    import { entry, playing, muted, volume } from '/store.js'
 
     let element
     let player
 
     $: updateEntry($entry)
     $: updatePlaying($playing)
-    $: updateVolume($volume)
     $: updateMuted($muted)
+    $: updateVolume($volume)
 
     const updateEntry = (entry) => {
         if (player && entry) player.load(entry.id, get(playing))
@@ -24,12 +24,12 @@
         if (player) playing ? player.play() : player.pause()
     }
 
-    const updateVolume = (volume) => {
-        if (player) player.setVolume(volume)
-    }
-
     const updateMuted = (muted) => {
         if (player) muted ? player.mute() : player.unMute()
+    }
+
+    const updateVolume = (volume) => {
+        if (player) player.setVolume(volume)
     }
 
     onMount(() => {
@@ -43,6 +43,10 @@
             modestBranding: true,
             related: false
         })
+
+        updatePlaying($playing)
+        updateMuted($muted)
+        updateVolume($volume)
 
         player.on('ended', () => entry.next())
         player.on('unplayable', () => entry.next())

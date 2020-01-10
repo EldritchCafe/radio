@@ -31,8 +31,7 @@ export const statusesToEntries = pipe(
         const metadata = await fetchYoutubeMetadata(id)
 
         return { status, url, id, tags, metadata }
-    }),
-    asyncTake(20)
+    })
 )
 
 function fetchYoutubeMetadata(id) {
