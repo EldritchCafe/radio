@@ -45,7 +45,7 @@ export function isSupportedUrl(urlAsString) {
 
     const hosts = [
         'youtube.com',
-        'music.youtube.host'
+        'music.youtube.com'
     ]
 
     return hosts.includes(url.hostname) && url.searchParams.has('v')
