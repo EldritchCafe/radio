@@ -34,7 +34,7 @@
     import { onMount } from 'svelte'
     import Controls from '/components/Controls.svelte'
     import Viewer from '/components/Viewer.svelte'
-    import { playing, loading, entry as currentEntry, entries } from '/store.js'
+    import { entry as currentEntry, entries } from '/store.js'
 
     onMount(() => {
         const unsubscribe = entries.subscribe(async (xs) => {

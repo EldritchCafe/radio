@@ -1,27 +1,52 @@
 <div>
-    <div bind:this={element}></div>
+    <div>
+        <div bind:this={element}></div>
+    </div>
+
+    {#if duration}
+        {Math.round(currentTime)} / {Math.round(duration)}
+        <input type="range" min="0" max={duration} value={currentTime} disabled>
+    {/if}
+
 </div>
 
 <script>
-    import { onMount } from 'svelte'
+    import { onMount, onDestroy } from 'svelte'
     import { get } from 'svelte/store'
     import YoutubePlayer from 'yt-player'
-    import { entry, playing, muted, volume } from '/store.js'
+    import { entry, paused, muted, volume } from '/store.js'
 
     let element
     let player
 
+    let currentTime = null
+    let duration = null
+
     $: updateEntry($entry)
-    $: updatePlaying($playing)
+    $: updatePaused($paused)
     $: updateMuted($muted)
     $: updateVolume($volume)
 
-    const updateEntry = (entry) => {
-        if (player && entry) player.load(entry.data.id, get(playing))
+    const updateViewerDurationCallback = () => {
+        console.log('update')
+        if (player) {
+            duration = player.getDuration()
+            currentTime = player.getCurrentTime()
+        }
     }
 
-    const updatePlaying = (playing) => {
-        if (player) playing ? player.play() : player.pause()
+    const updateEntry = (entry) => {
+        if (player && entry) {
+            duration = null
+            currentTime = null
+            player.off('playing', updateViewerDurationCallback)
+
+            player.load(entry.data.id, !$paused)
+        }
+    }
+
+    const updatePaused = (paused) => {
+        if (player) paused ? player.pause() : player.play()
     }
 
     const updateMuted = (muted) => {
@@ -32,11 +57,13 @@
         if (player) player.setVolume(volume)
     }
 
+
+
     onMount(() => {
         player = new YoutubePlayer(element, {
             width: 300,
             height: 300,
-            autoplay: $playing,
+            autoplay: !$paused,
             controls: false,
             keyboard: false,
             fullscreen: false,
@@ -44,9 +71,25 @@
             related: false
         })
 
-        updatePlaying($playing)
+        updatePaused($paused)
         updateMuted($muted)
         updateVolume($volume)
+
+        // player.on('playing', () => {
+        //     $paused = false
+        // })
+
+        // player.on('paused', () => {
+        //     $paused = true
+        // })
+
+        player.on('unstarted', () => {
+            player.once('playing', updateViewerDurationCallback)
+        })
+
+        player.on('timeupdate', (time) => {
+            currentTime = time
+        })
 
         player.on('ended', () => entry.next())
 
@@ -54,6 +97,12 @@
             console.log('unplayable', ...args)
             entry.next()
         })
+    })
+
+    onDestroy(() => {
+        if (player) {
+            player.destroy()
+        }
     })
 </script>
 

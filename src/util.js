@@ -62,8 +62,6 @@ async function statusToEntry(status) {
 async function urlToEntry(urlAsString) {
     const url = new URL(urlAsString)
 
-    console.log(url.hostname)
-
     if (['youtube.com', 'music.youtube.com'].includes(url.hostname) && url.searchParams.has('v')) {
         return await mkYoutubeEntry(url.searchParams.get('v'))
     } else if (url.hostname === 'youtu.be') {

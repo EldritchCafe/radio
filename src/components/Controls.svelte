@@ -19,7 +19,7 @@
 
     <div class="controls-group">
         <button on:click={() => entry.previous()}>⏮️</button>
-        <button on:click={() => $playing = !$playing}>{#if $playing}⏸️{:else}▶️{/if}</button>
+        <button on:click={() => $paused = !$paused}>{#if $paused}▶️{:else}⏸️{/if}</button>
         <button on:click={() => entry.next()}>⏭️</button>
     </div>
 
@@ -30,7 +30,7 @@
 </div>
 
 <script>
-    import { playing, volume, muted, entry } from '/store.js'
+    import { paused, volume, muted, entry } from '/store.js'
 </script>
 
 <style>

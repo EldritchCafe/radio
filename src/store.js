@@ -10,7 +10,7 @@ export const hashtags = writableLocalStorage('hashtags', [
     'pouetradio'
 ])
 
-export const playing = writable(true)
+export const paused = writable(false)
 export const muted = writableLocalStorage('muted', false)
 export const volume = writableLocalStorage('volume', 100)
 
