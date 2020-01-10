@@ -1,8 +1,11 @@
 import getUrls from 'get-urls'
 import { pipe, asyncFilter, asyncMap, asyncTap, asyncTake } from 'iter-tools'
+import YouTubePlayer from 'yt-player'
 
-export async function* statusesStreaming() {
-    let { statuses, nextLink, previousLink } = await fetchTimeline('https://eldritch.cafe/api/v1/timelines/tag/np')
+export async function* statusesStreaming(domain, [hashtag]) {
+    const initialLink = `https://${domain}/api/v1/timelines/tag/${hashtag}?limit=40`
+
+    let { statuses, nextLink, previousLink } = await fetchTimeline(initialLink)
 
     yield* statuses
 
@@ -15,49 +18,9 @@ export async function* statusesStreaming() {
 }
 
 export const statusesToEntries = pipe(
-    asyncMap(status => ({ status, urls: Array.from(getUrls(status.content)).filter(isSupportedUrl) })),
-    asyncFilter(entry => entry.urls.length > 0),
-    asyncMap(async ({ status, urls }) => {
-        const [url] = urls
-        const id = getYoutubeVideoId(url)
-
-        const tags = intersection(status.tags.map(tag => tag.name), [
-            'np',
-            'nowplaying',
-            'tootradio',
-            'pouetradio'
-        ])
-
-        const metadata = await fetchYoutubeMetadata(id)
-
-        return { status, url, id, tags, metadata }
-    })
+    asyncMap(statusToEntry),
+    asyncFilter(entry => entry.type !== 'unsupported')
 )
-
-function fetchYoutubeMetadata(id) {
-    return fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${id}`)
-        .then(response => response.json())
-
-}
-
-export function isSupportedUrl(urlAsString) {
-    const url = new URL(urlAsString)
-
-    const hosts = [
-        'youtube.com',
-        'music.youtube.com'
-    ]
-
-    return hosts.includes(url.hostname) && url.searchParams.has('v')
-}
-
-export function getYoutubeVideoId(urlAsString) {
-    return new URL(urlAsString).searchParams.get('v')
-}
-
-export function intersection(xs, ys) {
-    return xs.filter(x => ys.includes(x));
-}
 
 export async function fetchTimeline(url) {
     const urlBuilder = new URL(url)
@@ -72,7 +35,7 @@ export async function fetchTimeline(url) {
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 
-export function parseLinkHeader(link) {
+function parseLinkHeader(link) {
     const links = {}
 
     for (const [ , url, name ] of link.matchAll(LINK_RE)) {
@@ -80,4 +43,51 @@ export function parseLinkHeader(link) {
     }
 
     return links
+}
+
+async function statusToEntry(status) {
+    const urls = getUrls(status.content)
+
+    for await (const url of urls) {
+        const { type, data } = await urlToEntry(url)
+
+        if (type !== 'unsupported') {
+            return { status, url, type, data }
+        }
+    }
+
+    return { type: 'unsupported' }
+}
+
+async function urlToEntry(urlAsString) {
+    const url = new URL(urlAsString)
+
+    console.log(url.hostname)
+
+    if (['youtube.com', 'music.youtube.com'].includes(url.hostname) && url.searchParams.has('v')) {
+        return await mkYoutubeEntry(url.searchParams.get('v'))
+    } else if (url.hostname === 'youtu.be') {
+        return await mkYoutubeEntry(url.pathname.substring(1))
+    } else {
+        return { type: 'unsupported' }
+    }
+}
+
+async function mkYoutubeEntry(id) {
+    return {
+        type: 'youtube',
+        data: {
+            id,
+            metadata: await fetchYoutubeMetadata(id)
+        }
+    }
+}
+
+function fetchYoutubeMetadata(id) {
+    return fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${id}`)
+        .then(response => response.json())
+}
+
+export function intersection(xs, ys) {
+    return xs.filter(x => ys.includes(x))
 }

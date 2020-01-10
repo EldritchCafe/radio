@@ -1,9 +1,9 @@
 import { writable, get } from 'svelte/store'
 import * as util from '/util.js'
 
-export const domain = writable('eldritch.cafe')
+export const domain = writableLocalStorage('domain', 'eldritch.cafe')
 
-export const hashtags = writable([
+export const hashtags = writableLocalStorage('hashtags', [
     'np',
     'nowplaying',
     'tootradio',
@@ -14,7 +14,7 @@ export const playing = writable(true)
 export const muted = writableLocalStorage('muted', false)
 export const volume = writableLocalStorage('volume', 100)
 
-export const entries = entriesStore()
+export const entries = entriesStore(get(domain), get(hashtags))
 export const entry = entryStore(entries)
 
 
@@ -23,7 +23,7 @@ export const entry = entryStore(entries)
 function writableLocalStorage(key, value) {
     const item = JSON.parse(localStorage.getItem(key))
     const store = writable(item === null ? value : item)
-    const unsubscribe = store.subscribe(x => localStorage.setItem(key, x))
+    const unsubscribe = store.subscribe(x => localStorage.setItem(key, JSON.stringify(x)))
     return store
 }
 
@@ -80,8 +80,8 @@ function entryStore(entries) {
     return { subscribe, set: select, previous, next }
 }
 
-function entriesStore() {
-    const entriesSteam = util.statusesToEntries(util.statusesStreaming())
+function entriesStore(domain, hashtags) {
+    const entriesSteam = util.statusesToEntries(util.statusesStreaming(domain, hashtags))
 
     const store = writable([])
     const { update, subscribe } = store
@@ -91,6 +91,7 @@ function entriesStore() {
             const iteratorResult = await entriesSteam.next()
 
             if (iteratorResult.value) {
+                // console.log(iteratorResult.value)
                 update(entries => [...entries, iteratorResult.value])
             } else {
                 break

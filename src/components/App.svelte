@@ -11,9 +11,12 @@
         <div>
             {#each $entries as entry}
                 <div class="entry" class:active={entry === $currentEntry} on:click={() => $currentEntry = entry}>
-                    <div>{entry.metadata.title}</div>
-                    <b>{entry.status.account.username} <small>{entry.status.account.acct}</small></b>
-                    <small>{entry.tags}</small>
+                    <div>{entry.data.metadata.title}</div>
+
+                    <div>
+                        <small>{entry.url}</small>
+                        <b>{entry.status.account.username} <small>{entry.status.account.acct}</small></b>
+                    </div>
                 </div>
             {/each}
         </div>
@@ -34,13 +37,12 @@
     import { playing, loading, entry as currentEntry, entries } from '/store.js'
 
     onMount(() => {
-        const unsub = entries.subscribe(async (xs) => {
+        const unsubscribe = entries.subscribe(async (xs) => {
             if (xs.length) {
                 const [firstEntry] = xs
                 currentEntry.set(firstEntry)
-                unsub()
+                unsubscribe()
             }
-
         })
 
         entries.load(7)

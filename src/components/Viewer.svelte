@@ -17,7 +17,7 @@
     $: updateVolume($volume)
 
     const updateEntry = (entry) => {
-        if (player && entry) player.load(entry.id, get(playing))
+        if (player && entry) player.load(entry.data.id, get(playing))
     }
 
     const updatePlaying = (playing) => {
@@ -37,7 +37,7 @@
             width: 300,
             height: 300,
             autoplay: $playing,
-            controls: true, // debug only
+            controls: false,
             keyboard: false,
             fullscreen: false,
             modestBranding: true,
@@ -49,7 +49,11 @@
         updateVolume($volume)
 
         player.on('ended', () => entry.next())
-        player.on('unplayable', () => entry.next())
+
+        player.on('unplayable', (...args) => {
+            console.log('unplayable', ...args)
+            entry.next()
+        })
     })
 </script>
 
