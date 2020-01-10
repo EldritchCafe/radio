@@ -10,12 +10,24 @@
     <section class="queue">
         <div>
             {#each $entries as entry}
-                <div class="entry" class:active={entry === $currentEntry} on:click={() => $currentEntry = entry}>
-                    <div>{entry.data.metadata.title}</div>
+                <div class="entry" class:active={entry === $currentEntry}>
+                    <div>
+                        <button on:click={() => toggleEntry(entry)}>
+                            {#if entry === $currentEntry && !$paused}
+                                ⏸️
+                            {:else}
+                                ▶️
+                            {/if}
+                        </button>
+                    </div>
 
                     <div>
-                        <small>{entry.url}</small>
-                        <b>{entry.status.account.username} <small>{entry.status.account.acct}</small></b>
+                        <div>{entry.data.metadata.title}</div>
+
+                        <div>
+                            <small>{entry.url}</small>
+                            <b>{entry.status.account.username} <small>{entry.status.account.acct}</small></b>
+                        </div>
                     </div>
                 </div>
             {/each}
@@ -34,7 +46,15 @@
     import { onMount } from 'svelte'
     import Controls from '/components/Controls.svelte'
     import Viewer from '/components/Viewer.svelte'
-    import { entry as currentEntry, entries } from '/store.js'
+    import { paused, entry as currentEntry, entries } from '/store.js'
+
+    const toggleEntry = (entry) => {
+        if (entry !== $currentEntry) {
+            $currentEntry = entry
+        } else {
+            $paused = !$paused
+        }
+    }
 
     onMount(() => {
         const unsubscribe = entries.subscribe(async (xs) => {
@@ -110,7 +130,7 @@
     }
 
     .entry {
-        cursor: pointer;
+        display: flex;
         border: 1px solid black;
     }
 
