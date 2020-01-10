@@ -21,6 +21,7 @@
     "@babel/runtime-corejs3": "^7.7.7",
     "date-fns": "^2.9.0",
     "get-urls": "^9.2.0",
+    "iter-tools": "^7.0.0-rc.0",
     "yt-player": "^3.4.3"
   },
   "browserslist": [

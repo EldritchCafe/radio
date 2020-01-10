@@ -1,5 +1,5 @@
 import { writable, get } from 'svelte/store'
-import * as util from './util.js'
+import * as util from '/util.js'
 
 export const domain = writable('eldritch.cafe')
 
@@ -11,11 +11,10 @@ export const hashtags = writable([
 ])
 
 export const playing = writable(true)
+export const muted = writable(false)
+export const volume = writable(100)
 
-export const loading = writable(false)
-
-export const entries = entriesStore(loading)
-
+export const entries = entriesStore()
 export const entry = entryStore(entries)
 
 
@@ -26,8 +25,29 @@ function entryStore(entries) {
     const store = writable(null)
     const { set, update, subscribe } = store
 
-    const next = async () => {
-        const entriesList = await get(entries)
+    const select = (entry) => {
+        update(() => entry)
+
+        const entriesList = get(entries)
+        const index = entriesList.indexOf(entry)
+
+        if (index === entriesList.length - 1) {
+            entries.load(1)
+        }
+    }
+
+    const previous = () => {
+        const entriesList = get(entries)
+
+        update(currentEntry => {
+            const index = entriesList.indexOf(currentEntry)
+
+            return index > 0 ? entriesList[index - 1] : null
+        })
+    }
+
+    const next = () => {
+        const entriesList = get(entries)
 
         update(oldEntry => {
             if (entriesList.length === 0) {
@@ -51,39 +71,16 @@ function entryStore(entries) {
         })
     }
 
-    return { subscribe, set, next }
+    return { subscribe, set: select, previous, next }
 }
 
-async function* loader(loading) {
-    loading.set(true)
-    let { statuses, nextLink, previousLink } = await util.fetchTimeline('https://eldritch.cafe/api/v1/timelines/tag/np')
-    loading.set(false)
-
-    yield* util.statusesToEntries(statuses)
-
-    while (true) {
-        loading.set(true)
-        const timeline = await util.fetchTimeline(nextLink)
-        loading.set(false)
-
-        nextLink = timeline.nextLink
-
-        yield* util.statusesToEntries(timeline.statuses)
-    }
-}
-
-
-function entriesStore(loading) {
-    const entriesSteam = loader(loading)
+function entriesStore() {
+    const entriesSteam = util.statusesToEntries(util.statusesStreaming())
 
     const store = writable([])
     const { update, subscribe } = store
 
     const load = async (number) => {
-        if (get(loading)) {
-            return
-        }
-
         for (let i = 0; i < number; i++) {
             const iteratorResult = await entriesSteam.next()
 
@@ -97,4 +94,3 @@ function entriesStore(loading) {
 
     return { subscribe, load }
 }
-

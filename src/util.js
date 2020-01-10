@@ -1,4 +1,45 @@
 import getUrls from 'get-urls'
+import { pipe, asyncFilter, asyncMap, asyncTap, asyncTake } from 'iter-tools'
+
+export async function* statusesStreaming() {
+    let { statuses, nextLink, previousLink } = await fetchTimeline('https://eldritch.cafe/api/v1/timelines/tag/np')
+
+    yield* statuses
+
+    while (nextLink) {
+        const a = await fetchTimeline(nextLink)
+
+        nextLink = a.nextLink
+        yield* a.statuses
+    }
+}
+
+export const statusesToEntries = pipe(
+    asyncMap(status => ({ status, urls: Array.from(getUrls(status.content)).filter(isSupportedUrl) })),
+    asyncFilter(entry => entry.urls.length > 0),
+    asyncMap(async ({ status, urls }) => {
+        const [url] = urls
+        const id = getYoutubeVideoId(url)
+
+        const tags = intersection(status.tags.map(tag => tag.name), [
+            'np',
+            'nowplaying',
+            'tootradio',
+            'pouetradio'
+        ])
+
+        const metadata = await fetchYoutubeMetadata(id)
+
+        return { status, url, id, tags, metadata }
+    }),
+    asyncTake(20)
+)
+
+function fetchYoutubeMetadata(id) {
+    return fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${id}`)
+        .then(response => response.json())
+
+}
 
 export function isSupportedUrl(urlAsString) {
     const url = new URL(urlAsString)
@@ -40,27 +81,4 @@ export function parseLinkHeader(link) {
     }
 
     return links
-}
-
-export function statusesToEntries(statuses) {
-    const entries = []
-
-    return statuses
-        .map(status => {
-            const [url] = Array.from(getUrls(status.content)).filter(isSupportedUrl)
-
-            return { status, url }
-        })
-        .filter(entry => entry.url != null)
-        .map(({ status, url }) => {
-            const id = getYoutubeVideoId(url)
-            const tags = intersection(status.tags.map(tag => tag.name), [
-                'np',
-                'nowplaying',
-                'tootradio',
-                'pouetradio'
-            ])
-
-            return { status, url, id, tags }
-        })
 }
