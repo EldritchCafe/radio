@@ -44,7 +44,8 @@ export async function* mkStatusesIterator(initialLink) {
 }
 
 export async function* mkTracksIterator(domain, hashtags) {
-    const known = new Set()
+    // const known = new Set()
+    const known = {}
     const [hashtag] = hashtags
 
     const statuses = mkStatusesIterator(`https://${domain}/api/v1/timelines/tag/${hashtag}?limit=40`)
@@ -54,8 +55,10 @@ export async function* mkTracksIterator(domain, hashtags) {
         asyncMap(status => ({ status, data: mkData(status) })),
         asyncFilter(({ data }) => {
             if (data) {
-                const found = known.has(data.id)
-                known.add(data.id)
+                // const found = known.has(data.id)
+                // known.add(data.id)
+                const found = known.hasOwnProperty(data.id)
+                known[data.id] = true
                 return !found
             }
 
