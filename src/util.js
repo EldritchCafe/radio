@@ -1,36 +1,81 @@
 import getUrls from 'get-urls'
-import { pipe, asyncFilter, asyncMap, asyncTap, asyncTake } from 'iter-tools'
-import YouTubePlayer from 'yt-player'
+import { execPipe, asyncFilter, asyncMap } from 'iter-tools'
 
-export async function* statusesStreaming(domain, [hashtag]) {
-    const initialLink = `https://${domain}/api/v1/timelines/tag/${hashtag}?limit=40`
+const millisecond = 1
+const second = 1000 * millisecond
+const minute = 60 * second
 
-    let { statuses, nextLink, previousLink } = await fetchTimeline(initialLink)
+export async function* mkStatusesIterator(initialLink) {
+    let buffer = []
+    let { previousLink, nextLink } = initialLink
 
-    yield* statuses
+    console.log('fetch initial')
+    const initial = await fetchTimeline(initialLink)
+    let latestPreviousFetch = Date.now()
 
-    while (nextLink) {
-        const a = await fetchTimeline(nextLink)
+    if (initial.statuses.length > 0) {
+        buffer = [...initial.statuses]
+        previousLink = initial.links.prev
+        nextLink = initial.links.next
+    }
 
-        nextLink = a.nextLink
-        yield* a.statuses
+    yield buffer.shift()
+
+    while (true) {
+        const now = Date.now()
+        if (latestPreviousFetch + 5 * minute < now) {
+            console.log('fetch newer')
+            const previous = await fetchTimeline(previousLink)
+            console.log(`${previous.length} newers`)
+            buffer.unshift(...previous.statuses)
+            previousLink = previous.links.prev
+            latestPreviousFetch = now
+        }
+
+        if (buffer.length === 0) {
+            console.log('fetch older')
+            const next = await fetchTimeline(nextLink)
+            buffer.push(...next.statuses)
+            nextLink = next.links.next
+        }
+
+        yield buffer.shift()
     }
 }
 
-export const statusesToEntries = pipe(
-    asyncMap(statusToEntry),
-    asyncFilter(entry => entry.type !== 'unsupported')
-)
+export async function* mkTracksIterator(domain, hashtags) {
+    const known = new Set()
+    const [hashtag] = hashtags
+
+    const statuses = mkStatusesIterator(`https://${domain}/api/v1/timelines/tag/${hashtag}?limit=40`)
+
+    const tracks = execPipe(
+        statuses,
+        asyncMap(status => ({ status, data: mkData(status) })),
+        asyncFilter(({ data }) => {
+            if (data) {
+                const found = known.has(data.id)
+                known.add(data.id)
+                return !found
+            }
+
+            return false
+        }),
+        asyncMap(async ({ status, data }) => ({ status, data, metadata: await mkMetadata(data) }))
+    )
+
+    yield* tracks
+}
 
 export async function fetchTimeline(url) {
-    const urlBuilder = new URL(url)
-    urlBuilder.searchParams.set('limit', 40)
-
     const response = await fetch(url)
     const statuses = await response.json()
-    const { next, previous } = parseLinkHeader(response.headers.get('link'))
 
-    return { statuses, nextLink: next, previousLink: previous }
+    const links = response.headers.has('link')
+        ? parseLinkHeader(response.headers.get('link'))
+        : {}
+
+    return { statuses, links }
 }
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
@@ -45,44 +90,25 @@ function parseLinkHeader(link) {
     return links
 }
 
-async function statusToEntry(status) {
+function mkData(status)
+{
     const urls = getUrls(status.content)
 
-    for await (const url of urls) {
-        const { type, data } = await urlToEntry(url)
+    for (const urlAsString of urls) {
+        const url = new URL(urlAsString)
 
-        if (type !== 'unsupported') {
-            return { status, url, type, data }
+        if (['youtube.com', 'music.youtube.com'].includes(url.hostname) && url.searchParams.has('v')) {
+            return { url: urlAsString, id: url.searchParams.get('v') }
+        } else if (url.hostname === 'youtu.be') {
+            return { url: urlAsString, id: url.pathname.substring(1) }
         }
     }
 
-    return { type: 'unsupported' }
+    return null
 }
 
-async function urlToEntry(urlAsString) {
-    const url = new URL(urlAsString)
-
-    if (['youtube.com', 'music.youtube.com'].includes(url.hostname) && url.searchParams.has('v')) {
-        return await mkYoutubeEntry(url.searchParams.get('v'))
-    } else if (url.hostname === 'youtu.be') {
-        return await mkYoutubeEntry(url.pathname.substring(1))
-    } else {
-        return { type: 'unsupported' }
-    }
-}
-
-async function mkYoutubeEntry(id) {
-    return {
-        type: 'youtube',
-        data: {
-            id,
-            metadata: await fetchYoutubeMetadata(id)
-        }
-    }
-}
-
-function fetchYoutubeMetadata(id) {
-    return fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${id}`)
+async function mkMetadata(entry) {
+    return fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${entry.id}`)
         .then(response => response.json())
 }
 

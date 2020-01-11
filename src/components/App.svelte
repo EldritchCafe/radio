@@ -22,18 +22,18 @@
                     </div>
 
                     <div>
-                        <div>{entry.data.metadata.title}</div>
+                        <div>{entry.metadata.title}</div>
 
                         <div>
-                            <small>{entry.url}</small>
-                            <b>{entry.status.account.username} <small>{entry.status.account.acct}</small></b>
+                            <b>{entry.status.account.username} <small style="color: dimgray">{entry.status.account.acct}</small></b>
+                            {entry.data.url}
                         </div>
                     </div>
                 </div>
             {/each}
         </div>
 
-        <button on:click={() => entries.load(5)}>LOAD MOAR</button>
+        <button on:click={() => entries.load(5)}>LOAD 5 MOAR</button>
     </section>
 
     <section class="controls">
@@ -57,7 +57,7 @@
     }
 
     onMount(() => {
-        const unsubscribe = entries.subscribe(async (xs) => {
+         const unsubscribe = entries.subscribe(async (xs) => {
             if (xs.length) {
                 const [firstEntry] = xs
                 currentEntry.set(firstEntry)
@@ -65,7 +65,7 @@
             }
         })
 
-        entries.load(7)
+        entries.load(1)
     })
 </script>
 

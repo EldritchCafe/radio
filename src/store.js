@@ -72,7 +72,6 @@ function entryStore(entries) {
                 entries.load(1)
             }
 
-
             return entriesList[nextIndex]
         })
     }
@@ -81,19 +80,19 @@ function entryStore(entries) {
 }
 
 function entriesStore(domain, hashtags) {
-    const entriesSteam = util.statusesToEntries(util.statusesStreaming(domain, hashtags))
+    const tracksIterator = util.mkTracksIterator(domain, hashtags)
 
     const store = writable([])
     const { update, subscribe } = store
 
     const load = async (number) => {
         for (let i = 0; i < number; i++) {
-            const iteratorResult = await entriesSteam.next()
+            const iteratorResult = await tracksIterator.next()
 
             if (iteratorResult.value) {
-                // console.log(iteratorResult.value)
                 update(entries => [...entries, iteratorResult.value])
             } else {
+                // iterator don't have new entries for now
                 break
             }
         }

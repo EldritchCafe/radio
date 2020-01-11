@@ -28,7 +28,6 @@
     $: updateVolume($volume)
 
     const updateViewerDurationCallback = () => {
-        console.log('update')
         if (player) {
             duration = player.getDuration()
             currentTime = player.getCurrentTime()
@@ -95,6 +94,11 @@
 
         player.on('unplayable', (...args) => {
             console.log('unplayable', ...args)
+            entry.next()
+        })
+
+        player.on('error', (...args) => {
+            console.log('error', ...args)
             entry.next()
         })
     })
