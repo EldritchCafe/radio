@@ -51,17 +51,23 @@ export async function* mkStatusesIterator(initialLink) {
         if (latestPreviousFetch + 5 * minute < now) {
             console.log('fetch newer')
             const previous = await fetchTimeline(previousLink)
-            console.log(`${previous.length} newers`)
-            buffer.unshift(...previous.statuses)
-            previousLink = previous.links.prev
+
             latestPreviousFetch = now
+
+            if (previous.statuses.length) {
+                buffer.unshift(...previous.statuses)
+                previousLink = previous.links.prev
+            }
         }
 
         if (buffer.length === 0) {
             console.log('fetch older')
             const next = await fetchTimeline(nextLink)
-            buffer.push(...next.statuses)
-            nextLink = next.links.next
+
+            if (next.statuses.length) {
+                buffer.push(...next.statuses)
+                nextLink = next.links.next
+            }
         }
 
         yield buffer.shift()
@@ -96,6 +102,7 @@ export async function* mkTracksIterator(domain, hashtags) {
 }
 
 export async function fetchTimeline(url) {
+    console.log(`fetching ${url}`)
     const response = await fetch(url)
     const statuses = await response.json()
 
