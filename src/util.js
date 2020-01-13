@@ -4,6 +4,20 @@ import { execPipe, asyncFilter, asyncMap } from 'iter-tools'
 const millisecond = 1
 const second = 1000 * millisecond
 const minute = 60 * second
+const hour = 60 * minute
+
+export const secondsToElapsedTime = (seconds) => {
+    const parts = [
+        Math.floor(seconds / 3600),
+        Math.floor(seconds / 60) % 60,
+        Math.floor(seconds) % 60
+    ]
+
+    return parts
+        .filter((value, index) => value > 0 || index > 0)
+        .map(value => value < 10 ? '0' + value : value)
+        .join(':')
+}
 
 export async function* mkStatusesIterator(initialLink) {
     let buffer = []

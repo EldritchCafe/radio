@@ -1,13 +1,13 @@
 <div>
-    <div>
+    <div class:hidden={!duration}>
         <div bind:this={element}></div>
     </div>
 
     {#if duration}
-        {Math.round(currentTime)} / {Math.round(duration)}
+        {currentTimeText}
         <input type="range" min="0" max={duration} value={currentTime} disabled>
+        {durationText}
     {/if}
-
 </div>
 
 <script>
@@ -15,12 +15,19 @@
     import { get } from 'svelte/store'
     import YoutubePlayer from 'yt-player'
     import { entry, paused, muted, volume } from '/store.js'
+    import { secondsToElapsedTime } from '/util.js'
 
     let element
     let player
 
     let currentTime = null
     let duration = null
+
+    let currentTimeText = null
+    let durationText = null
+
+    $: currentTimeText = currentTime !== null ? secondsToElapsedTime(currentTime) : null
+    $: durationText = duration !== null ? secondsToElapsedTime(duration) : null
 
     $: updateEntry($entry)
     $: updatePaused($paused)
@@ -111,5 +118,7 @@
 </script>
 
 <style>
-
+    .hidden {
+        display: none;
+    }
 </style>
