@@ -27,7 +27,7 @@
 
 <script>
     import { onMount } from 'svelte'
-    import { paused, entry as currentEntry, entries } from '/store.js'
+    import { paused, entry as currentEntry, entries } from '/stores.js'
 
     const toggleEntry = (entry) => {
         if (entry !== $currentEntry) {

@@ -1,49 +1,69 @@
 import { writable, get } from 'svelte/store'
-import * as util from '/util.js'
+import { mkTracksIterator } from '/util.js'
 
-export const domain = writableLocalStorage('domain', 'eldritch.cafe')
-
-export const hashtags = writableLocalStorage('hashtags', [
-    'np',
-    'nowplaying',
-    'tootradio',
-    'pouetradio'
-])
-
-export const paused = writable(false)
-export const muted = writableLocalStorage('muted', false)
-export const volume = writableLocalStorage('volume', 100)
-
-export const entries = entriesStore(get(domain), get(hashtags))
-export const entry = entryStore(entries)
-
-
-
-
-function writableLocalStorage(key, value) {
+export const writableLocalStorage = (key, value) => {
     const item = JSON.parse(localStorage.getItem(key))
     const store = writable(item === null ? value : item)
-    const unsubscribe = store.subscribe(x => localStorage.setItem(key, JSON.stringify(x)))
+
+    store.subscribe(x => localStorage.setItem(key, JSON.stringify(x)))
+
     return store
 }
 
-function entryStore(entries) {
+export const stackStore = (domain, hashtags) => {
+    const tracksIterator = mkTracksIterator(domain, hashtags)
+
+    const store = writable([])
+    const { update, subscribe } = store
+
+    let promise = Promise.resolve()
+    const buffer = []
+
+    const load = async () => {
+
+
+        const n = 5 - buffer.length
+
+        for (let i = 0; i < n; i++) {
+            const iteratorResult = await tracksIterator.next()
+
+            if (iteratorResult.value) {
+                update(entries => [...entries, iteratorResult.value])
+            } else {
+                // iterator don't have new entries for now
+                break
+            }
+        }
+    }
+
+    const unshift = async () => {
+        let promise = promise.then(() => {
+
+        })
+    }
+
+    promise = load()
+
+    return { subscribe, unshift }
+}
+
+export const entryStore = (entriesStore) => {
     const store = writable(null)
     const { set, update, subscribe } = store
 
     const select = (entry) => {
         update(() => entry)
 
-        const entriesList = get(entries)
+        const entriesList = get(entriesStore)
         const index = entriesList.indexOf(entry)
 
         if (index === entriesList.length - 1) {
-            entries.load(1)
+            entriesStore.load(1)
         }
     }
 
     const previous = () => {
-        const entriesList = get(entries)
+        const entriesList = get(entriesStore)
 
         update(currentEntry => {
             const index = entriesList.indexOf(currentEntry)
@@ -53,7 +73,7 @@ function entryStore(entries) {
     }
 
     const next = () => {
-        const entriesList = get(entries)
+        const entriesList = get(entriesStore)
 
         update(oldEntry => {
             if (entriesList.length === 0) {
@@ -79,8 +99,8 @@ function entryStore(entries) {
     return { subscribe, set: select, previous, next }
 }
 
-function entriesStore(domain, hashtags) {
-    const tracksIterator = util.mkTracksIterator(domain, hashtags)
+export const entriesStore = (domain, hashtags) => {
+    const tracksIterator = mkTracksIterator(domain, hashtags)
 
     const store = writable([])
     const { update, subscribe } = store

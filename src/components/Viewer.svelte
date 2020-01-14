@@ -14,7 +14,7 @@
     import { onMount, onDestroy } from 'svelte'
     import { get } from 'svelte/store'
     import YoutubePlayer from 'yt-player'
-    import { entry, paused, muted, volume } from '/store.js'
+    import { entry, paused, muted, volume } from '/stores.js'
     import { secondsToElapsedTime } from '/util.js'
 
     let element

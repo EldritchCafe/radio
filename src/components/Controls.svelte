@@ -30,7 +30,7 @@
 </div>
 
 <script>
-    import { paused, volume, muted, entry } from '/store.js'
+    import { paused, volume, muted, entry } from '/stores.js'
 </script>
 
 <style>

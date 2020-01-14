@@ -37,6 +37,7 @@ export async function* mkStatusesIterator(initialLink) {
 
     while (true) {
         const now = Date.now()
+
         if (latestPreviousFetch + 5 * minute < now) {
             console.log('fetch newer')
             const previous = await fetchTimeline(previousLink)
