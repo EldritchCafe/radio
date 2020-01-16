@@ -3,14 +3,12 @@
         <button on:click={() => $muted = !$muted}>
             {#if $muted}
                 🔇
-            {:else}
-                {#if $volume < 20}
-                    🔈
-                {:else if $volume < 80}
-                    🔉
-                {:else}
-                    🔊
-                {/if}
+            {:else if $volume < 20}
+                🔈
+            {:else if $volume < 80}
+                🔉
+            {:else }
+                🔊
             {/if}
         </button>
 
@@ -18,9 +16,21 @@
     </div>
 
     <div class="controls-group">
-        <button on:click={() => entry.previous()}>⏮️</button>
-        <button on:click={() => $paused = !$paused}>{#if $paused}▶️{:else}⏸️{/if}</button>
-        <button on:click={() => entry.next()}>⏭️</button>
+        <button class:cant={!$canPrevious} on:click={() => selectPrevious()}>⏮️</button>
+
+        <button on:click={() => $paused = !$paused}>
+            {#if $index === null}
+                ▶️
+            {:else if $loading}
+                🕒
+            {:else if $paused}
+                ▶️
+            {:else }
+                ⏸️
+            {/if}
+        </button>
+
+        <button class:cant={!$canNext} on:click={() => selectNext()}>⏭️</button>
     </div>
 
     <div class="controls-group">
@@ -30,7 +40,18 @@
 </div>
 
 <script>
-    import { paused, volume, muted, entry } from '/stores.js'
+    import {
+        paused,
+        muted,
+        volume,
+        index,
+        queue,
+        canPrevious,
+        canNext,
+        selectPrevious,
+        selectNext,
+        loading
+    } from '/store.js'
 </script>
 
 <style>
@@ -41,5 +62,9 @@
 
     .controls-group {
         margin: 0 1rem;
+    }
+
+    .cant {
+        background-color: red;
     }
 </style>

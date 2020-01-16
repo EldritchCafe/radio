@@ -4,7 +4,9 @@
     </header>
 
     <section class="viewer">
-        <Viewer></Viewer>
+        {#if $current}
+            <Viewer></Viewer>
+        {/if}
     </section>
 
     <section class="queue">
@@ -23,6 +25,8 @@
     import Controls from '/components/Controls.svelte'
     import Queue from '/components/Queue.svelte'
     import Viewer from '/components/Viewer.svelte'
+
+    import { current } from '/store.js'
 </script>
 
 <style>

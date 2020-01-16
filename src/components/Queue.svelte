@@ -1,53 +1,58 @@
 <div>
-    {#each $entries as entry}
-        <div class="entry" class:active={entry === $currentEntry}>
+    {#each $queue as track, i}
+        <div class="entry" class:active={i === $index}>
             <div>
-                <button on:click={() => toggleEntry(entry)}>
-                    {#if entry === $currentEntry && !$paused}
-                        ⏸️
-                    {:else}
+                <button on:click={() => toggle(i)}>
+                    {#if i != $index}
                         ▶️
+                    {:else if $loading}
+                        🕒
+                    {:else if $paused}
+                        ▶️
+                    {:else}
+                        ⏸️
                     {/if}
                 </button>
             </div>
 
             <div>
-                <div>{entry.metadata.title}</div>
+                <div>{track.metadata.title}</div>
 
                 <div>
-                    <b>{entry.status.account.username} <small style="color: dimgray">{entry.status.account.acct}</small></b>
-                    {entry.data.url}
+                    <b>{track.status.account.username} <small style="color: dimgray">{track.status.account.acct}</small></b>
+                    {track.data.url}
                 </div>
             </div>
         </div>
     {/each}
 
-    <button on:click={() => entries.load(5)}>LOAD 5 MOAR</button>
+    {#if $enqueueing}
+        LOADING ...
+    {/if}
 </div>
 
 <script>
     import { onMount } from 'svelte'
-    import { paused, entry as currentEntry, entries } from '/stores.js'
+    import { index, queue, paused, enqueueing, enqueue, loading } from '/store.js'
 
-    const toggleEntry = (entry) => {
-        if (entry !== $currentEntry) {
-            $currentEntry = entry
-        } else {
+    const toggle = i => {
+        if (i === $index) {
             $paused = !$paused
+        } else {
+            $index = i
+            $paused = false
         }
     }
 
     onMount(() => {
-         const unsubscribe = entries.subscribe(async (xs) => {
-            if (xs.length) {
-                const [firstEntry] = xs
-                currentEntry.set(firstEntry)
-                unsubscribe()
-            }
+        enqueue().then(() => {
+            $index = 0
         })
-
-        entries.load(1)
     })
+
+    $: if ($index !== null && $index === $queue.length - 1) {
+        enqueue()
+    }
 </script>
 
 <style>

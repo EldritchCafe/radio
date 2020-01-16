@@ -1,12 +1,22 @@
 <div>
-    <div class:hidden={!duration}>
+    <div class="embed-container" class:hidden={!duration}>
         <div bind:this={element}></div>
+        <div class="embed-overlay" on:click={() => $paused = !$paused}></div>
     </div>
 
     {#if duration}
         {currentTimeText}
-        <input type="range" min="0" max={duration} value={currentTime} disabled>
+        <input
+            type="range"
+            min="0"
+            max={duration}
+            value={currentTime}
+            on:input={ (e) => updatePlayerCurrentTime(e.target.value) }
+            on:mousedown={() => { if (player && !$paused) player.pause() }}
+            on:mouseup={() => { if (player && !$paused) player.play() }}>
         {durationText}
+    {:else}
+        LOADING TRACK
     {/if}
 </div>
 
@@ -14,8 +24,8 @@
     import { onMount, onDestroy } from 'svelte'
     import { get } from 'svelte/store'
     import YoutubePlayer from 'yt-player'
-    import { entry, paused, muted, volume } from '/stores.js'
     import { secondsToElapsedTime } from '/util.js'
+    import { paused, muted, volume, current, selectNext, loading } from '/store.js'
 
     let element
     let player
@@ -29,40 +39,45 @@
     $: currentTimeText = currentTime !== null ? secondsToElapsedTime(currentTime) : null
     $: durationText = duration !== null ? secondsToElapsedTime(duration) : null
 
-    $: updateEntry($entry)
-    $: updatePaused($paused)
-    $: updateMuted($muted)
-    $: updateVolume($volume)
+    $: updatePlayerVideoId($current)
+    $: updatePlayerPaused($paused)
+    $: updatePlayerMuted($muted)
+    $: updatePlayerVolume($volume)
 
     const updateViewerDurationCallback = () => {
         if (player) {
             duration = player.getDuration()
             currentTime = player.getCurrentTime()
+            $loading = false
         }
     }
 
-    const updateEntry = (entry) => {
-        if (player && entry) {
+    const updatePlayerVideoId = ($current) => {
+        if (player && $current) {
             duration = null
             currentTime = null
+            $loading = true
             player.off('playing', updateViewerDurationCallback)
 
-            player.load(entry.data.id, !$paused)
+            player.load($current.data.id, !$paused)
         }
     }
 
-    const updatePaused = (paused) => {
+    const updatePlayerPaused = (paused) => {
         if (player) paused ? player.pause() : player.play()
     }
 
-    const updateMuted = (muted) => {
+    const updatePlayerMuted = (muted) => {
         if (player) muted ? player.mute() : player.unMute()
     }
 
-    const updateVolume = (volume) => {
+    const updatePlayerVolume = (volume) => {
         if (player) player.setVolume(volume)
     }
 
+    const updatePlayerCurrentTime = (seconds) => {
+        if (player) player.seek(seconds)
+    }
 
 
     onMount(() => {
@@ -77,17 +92,9 @@
             related: false
         })
 
-        updatePaused($paused)
-        updateMuted($muted)
-        updateVolume($volume)
-
-        // player.on('playing', () => {
-        //     $paused = false
-        // })
-
-        // player.on('paused', () => {
-        //     $paused = true
-        // })
+        updatePlayerPaused($paused)
+        updatePlayerMuted($muted)
+        updatePlayerVolume($volume)
 
         player.on('unstarted', () => {
             player.once('playing', updateViewerDurationCallback)
@@ -97,16 +104,18 @@
             currentTime = time
         })
 
-        player.on('ended', () => entry.next())
+        player.on('ended', () => {
+            selectNext()
+        })
 
         player.on('unplayable', (...args) => {
             console.log('unplayable', ...args)
-            entry.next()
+            selectNext()
         })
 
         player.on('error', (...args) => {
             console.log('error', ...args)
-            entry.next()
+            selectNext()
         })
     })
 
@@ -120,5 +129,17 @@
 <style>
     .hidden {
         display: none;
+    }
+
+    .embed-container {
+        position: relative;
+    }
+
+    .embed-overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
 </style>

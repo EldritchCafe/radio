@@ -1,5 +1,15 @@
+import { writable } from 'svelte/store'
 import getUrls from 'get-urls'
 import { execPipe, asyncFilter, asyncMap } from 'iter-tools'
+
+export const writableLocalStorage = (key, value) => {
+    const item = JSON.parse(localStorage.getItem(key))
+    const store = writable(item === null ? value : item)
+
+    store.subscribe(x => localStorage.setItem(key, JSON.stringify(x)))
+
+    return store
+}
 
 const millisecond = 1
 const second = 1000 * millisecond
