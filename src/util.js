@@ -29,39 +29,30 @@ export const secondsToElapsedTime = (seconds) => {
         .join(':')
 }
 
-export async function* mkStatusesIterator(initialLink) {
-    let buffer = []
-    let { previousLink, nextLink } = initialLink
+export async function* mkStatusesIterator(domain, hashtag) {
+    console.log(`Initialize statuses iterator for #${hashtag} on ${domain}`)
+    const buffer = []
 
-    console.log('fetch initial')
-    const initial = await fetchTimeline(initialLink)
-    let latestPreviousFetch = Date.now()
 
-    if (initial.statuses.length > 0) {
-        buffer = [...initial.statuses]
-        previousLink = initial.links.prev
-        nextLink = initial.links.next
-    }
 
-    yield buffer.shift()
+    // streaming
+    const eventSource = new EventSource(`https://${domain}/api/v1/streaming/hashtag?tag=${hashtag}`)
+
+    eventSource.addEventListener('update', (e) => {
+        console.log(`Received new recent status for #${hashtag} on ${domain}`)
+        buffer.unshift(JSON.parse(e.data))
+    })
+
+    eventSource.onerror = (error) => console.log('onerror', error)
+
+
+
+    // timeline
+    let nextLink = `https://${domain}/api/v1/timelines/tag/${hashtag}?limit=40`
 
     while (true) {
-        const now = Date.now()
-
-        if (latestPreviousFetch + 5 * minute < now) {
-            console.log('fetch newer')
-            const previous = await fetchTimeline(previousLink)
-
-            latestPreviousFetch = now
-
-            if (previous.statuses.length) {
-                buffer.unshift(...previous.statuses)
-                previousLink = previous.links.prev
-            }
-        }
-
         if (buffer.length === 0) {
-            console.log('fetch older')
+            console.log(`Fetch timeline for #${hashtag} on ${domain}`)
             const next = await fetchTimeline(nextLink)
 
             if (next.statuses.length) {
@@ -79,7 +70,7 @@ export async function* mkTracksIterator(domain, hashtags) {
     const known = {}
     const [hashtag] = hashtags
 
-    const statuses = mkStatusesIterator(`https://${domain}/api/v1/timelines/tag/${hashtag}?limit=40`)
+    const statuses = mkStatusesIterator(domain, hashtag)
 
     const tracks = execPipe(
         statuses,
