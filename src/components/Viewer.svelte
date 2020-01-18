@@ -1,8 +1,12 @@
 <div>
-    <div class="embed-container" class:hidden={!duration}>
+    <div class="embed-container" class:hidden={!loaded}>
         <div bind:this={element}></div>
         <div class="embed-overlay" on:click={() => $paused = !$paused}></div>
     </div>
+
+    {#if !loaded}
+        LOADING TRACK
+    {/if}
 
     {#if duration}
         {currentTimeText}
@@ -15,8 +19,6 @@
             on:mousedown={() => { if (player && !$paused) player.pause() }}
             on:mouseup={() => { if (player && !$paused) player.play() }}>
         {durationText}
-    {:else}
-        LOADING TRACK
     {/if}
 </div>
 
@@ -32,6 +34,7 @@
 
     let currentTime = null
     let duration = null
+    let loaded = false
 
     let currentTimeText = null
     let durationText = null
@@ -57,6 +60,7 @@
             duration = null
             currentTime = null
             $loading = true
+            loaded = false
             player.off('playing', updateViewerDurationCallback)
 
             player.load($current.data.id, !$paused)
@@ -97,6 +101,7 @@
         updatePlayerVolume($volume)
 
         player.on('unstarted', () => {
+            loaded = true
             player.once('playing', updateViewerDurationCallback)
         })
 
