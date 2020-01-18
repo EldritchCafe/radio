@@ -1,17 +1,17 @@
 <div>
-    <YoutubePlayer
-        id={$current ? $current.data.id : null}
-        paused={$paused}
-        muted={$muted}
-        volume={$volume}
-        bind:ready
-        bind:ended
-        bind:currentTime
-        bind:duration
-        bind:seek={seek}>
-    </YoutubePlayer>
-
     <div class="embed-container" class:hidden={!ready}>
+        <YoutubePlayer
+            id={$current ? $current.data.id : null}
+            paused={$paused}
+            muted={$muted}
+            volume={$volume}
+            bind:ready
+            bind:ended
+            bind:currentTime
+            bind:duration
+            bind:seek={seek}
+        ></YoutubePlayer>
+
         <div class="embed-overlay" on:click={() => $paused = !$paused}></div>
     </div>
 

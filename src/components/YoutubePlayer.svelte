@@ -91,7 +91,7 @@
                 console.log('stateChange', event)
 
                 switch (event.data) {
-                    case STATUS.CUED:
+                    case STATUS.UNSTARTED:
                         ready = true
                         break
 
