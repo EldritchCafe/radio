@@ -1,10 +1,21 @@
 <div>
-    <div class="embed-container" class:hidden={!loaded}>
-        <div bind:this={element}></div>
+    <YoutubePlayer
+        id={$current ? $current.data.id : null}
+        paused={$paused}
+        muted={$muted}
+        volume={$volume}
+        bind:ready
+        bind:ended
+        bind:currentTime
+        bind:duration
+        bind:seek={seek}>
+    </YoutubePlayer>
+
+    <div class="embed-container" class:hidden={!ready}>
         <div class="embed-overlay" on:click={() => $paused = !$paused}></div>
     </div>
 
-    {#if !loaded}
+    {#if !ready}
         LOADING TRACK
     {/if}
 
@@ -15,120 +26,30 @@
             min="0"
             max={duration}
             value={currentTime}
-            on:input={ (e) => updatePlayerCurrentTime(e.target.value) }
-            on:mousedown={() => { if (player && !$paused) player.pause() }}
-            on:mouseup={() => { if (player && !$paused) player.play() }}>
+            on:input={(e) => seek(e.target.value, false)}
+            on:change={(e) => seek(e.target.value, true)}>
         {durationText}
     {/if}
 </div>
 
 <script>
-    import { onMount, onDestroy } from 'svelte'
     import { get } from 'svelte/store'
-    import YoutubePlayer from 'yt-player'
+    import YoutubePlayer from '/components/YoutubePlayer'
     import { secondsToElapsedTime } from '/util.js'
     import { paused, muted, volume, current, selectNext, loading } from '/store.js'
 
-    let element
-    let player
-
+    let ready = null
+    let ended = null
     let currentTime = null
     let duration = null
-    let loaded = false
-
-    let currentTimeText = null
-    let durationText = null
+    let seek = null
 
     $: currentTimeText = currentTime !== null ? secondsToElapsedTime(currentTime) : null
     $: durationText = duration !== null ? secondsToElapsedTime(duration) : null
 
-    $: updatePlayerVideoId($current)
-    $: updatePlayerPaused($paused)
-    $: updatePlayerMuted($muted)
-    $: updatePlayerVolume($volume)
-
-    const updateViewerDurationCallback = () => {
-        if (player) {
-            duration = player.getDuration()
-            currentTime = player.getCurrentTime()
-            $loading = false
-        }
+    $: if (ended) {
+        selectNext()
     }
-
-    const updatePlayerVideoId = ($current) => {
-        if (player && $current) {
-            duration = null
-            currentTime = null
-            $loading = true
-            loaded = false
-            player.off('playing', updateViewerDurationCallback)
-
-            player.load($current.data.id, !$paused)
-        }
-    }
-
-    const updatePlayerPaused = (paused) => {
-        if (player) paused ? player.pause() : player.play()
-    }
-
-    const updatePlayerMuted = (muted) => {
-        if (player) muted ? player.mute() : player.unMute()
-    }
-
-    const updatePlayerVolume = (volume) => {
-        if (player) player.setVolume(volume)
-    }
-
-    const updatePlayerCurrentTime = (seconds) => {
-        if (player) player.seek(seconds)
-    }
-
-
-    onMount(() => {
-        player = new YoutubePlayer(element, {
-            width: 300,
-            height: 300,
-            autoplay: !$paused,
-            controls: false,
-            keyboard: false,
-            fullscreen: false,
-            modestBranding: true,
-            related: false
-        })
-
-        updatePlayerPaused($paused)
-        updatePlayerMuted($muted)
-        updatePlayerVolume($volume)
-
-        player.on('unstarted', () => {
-            loaded = true
-            player.once('playing', updateViewerDurationCallback)
-        })
-
-        player.on('timeupdate', (time) => {
-            currentTime = time
-        })
-
-        player.on('ended', () => {
-            selectNext()
-        })
-
-        player.on('unplayable', (...args) => {
-            console.log('unplayable', ...args)
-            selectNext()
-        })
-
-        player.on('error', (...args) => {
-            console.log('error', ...args)
-            selectNext()
-        })
-    })
-
-    onDestroy(() => {
-        if (player) {
-            player.destroy()
-        }
-    })
 </script>
 
 <style>

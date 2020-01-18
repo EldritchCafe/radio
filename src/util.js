@@ -2,6 +2,34 @@ import { writable } from 'svelte/store'
 import getUrls from 'get-urls'
 import { execPipe, asyncFilter, asyncMap } from 'iter-tools'
 
+export const tap = f => x => {
+    f(x)
+    return x
+}
+
+export const queue = () => {
+    const deferred = defer()
+    let promise = deferred.promise
+
+    const enqueue = f => {
+        promise = promise.then(tap(f))
+    }
+
+    return { enqueue, run: deferred.resolve }
+}
+
+export const defer = () => {
+    let resolve
+    let reject
+
+    const promise = new Promise((res, rej) => {
+        resolve = res
+        reject = rej
+    })
+
+    return { resolve, reject, promise }
+}
+
 export const writableLocalStorage = (key, value) => {
     const item = JSON.parse(localStorage.getItem(key))
     const store = writable(item === null ? value : item)
