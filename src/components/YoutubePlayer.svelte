@@ -11,6 +11,7 @@
     // output props
     export let ready = false
     export let ended = false
+    export let error = false
     export let duration = null
     export let currentTime = null
 
@@ -30,6 +31,7 @@
     export const load = (id) => enqueue((player) => {
         ready = false
         ended = false
+        error = false
         currentTime = null
         duration = null
 
@@ -106,7 +108,7 @@
             }
 
             const onError = () => {
-                console.log('error', event)
+                error = true
             }
 
             player = new api.Player(element.id, {

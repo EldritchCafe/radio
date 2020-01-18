@@ -7,6 +7,7 @@
             volume={$volume}
             bind:ready
             bind:ended
+            bind:error
             bind:currentTime
             bind:duration
             bind:seek={seek}
@@ -40,6 +41,7 @@
 
     let ready = null
     let ended = null
+    let error = null
     let currentTime = null
     let duration = null
     let seek = null
@@ -47,7 +49,7 @@
     $: currentTimeText = currentTime !== null ? secondsToElapsedTime(currentTime) : null
     $: durationText = duration !== null ? secondsToElapsedTime(duration) : null
 
-    $: if (ended) {
+    $: if (ended || error) {
         selectNext()
     }
 </script>
