@@ -1,5 +1,5 @@
 <div>
-    <div class="embed-container" class:hidden={!ready}>
+    <div class="embed-container">
         <YoutubePlayer
             id={$current ? $current.data.id : null}
             paused={$paused}
