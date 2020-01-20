@@ -1,5 +1,5 @@
+import Observable from 'core-js-pure/features/observable'
 import { observableToAsyncIterator } from '/services/misc.js'
-import 'core-js/es7/observable.js'
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 

@@ -83,17 +83,16 @@ export const secondsToElapsedTime = (seconds) => {
 }
 
 export async function* mkTracksIterator(statusesIterator) {
-    // const known = new Set()
-    const knownStatus = {}
-    const knownYoutube = {}
+    const knownStatus = new Set()
+    const knownYoutube = new Set()
 
     const tracks = execPipe(
         statusesIterator,
         asyncFilter(status => {
-            if (knownStatus.hasOwnProperty(status.id)) {
+            if (knownStatus.has(status.id)) {
                 return false
             } else {
-                knownStatus[status.id] = null
+                knownStatus.add(status.id)
                 return true
             }
         }),
@@ -102,10 +101,10 @@ export async function* mkTracksIterator(statusesIterator) {
             if (!data) {
                 return false
             } else {
-                if (knownYoutube.hasOwnProperty(data.id)) {
+                if (knownYoutube.has(data.id)) {
                     return false
                 } else {
-                    knownYoutube[data.id] = null
+                    knownYoutube.add(data.id)
                     return true
                 }
             }
