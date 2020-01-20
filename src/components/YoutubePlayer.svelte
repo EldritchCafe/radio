@@ -2,11 +2,12 @@
 
 <script>
     import { onMount, onDestroy } from 'svelte'
-    import { loadIframeApi, STATUS } from '/youtube.js'
-    import { queue } from '/util.js'
+    import { loadIframeApi, STATE } from '/services/youtube.js'
+    import { queue } from '/services/misc.js'
 
     let element
     let player
+    let animationFrameId
 
     // output props
     export let ready = false
@@ -44,11 +45,11 @@
 
     const setPaused = paused => enqueue(player => {
         if (paused) {
-            if (player.getPlayerState() === STATUS.PLAYING) {
+            if (player.getPlayerState() === STATE.PLAYING) {
                 player.pauseVideo()
             }
         } else {
-            if (player.getPlayerState() !== STATUS.PLAYING) {
+            if (player.getPlayerState() !== STATE.PLAYING) {
                 player.playVideo()
             }
         }
@@ -66,44 +67,51 @@
         }
     })
 
-
     const setVolume = volume => enqueue(player => {
         player.setVolume(volume)
     })
 
-
     export const seek = (seconds, allowSeekAhead) => enqueue((player) => {
         player.seekTo(seconds, allowSeekAhead)
-        // currentTime = player.getCurrentTime()
     })
 
     onMount(() => {
         loadIframeApi().then(api => {
             element.id = Math.random().toString(16).slice(2, 8)
 
-            const onReady = (event) => {
-                run(event.target)
-
-                setInterval(() => {
-                    currentTime = event.target.getCurrentTime()
-                }, 1000)
+            const onReady = ({ target: player }) => {
+                run(player)
             }
 
-            const onStateChange = (event) => {
-                console.log('stateChange', event)
-
-                switch (event.data) {
-                    case STATUS.UNSTARTED:
+            const onStateChange = ({ data: state, target: player }) => {
+                switch (state) {
+                    case STATE.UNSTARTED:
                         ready = true
                         break
 
-                    case STATUS.PLAYING:
-                        duration = event.target.getDuration()
+                    case STATE.PLAYING:
+                        if (duration === null) {
+                            duration = player.getDuration()
+                        }
+
                         break
 
-                    case STATUS.ENDED:
+                    case STATE.ENDED:
                         ended = true
                         break
+                }
+
+                if (state === STATE.PLAYING) {
+                    const step = () => {
+                        currentTime = player.getCurrentTime()
+                        animationFrameId = requestAnimationFrame(step)
+                    }
+
+                    animationFrameId = requestAnimationFrame(step)
+                } else {
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId)
+                    }
                 }
             }
 

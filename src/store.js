@@ -1,5 +1,7 @@
 import { writable, derived, get } from 'svelte/store'
-import { writableLocalStorage, mkTracksIterator } from '/util.js'
+import { writableLocalStorage } from '/services/svelte.js'
+import { hashtagIterator } from '/services/mastodon.js'
+import { mkTracksIterator } from '/services/misc.js'
 
 export const domain = writableLocalStorage('domain', 'eldritch.cafe')
 
@@ -26,10 +28,13 @@ export const loading = writable(false)
 
 
 
-const tracksIterator = mkTracksIterator(get(domain), get(hashtags))
+
 
 export const selectPrevious = () => { if (get(canPrevious)) index.update($index => $index - 1) }
 export const selectNext = () => { if (get(canNext)) index.update($index => $index + 1) }
+
+
+const tracksIterator = mkTracksIterator(hashtagIterator(get(domain), get(hashtags)[0]))
 
 export const enqueue = async () => {
     if (!get(enqueueing)) {

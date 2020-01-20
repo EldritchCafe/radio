@@ -1,6 +1,6 @@
 const IFRAME_API_URL = 'https://www.youtube.com/iframe_api'
 
-export const STATUS = {
+export const STATE = {
     UNSTARTED: -1,
     ENDED: 0,
     PLAYING: 1,
@@ -15,6 +15,7 @@ const loadScript = (attributes) => {
             throw new Error('src is required')
         }
 
+        // // we could optimize futher by checking if a script with iframe api as src is already loading
         // const scripts = Array.from(document.getElementsByTagName('script'))
         //     .filter(script => script.src === attribute.src)
 

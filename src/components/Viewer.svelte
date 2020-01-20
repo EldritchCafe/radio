@@ -22,13 +22,16 @@
 
     {#if duration}
         {currentTimeText}
+
         <input
             type="range"
             min="0"
             max={duration}
-            value={currentTime}
-            on:input={(e) => seek(e.target.value, false)}
-            on:change={(e) => seek(e.target.value, true)}>
+            value="0"
+            on:input={event => updateCurrentTime(event.target.value, false)}
+            on:change={event => updateCurrentTime(event.target.value, true)}
+        >
+
         {durationText}
     {/if}
 </div>
@@ -36,7 +39,7 @@
 <script>
     import { get } from 'svelte/store'
     import YoutubePlayer from '/components/YoutubePlayer'
-    import { secondsToElapsedTime } from '/util.js'
+    import { secondsToElapsedTime } from '/services/misc.js'
     import { paused, muted, volume, current, selectNext, loading } from '/store.js'
 
     let ready = null
@@ -51,6 +54,11 @@
 
     $: if (ended || error) {
         selectNext()
+    }
+
+    const updateCurrentTime = (seconds, seekAhead) => {
+        seek(seconds, seekAhead)
+        currentTime = seconds
     }
 </script>
 
