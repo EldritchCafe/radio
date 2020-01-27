@@ -51,9 +51,10 @@ export async function* observableToAsyncIterator(observable) {
 
     try {
         while (true) {
-            const value = yield await buffer[0].promise
+            const value = await buffer[0].promise
             buffer.unshift()
 
+            // might cause a early complete because done can be true true when more than one item are in buffer
             if (done) {
                 return value
             } else {
