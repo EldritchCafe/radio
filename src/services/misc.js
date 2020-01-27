@@ -123,7 +123,7 @@ function mkData(status)
     for (const urlAsString of urls) {
         const url = new URL(urlAsString)
 
-        if (['youtube.com', 'music.youtube.com'].includes(url.hostname) && url.searchParams.has('v')) {
+        if (['youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(url.hostname) && url.searchParams.has('v')) {
             return { url: urlAsString, id: url.searchParams.get('v') }
         } else if (url.hostname === 'youtu.be') {
             return { url: urlAsString, id: url.pathname.substring(1) }
