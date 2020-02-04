@@ -54,7 +54,7 @@ export async function* observableToAsyncIterator(observable) {
             const value = await buffer[0].promise
             buffer.unshift()
 
-            // might cause a early complete because done can be true true when more than one item are in buffer
+            // might cause a early complete because done can be true when more than one item are in buffer
             if (done) {
                 return value
             } else {
@@ -90,19 +90,27 @@ export async function* mkTracksIterator(statusesIterator) {
     const tracks = execPipe(
         statusesIterator,
         asyncFilter(status => {
-            if (knownStatus.has(status.id)) {
+            if (!status) {
+                console.error(`No status, should not happen here`)
                 return false
             } else {
-                knownStatus.add(status.id)
-                return true
+                if (knownStatus.has(status.id)) {
+                    console.log(`Drop already processed status ${status.id}`)
+                    return false
+                } else {
+                    knownStatus.add(status.id)
+                    return true
+                }
             }
         }),
         asyncMap(status => ({ status, data: mkData(status) })),
-        asyncFilter(({ data }) => {
+        asyncFilter(({ status, data }) => {
             if (!data) {
+                console.log(`Drop non processable status ${status.id}`)
                 return false
             } else {
                 if (knownYoutube.has(data.id)) {
+                    console.log(`Drop already processed youtube ${data.id}`)
                     return false
                 } else {
                     knownYoutube.add(data.id)

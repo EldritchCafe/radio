@@ -15,14 +15,29 @@ function parseLinkHeader(link) {
 
 export const hashtagStreamingObservable = (domain, hashtag) => {
     return new Observable(observer => {
-        const onStatus = (event) => observer.next(JSON.parse(event.data))
-        const onError = (error) => observer.error(error)
+        const onOpen = () => {
+            console.log(`Streaming ${domain} #${hashtag} : open`)
+        }
+
+        const onStatus = event => {
+            const status = JSON.parse(event.data)
+            console.log(`Streaming ${domain} #${hashtag} : status ${status.id}`)
+            observer.next(status)
+        }
+
+        const onError = error => {
+            console.error(`Streaming ${domain} #${hashtag} : error`)
+            console.error(error)
+            observer.error(error)
+        }
 
         const eventSource = new EventSource(`https://${domain}/api/v1/streaming/hashtag?tag=${hashtag}`)
+        eventSource.addEventListener('open', onOpen)
         eventSource.addEventListener('update', onStatus)
         eventSource.addEventListener('error', onError)
 
         return () => {
+            eventSource.removeEventListener('open', onOpen)
             eventSource.removeEventListener('update', onStatus)
             eventSource.removeEventListener('error', onError)
         }
@@ -39,7 +54,11 @@ export async function* hashtagTimelineIterator (domain, hashtag) {
             ? parseLinkHeader(response.headers.get('link')).next
             : null
 
-        yield* await response.json()
+        const statuses = await response.json()
+
+        console.log(`Timeline ${domain} #${hashtag} : fetched ${statuses.length} statuses`)
+
+        yield* statuses
     }
 }
 
@@ -47,26 +66,16 @@ export async function* hashtagIterator(domain, hashtag) {
     const newerIterator = observableToAsyncIterator(hashtagStreamingObservable(domain, hashtag))
     const olderIterator = hashtagTimelineIterator(domain, hashtag)
 
-    let newer = newerIterator.next()
-    let older = olderIterator.next()
+    const iterators = [newerIterator, olderIterator]
+    const values = iterators.map(iterator => iterator.next())
 
     while (true) {
-        const promises = [newer, older].map((promise, index) => promise.then(result => ({ index, result })))
+        const promises = values.map((promise, index) => promise.then(result => ({ index, result })))
         const { index, result: { done, value } } = await Promise.race(promises)
 
-        switch (index) {
-            default:
-                throw new Error()
+        values[index] = iterators[index].next()
 
-            case 0:
-                newer = newerIterator.next()
-                break;
-
-            case 1:
-                older = olderIterator.next()
-                break;
-        }
-
+        console.log(`Resolver ${domain} #${hashtag} : resolved with iterator ${index} status ${value.id}`)
         yield value
     }
 }
