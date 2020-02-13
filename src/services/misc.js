@@ -31,20 +31,18 @@ export const defer = () => {
 
 export async function* observableToAsyncIterator(observable) {
     const buffer = [defer()]
-    let done = false
 
-    const next = (x) => {
-        buffer[buffer.length - 1].resolve(x)
+    const next = value => {
+        buffer[buffer.length - 1].resolve(value)
         buffer.push(defer())
+    }
+
+    const complete = value => {
+        buffer[buffer.length - 1].resolve(value)
     }
 
     const error = (error) => {
         buffer[buffer.length - 1].reject(error)
-    }
-
-    const complete = (x) => {
-        buffer[buffer.length - 1].resolve(x)
-        done = true
     }
 
     const subscription = observable.subscribe({ next, error, complete })
@@ -52,13 +50,12 @@ export async function* observableToAsyncIterator(observable) {
     try {
         while (true) {
             const value = await buffer[0].promise
-            buffer.unshift()
+            buffer.shift()
 
-            // might cause a early complete because done can be true when more than one item are in buffer
-            if (done) {
-                return value
-            } else {
+            if (buffer.length) {
                 yield value
+            } else {
+                return value
             }
         }
     } finally {
