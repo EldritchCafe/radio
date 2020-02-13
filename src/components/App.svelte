@@ -1,3 +1,7 @@
+<svelte:head>
+    <title>{`${ $current ? `${$current.metadata.title} ∴ ` : ''}Eldritch Radio`}</title>
+</svelte:head>
+
 <main class="app">
     <header class="header">
         <h1>Eldritch Radio</h1>
