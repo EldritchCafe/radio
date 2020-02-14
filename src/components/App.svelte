@@ -27,7 +27,7 @@
     import Controls from '/components/Controls.svelte'
     import Queue from '/components/Queue.svelte'
     import Viewer from '/components/Viewer.svelte'
-    import { hashtagIterator } from '/services/mastodon.js'
+    import { hashtagIterator, combinedIterator } from '/services/mastodon.js'
     import { mkTracksIterator } from '/services/misc.js'
 
     import { domain, hashtags, queue, next, current, enqueueing, select } from '/store.js'
@@ -36,7 +36,13 @@
     let currentUnsubcribe = null
 
     onMount(async () => {
-        const iterator = mkTracksIterator(hashtagIterator(get(domain), get(hashtags)[0]))
+        // const iterator = mkTracksIterator(hashtagIterator(get(domain), get(hashtags)[0]))
+        const domainValue = get(domain)
+        const hashtagsValue = get(hashtags)
+
+        const iterator = combinedIterator(
+            hashtagsValue.map(hashtag => mkTracksIterator(hashtagIterator(domainValue, hashtag)))
+        )
 
         const { value: first } = await iterator.next()
 

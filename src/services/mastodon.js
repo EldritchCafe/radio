@@ -75,8 +75,28 @@ export async function* hashtagIterator(domain, hashtag) {
 
         values[index] = iterators[index].next()
 
-        console.log(`Resolver ${domain} #${hashtag} : resolved with iterator ${index} status ${value.id}`)
+        console.log(`Resolver ${domain} #${hashtag} : resolved with iterator ${index}`)
         yield value
     }
 }
 
+export async function* combinedIterator(iterators) {
+    const values = iterators.map(iterator => iterator.next())
+
+    while (true) {
+        const promises = values.map((promise, index) => promise.then(result => ({ index, result })))
+        const promisesValues = await Promise.all(promises)
+
+        const sorted = promisesValues
+            .sort((a, b) =>{
+                new Date(a.result.value.status.created_at) - new Date(b.result.value.status.created_at)
+            })
+
+        const { index, result: { done, value } } = sorted[0]
+
+        values[index] = iterators[index].next()
+
+        console.log(`CombinedResolver : resolved with iterator ${index}`)
+        yield value
+    }
+}
