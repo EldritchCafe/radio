@@ -19,7 +19,7 @@
         <button class:cant={!$canPrevious} on:click={() => selectPrevious()}>⏮️</button>
 
         <button on:click={() => $paused = !$paused}>
-            {#if $index === null}
+            {#if $current === null}
                 ▶️
             {:else if $loading}
                 🕒
@@ -44,7 +44,7 @@
         paused,
         muted,
         volume,
-        index,
+        current,
         queue,
         canPrevious,
         canNext,

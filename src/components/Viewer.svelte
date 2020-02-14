@@ -20,20 +20,22 @@
         LOADING TRACK
     {/if}
 
-    {#if duration}
+    <div>
         {currentTimeText}
 
         <input
             type="range"
             min="0"
             max={duration}
-            value="0"
+            value="{currentTime}"
             on:input={event => updateCurrentTime(event.target.value, false)}
             on:change={event => updateCurrentTime(event.target.value, true)}
+            disabled={currentTime === null || duration === null}
         >
 
         {durationText}
-    {/if}
+    </div>
+
 </div>
 
 <script>
@@ -49,8 +51,8 @@
     let duration = null
     let seek = null
 
-    $: currentTimeText = currentTime !== null ? secondsToElapsedTime(currentTime) : null
-    $: durationText = duration !== null ? secondsToElapsedTime(duration) : null
+    $: currentTimeText = currentTime !== null ? secondsToElapsedTime(currentTime) : '--:--'
+    $: durationText = duration !== null ? secondsToElapsedTime(duration) : '--:--'
 
     $: if (ended || error) {
         selectNext()

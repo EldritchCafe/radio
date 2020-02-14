@@ -1,7 +1,8 @@
 <div>
     <h6>PLAY NEXT</h6>
+
     {#if $next}
-        <div class="entry">
+        <div class="entry" on:click={() => select($next)}>
             <div class="title">{$next.metadata.title}</div>
             <div class="user">by {$next.status.account.acct}</div>
         </div>
@@ -13,54 +14,32 @@
 
 
     <h6>HISTORY</h6>
-    {#each $queue as track, i (track.status.id)}
-        <div class="entry" class:active={i === $index}>
-            <div>
-                <button on:click={() => toggle(i)}>
-                    {#if i != $index}
-                        ▶️
-                    {:else if $loading}
-                        🕒
-                    {:else if $paused}
-                        ▶️
-                    {:else}
-                        ⏸️
-                    {/if}
-                </button>
-            </div>
 
-            <div class="title">{track.metadata.title}</div>
-            <div class="user">by {track.status.account.acct}</div>
+    {#each history as track (track.status.id)}
+        <div class="entry" class:active={track === $current} on:click={() => select(track)}>
+            <div class>{track.metadata.title}</div>
+            <div class>shared by {track.status.account.acct}</div>
         </div>
     {/each}
 </div>
 
 <script>
-    import { onMount } from 'svelte'
-    import { next, enqueueing, queue, index, paused, loading, canNext, selectNext } from '/store.js'
+    import { queue, next, current, enqueueing, select } from '/store.js'
 
-    const toggle = i => {
-        if (i === $index) {
-            $paused = !$paused
-        } else {
-            $index = i
-            $paused = false
-        }
-    }
-
-    $: if ($queue.length === 0 && $index === null && $next !== null) {
-        $queue = [$next]
-        $next = null
-        $index = 0
-    }
+    $: history = $queue.filter(x => x !== $next).reverse()
 </script>
 
 <style>
     .entry {
         padding: 1em 2em;
+        cursor: pointer;
     }
 
     .entry.active {
         background-color: plum;
+    }
+
+    .entry.active::before {
+        content: "▶️";
     }
 </style>
