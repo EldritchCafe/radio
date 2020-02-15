@@ -1,7 +1,8 @@
 <div>
-    <div class="embed-container">
+    <div class="playerBig__player">
         <YoutubePlayer
             id={$current ? $current.data.id : null}
+            class="playerBig__iframe"
             paused={$paused}
             muted={$muted}
             volume={$volume}
@@ -13,7 +14,7 @@
             bind:seek={seek}
         ></YoutubePlayer>
 
-        <div class="embed-overlay" on:click={() => $paused = !$paused}></div>
+        <div class="playerBig__overlay" on:click={() => $paused = !$paused}></div>
     </div>
 
     {#if !ready}
@@ -63,21 +64,3 @@
         currentTime = seconds
     }
 </script>
-
-<style>
-    .hidden {
-        display: none;
-    }
-
-    .embed-container {
-        position: relative;
-    }
-
-    .embed-overlay {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-</style>

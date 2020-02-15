@@ -56,12 +56,14 @@
 
 <style>
     .controls {
-        display: flex;
         width: 100%;
+        display: flex;
+        flex-wrap: wrap;
     }
 
     .controls-group {
         margin: 0 1rem;
+
     }
 
     .cant {

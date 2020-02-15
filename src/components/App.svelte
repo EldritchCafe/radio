@@ -2,10 +2,8 @@
     <title>{`${ $current ? `${$current.metadata.title} ∴ ` : ''}Eldritch Radio`}</title>
 </svelte:head>
 
-<main class="app">
-    <header class="header">
-        <h1>Eldritch Radio</h1>
-    </header>
+<div class="app container">
+    <Header></Header>
 
     <section class="viewer">
         {#if $current}
@@ -17,13 +15,18 @@
     <section class="queue">
         <Queue></Queue>
     </section>
-</main>
+
+    <Footer></Footer>
+</div>
 
 
 <script>
+
     import { onMount, onDestroy } from 'svelte'
     import { get } from 'svelte/store'
 
+    import Header from '/components/layout/Header.svelte'
+    import Footer from '/components/layout/Footer.svelte'
     import Controls from '/components/Controls.svelte'
     import Queue from '/components/Queue.svelte'
     import Viewer from '/components/Viewer.svelte'
@@ -87,10 +90,3 @@
         }
     })
 </script>
-
-<style>
-    .app {
-        min-width: 100%;
-        min-height: 100%;
-    }
-</style>

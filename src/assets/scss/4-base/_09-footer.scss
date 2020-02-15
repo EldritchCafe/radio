@@ -3,17 +3,32 @@
 /* ----------------------------------------------------------- */
 
 .footer {
-  padding: 2rem 0;
+  position: relative;
+  margin-top: 6rem;
+  padding-top: 2.4rem;
+  padding-bottom: 4rem;
+  color: rgba($color-primary, .4);
+  text-align: center;
+  font-size: 1.3rem;
 }
 
-.footer ul,
-.footer li {
-  margin: 0;
-  padding: 0;
+.footer::before {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 1rem);
+  width: 2rem;
+  height: .2rem;
+  background-color: rgba($color-primary, .15);
+  content: "";
 }
 
 .footer a,
 .footer a:hover,
 .footer a:visited {
-  color: $color-link;
+  color: rgba($color-primary, .4);
+  text-decoration: underline;
+}
+
+.footer__illu {
+  margin-bottom: 2rem;
 }

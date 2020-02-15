@@ -5,7 +5,7 @@
 // palette
 // --------------------------------------------------------------
 
-$color-primary: #3498db;
+$color-primary: #635776;
 $color-secondary: #1abc9c;
 $color-tertiary: #34495e;
 $color-info: #2185d0;
@@ -14,7 +14,7 @@ $color-info: #2185d0;
 // --------------------------------------------------------------
 
 $color-light-text: #fcfcfc;
-$color-dark-text: #000;
+$color-dark-text: $color-primary;
 
 // links
 // --------------------------------------------------------------
