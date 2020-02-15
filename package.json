@@ -14,8 +14,10 @@
   "devDependencies": {
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.8.3",
+    "autoprefixer": "^9.7.4",
     "parcel": "^1.12.4",
     "parcel-plugin-svelte": "^4.0.5",
+    "sass": "^1.25.0",
     "svelte": "^3.16.7"
   },
   "dependencies": {

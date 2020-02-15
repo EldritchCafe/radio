@@ -1,0 +1,205 @@
+/**
+ * Form Module
+ * Namespace : .form
+ */
+
+
+/* ----------------------------------------------------------- */
+/* == configuration */
+/* ----------------------------------------------------------- */
+
+
+$input-border-radius: .4rem;
+$input-border: .1rem solid #d8d8d8;
+$input-background-color: #fff;
+$input-hover: 5%;
+$input-placeholder-color: #c4c1be;
+$input-error: #ff3860;
+$input-required: #ff3860;
+
+
+/* ----------------------------------------------------------- */
+/* == module */
+/* ----------------------------------------------------------- */
+
+/* placeholders
+-------------------------------------------------------------- */
+
+input::-webkit-input-placeholder {
+  color: $input-placeholder-color;
+}
+input:-moz-placeholder {
+  color: $input-placeholder-color;
+}
+textarea::-webkit-input-placeholder {
+  color: $input-placeholder-color;
+}
+textarea:-moz-placeholder {
+  color: $input-placeholder-color;
+}
+
+/* block form
+-------------------------------------------------------------- */
+
+label,
+.label {
+  display: block;
+  margin-top: 1.3em;
+  margin-bottom: .8em;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+/* inline form
+-------------------------------------------------------------- */
+
+.f-inline label,
+.f-inline .label {
+  display: inline-block;
+  margin: 0 1rem;
+}
+
+.f-inline {
+  display: inline-block;
+}
+
+.f-inline input,
+.f-inline .btn {
+  height: 4rem;
+}
+
+.f-inline .btn {
+  vertical-align: middle;
+}
+
+
+/* basics style
+-------------------------------------------------------------- */
+
+fieldset {
+  margin: 2.5rem 0;
+  padding: 1em;
+  border: .1rem solid #d8d8d8;
+}
+
+input,
+select,
+label,
+.label {
+  vertical-align: middle;
+}
+
+select {
+  margin: 0;
+  border: .1rem solid #ccc;
+  background-color: #fff;
+}
+
+textarea {
+  padding: .4em;
+  min-width: 32rem;
+  min-height: 8em;
+  vertical-align: top;
+  resize: vertical;
+}
+
+input {
+  padding: .8em;
+  max-width: 32rem;
+  width: 100%;
+  border: $input-border;
+  border-radius: $input-border-radius;
+  background: $input-background-color;
+  box-shadow: inset 0 1px 2px rgba(10, 10, 10, .08);
+}
+
+textarea:active,
+textarea:focus,
+select:active,
+select:focus,
+input:active,
+input:focus {
+  outline: none;
+  box-shadow: $focus-ring;
+}
+
+input[type="radio"] + label,
+input[type="checkbox"] + label {
+  display: inline-block;
+  margin-right: 1rem;
+  vertical-align: baseline;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  padding: 0;
+  width: inherit;
+}
+
+/* autogrid
+-------------------------------------------------------------- */
+
+[class^="f-grid"] {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+}
+
+[class^="f-grid"] > * {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
+  margin-left: 2rem;
+}
+
+[class^="f-grid"] > *:first-child {
+  margin-left: 0;
+}
+
+[class^="f-grid"] input {
+  max-width: 100%;
+}
+
+/* size
+-------------------------------------------------------------- */
+
+.f-size-1 {
+  max-width: 10rem;
+}
+
+.f-size-2 {
+  max-width: 20rem;
+}
+
+.f-size-3 {
+  max-width: 30rem;
+}
+
+.f-size-4 {
+  max-width: 40rem;
+}
+
+.f-size-5 {
+  max-width: 50rem;
+}
+
+.f-size-full {
+  max-width: 100%;
+}
+
+/* errors
+-------------------------------------------------------------- */
+
+.f-required {
+  color: $input-error;
+  font-weight: bold;
+}
+
+.f-error input {
+  margin-bottom: .8rem;
+  border: .1rem solid $input-error;
+}
+
+.f-error-message {
+  color: $input-error;
+}

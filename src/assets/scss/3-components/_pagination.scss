@@ -1,0 +1,54 @@
+/**
+ * Pagination Module
+ * namespace : .pagination
+ */
+
+/* ----------------------------------------------------------- */
+/* == configuration */
+/* ----------------------------------------------------------- */
+
+
+$pagination-border-radius: .2rem;
+$pagination-border: .1rem solid grey;
+$pagination-hover-color: $color-secondary;
+$pagination-current-bg: $color-primary;
+$pagination-current-color: #fff;
+
+
+/* ----------------------------------------------------------- */
+/* == module */
+/* ----------------------------------------------------------- */
+
+.pagination {
+  display: inline-block;
+  margin: 2rem 0;
+  border-radius: .4rem;
+}
+
+.pagination,
+.pagination li {
+  margin: 0;
+  padding: 0;
+}
+
+.pagination li {
+  display: inline-block;
+  margin: 0 .3rem 1em;
+  list-style-type: none;
+}
+
+.pagination li a,
+.pagination li > span {
+  padding: .3em .6em;
+  border: $pagination-border;
+  border-radius: $pagination-border-radius;
+}
+
+.pagination li a:hover {
+  color: $pagination-hover-color;
+}
+
+.pagination li.current a {
+  background-color: $pagination-current-bg;
+  color: $pagination-current-color;
+}

@@ -1,0 +1,19 @@
+/* ----------------------------------------------------------- */
+/* == footer */
+/* ----------------------------------------------------------- */
+
+.footer {
+  padding: 2rem 0;
+}
+
+.footer ul,
+.footer li {
+  margin: 0;
+  padding: 0;
+}
+
+.footer a,
+.footer a:hover,
+.footer a:visited {
+  color: $color-link;
+}

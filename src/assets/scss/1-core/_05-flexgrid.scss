@@ -1,0 +1,124 @@
+// important: nth-child(n) is used to keep same specificity between grid (equal and unequal)
+
+.grid {
+  display: flex;
+  flex-direction: row;
+
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.grid > * {
+  display: block; /* IE fix */
+
+  flex: 0 0 auto;
+}
+
+
+// equal grid
+@mixin grid($number:$number, $gutter:$default-gutter, $mb:$gutter) {
+
+  // equal grid no gutter
+  @if $gutter == 0 {
+    & {
+      margin-bottom: -$mb;
+    }
+
+    & > *:nth-child(n) {
+      margin-bottom: $mb;
+      width: calc(100% * 1 / #{$number} - .01px);
+    }
+  }
+
+  // one column mode
+  @if $number == 1 {
+    & {
+      margin-bottom: -$mb;
+      margin-left: 0;
+    }
+
+    & > *:nth-child(n) {
+      margin-bottom: $mb;
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  // with gutter (avoid percentage since it doesn't work well with margin bottom)
+  @if $number>1 and $gutter>0 {
+    & {
+      margin-bottom: -$mb; /* avoid unwanted margin on last line */
+      margin-left: -$gutter;
+    }
+
+    & > *:nth-child(n) {
+      margin-bottom: $mb;
+      margin-left: $gutter;
+      width: calc(100% * 1 / #{$number} - #{$gutter} - .01px); // .01px = $bugfix IE
+    }
+  }
+}
+
+// unequal grid
+@mixin unequalGrid($column1, $column2, $gutter:$default-gutter, $mb:$gutter) {
+
+  // no gutter (when gutter = 0)
+  @if $gutter == 0 {
+    & > *:nth-child(odd) {
+      width: calc(#{$size});
+
+      $size : ($column1 * 100%) / ($column1 + $column2);
+    }
+
+    & > *:nth-child(even) {
+      width: calc(#{$size});
+
+      $size : ($column2 * 100%) / ($column1 + $column2);
+    }
+  }
+
+  // with gutter
+  @else {
+    $g : $gutter / 2;
+
+    &>* {
+      margin-bottom: $mb;
+    }
+
+    & > *:nth-child(odd) {
+      $size : ($column1 * 100%) / ($column1 + $column2);
+
+      width: calc(#{$size} - #{$g} - .01px); // .01px = $bugfix IE
+    }
+
+    & > *:nth-child(even) {
+      $size : ($column2 * 100%) / ($column1 + $column2);
+
+      margin-left: $gutter;
+      width: calc(#{$size} - #{$g} - .01px); // .01px = $bugfix IE
+
+    }
+  }
+}
+
+/* vertical align
+-------------------------------------------------------------- */
+
+[class*="grid-top"] {
+  align-items: flex-start;
+}
+
+[class*="grid-bottom"] {
+  align-items: flex-end;
+}
+
+[class*="grid-center"] {
+  align-items: center;
+}
+
+/* helpers
+-------------------------------------------------------------- */
+
+[class*="grid-"].grid-noMargin > * {
+  margin-bottom: 0;
+}
