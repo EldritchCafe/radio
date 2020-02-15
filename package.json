@@ -26,7 +26,8 @@
     "core-js-pure": "^3.6.4",
     "date-fns": "^2.9.0",
     "get-urls": "^9.2.0",
-    "iter-tools": "^7.0.0-rc.0"
+    "iter-tools": "^7.0.0-rc.0",
+    "svelte-routing": "^1.4.0"
   },
   "browserslist": [
     "last 1 chrome versions"

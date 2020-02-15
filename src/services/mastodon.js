@@ -3,6 +3,8 @@ import { observableToAsyncIterator } from '/services/misc.js'
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 
+export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statuses/${id}`).then(x => x.json())
+
 function parseLinkHeader(link) {
     const links = {}
 
