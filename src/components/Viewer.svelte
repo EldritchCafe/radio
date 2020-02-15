@@ -1,7 +1,7 @@
 <div class="playerBig">
     <div class="playerBig__player">
         <YoutubePlayer
-            id={$current ? $current.data.id : null}
+            id={$current ? $current.media.credentials.id : null}
             class="playerBig__iframe"
             paused={$paused}
             muted={$muted}
@@ -37,7 +37,6 @@
     import Progress from '/components/player/Progress'
     import { secondsToElapsedTime } from '/services/misc.js'
     import { paused, muted, volume, current, selectNext, loading } from '/store.js'
-
 
     let ready = null
     let ended = null

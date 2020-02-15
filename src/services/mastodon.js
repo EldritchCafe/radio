@@ -1,9 +1,7 @@
 import Observable from 'core-js-pure/features/observable'
-import { observableToAsyncIterator } from '/services/misc.js'
+import { observableToAsyncIterator, raceIterator } from '/services/misc.js'
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
-
-export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statuses/${id}`).then(x => x.json())
 
 function parseLinkHeader(link) {
     const links = {}
@@ -15,6 +13,9 @@ function parseLinkHeader(link) {
     return links
 }
 
+export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statuses/${id}`).then(x => x.json())
+
+// Observable<{ domain : string, hashtag : string, status : Status}>
 export const hashtagStreamingObservable = (domain, hashtag) => {
     return new Observable(observer => {
         const onOpen = () => {
@@ -24,7 +25,7 @@ export const hashtagStreamingObservable = (domain, hashtag) => {
         const onStatus = event => {
             const status = JSON.parse(event.data)
             console.log(`Streaming ${domain} #${hashtag} : status ${status.id}`)
-            observer.next(status)
+            observer.next(processStatus(domain, status))
         }
 
         const onError = error => {
@@ -60,29 +61,19 @@ export async function* hashtagTimelineIterator (domain, hashtag) {
 
         console.log(`Timeline ${domain} #${hashtag} : fetched ${statuses.length} statuses`)
 
-        yield* statuses
+        yield* statuses.map(status => processStatus(domain, status))
     }
 }
 
-export async function* hashtagIterator(domain, hashtag) {
-    const newerIterator = observableToAsyncIterator(hashtagStreamingObservable(domain, hashtag))
-    const olderIterator = hashtagTimelineIterator(domain, hashtag)
-
-    const iterators = [newerIterator, olderIterator]
-    const values = iterators.map(iterator => iterator.next())
-
-    while (true) {
-        const promises = values.map((promise, index) => promise.then(result => ({ index, result })))
-        const { index, result: { done, value } } = await Promise.race(promises)
-
-        values[index] = iterators[index].next()
-
-        console.log(`Resolver ${domain} #${hashtag} : resolved with iterator ${index}`)
-        yield value
-    }
+export const hashtagIterator = (domain, hashtag) => {
+    return raceIterator([
+        observableToAsyncIterator(hashtagStreamingObservable(domain, hashtag)),
+        hashtagTimelineIterator(domain, hashtag)
+    ])
 }
 
-export async function* combinedIterator(iterators) {
+export async function* hashtagsIterator (domain, hashtags) {
+    const iterators = hashtags.map(hashtag => hashtagIterator(domain, hashtag))
     const values = iterators.map(iterator => iterator.next())
 
     while (true) {
@@ -91,14 +82,24 @@ export async function* combinedIterator(iterators) {
 
         const sorted = promisesValues
             .sort((a, b) =>{
-                new Date(a.result.value.status.created_at) - new Date(b.result.value.status.created_at)
+                a.result.value.date - b.result.value.date
             })
 
         const { index, result: { done, value } } = sorted[0]
-
         values[index] = iterators[index].next()
-
-        console.log(`CombinedResolver : resolved with iterator ${index}`)
         yield value
     }
 }
+
+const processStatus = (domain, status) => ({
+    title: null,
+    username: status.account.username,
+    date: new Date(status.createdAt),
+    content: status.content,
+    referer: {
+        url: status.url,
+        credentials: { type: 'mastodon', domain, id: status.id }
+    },
+    media: null
+})
+

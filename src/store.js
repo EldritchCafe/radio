@@ -31,7 +31,7 @@ export const canNext = derived([queue, index], ([$queue, $index]) => $index !== 
 
 
 export const select = track => {
-    console.log(`Select ${track.metadata.title}`)
+    console.log(`Select ${track.title}`)
     current.set(track)
 }
 

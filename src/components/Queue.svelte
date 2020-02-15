@@ -3,8 +3,8 @@
 
     {#if $next}
         <div class="entry" on:click={() => select($next)}>
-            <div class="title">{$next.metadata.title}</div>
-            <div class="user">by {$next.status.account.acct}</div>
+            <div class="title">{$next.title}</div>
+            <div class="user">by {$next.username}</div>
         </div>
     {/if}
 
@@ -15,10 +15,10 @@
 
     <h6>HISTORY</h6>
 
-    {#each history as track (track.status.id)}
+    {#each history as track}
         <div class="entry" class:active={track === $current} on:click={() => select(track)}>
-            <div class>{track.metadata.title}</div>
-            <div class>shared by {track.status.account.acct}</div>
+            <div class>{track.title}</div>
+            <div class>shared by {track.username}</div>
         </div>
     {/each}
 </div>

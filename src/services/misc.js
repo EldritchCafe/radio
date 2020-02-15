@@ -1,5 +1,5 @@
 import getUrls from 'get-urls'
-import { execPipe, asyncFilter, asyncMap } from 'iter-tools'
+import { execPipe, asyncFilter, asyncMap, map, findOr } from 'iter-tools'
 
 export const tap = f => x => {
     f(x)
@@ -80,65 +80,159 @@ export const secondsToElapsedTime = (seconds) => {
         .join(':')
 }
 
-export async function* mkTracksIterator(statusesIterator) {
-    const knownStatus = new Set()
-    const knownYoutube = new Set()
+export async function* raceIterator(iterators) {
+    const values = iterators.map(iterator => iterator.next())
 
-    const tracks = execPipe(
-        statusesIterator,
-        asyncFilter(status => {
-            if (!status) {
-                console.error(`No status, should not happen here`)
-                return false
-            } else {
-                if (knownStatus.has(status.id)) {
-                    console.log(`Drop already processed status ${status.id}`)
-                    return false
-                } else {
-                    knownStatus.add(status.id)
-                    return true
-                }
-            }
-        }),
-        asyncMap(status => ({ status, data: mkData(status) })),
-        asyncFilter(({ status, data }) => {
-            if (!data) {
-                console.log(`Drop non processable status ${status.id}`)
-                return false
-            } else {
-                if (knownYoutube.has(data.id)) {
-                    console.log(`Drop already processed youtube ${data.id}`)
-                    return false
-                } else {
-                    knownYoutube.add(data.id)
-                    return true
-                }
-            }
-        }),
-        asyncMap(async ({ status, data }) => ({ status, data, metadata: await mkMetadata(data) }))
-    )
+    while (true) {
+        const promises = values.map((promise, index) => promise.then(result => ({ index, result })))
+        const { index, result: { done, value } } = await Promise.race(promises)
 
-    yield* tracks
+        values[index] = iterators[index].next()
+        yield value
+    }
 }
 
-function mkData(status)
-{
-    const urls = getUrls(status.content)
+const mkMapSet = () => ({ set: new Set(), children: new Map() })
 
-    for (const urlAsString of urls) {
-        const url = new URL(urlAsString)
+const pathSet = () => {
+    const root = mkMapSet()
 
-        if (['youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(url.hostname) && url.searchParams.has('v')) {
-            return { url: urlAsString, id: url.searchParams.get('v') }
-        } else if (url.hostname === 'youtu.be') {
-            return { url: urlAsString, id: url.pathname.substring(1) }
+    const has = (keys, value) => {
+        let x = root
+
+        for (const key of keys) {
+            if (x.children.has(key)) {
+                x = x.children.get(key)
+            } else {
+                return false
+            }
         }
+
+        return x.set.has(value)
     }
 
-    return null
+    const add = (keys, value) => {
+        let x = root
+
+        for (const key of keys) {
+            if (!x.children.has(key)) {
+                x.children.set(key, mkMapSet())
+            }
+
+            x = x.children.get(key)
+        }
+
+        x.set.add(value)
+    }
+
+    return { root, has, add }
 }
 
-async function mkMetadata(entry) {
-    return fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${entry.id}`)
-        .then(response => response.json())
+export async function* tracksIterator(statusesIterator) {
+    const known = pathSet()
+
+    yield* execPipe(
+        statusesIterator,
+        asyncFilter(knownByReferer(known)),
+        asyncMap(processReferer),
+        asyncFilter(knownByMedia(known)),
+        asyncMap(processMedia)
+    )
+}
+
+const knownByReferer = known => track => {
+    if (!track) {
+        console.error(`No status, should not happen here`)
+        return false
+    } else {
+        switch (track.referer.credentials.type) {
+            default:
+                throw new Error()
+
+            case 'mastodon':
+                const path = [
+                    'referer',
+                    'mastodon',
+                    track.referer.credentials.domain
+                ]
+
+                const id = track.referer.credentials.id
+
+                if (known.has(path, id)) {
+                    console.log(`Drop already processed referer ${id}`)
+                    return false
+                } else {
+                    known.add(path, id)
+                    return true
+                }
+        }
+    }
+}
+
+const knownByMedia = known => track => {
+    if (track !== null) {
+        switch (track.media.credentials.type) {
+            default:
+                throw new Error()
+
+            case 'youtube':
+                const path = [
+                    'media',
+                    'youtube'
+                ]
+
+                const id = track.media.credentials.id
+
+                if (known.has(path, id)) {
+                    console.log(`Drop already processed media ${id}`)
+                    return false
+                } else {
+                    known.add(path, id)
+                    return true
+                }
+        }
+    } else {
+        return false
+    }
+}
+
+const processReferer = track => {
+    const urls = getUrls(track.content)
+
+    const media = execPipe(
+        urls,
+        map(parseSource),
+        findOr(null, x => x !== null)
+    )
+
+    if (media) {
+        return { ...track, media }
+    } else {
+        return null
+    }
+}
+
+const processMedia = async track => {
+    const metadata = await fetchMetadata(track.media)
+    return { ...track, title: metadata.title }
+}
+
+const parseSource = (url) => {
+    const { hostname, pathname, searchParams } = new URL(url)
+
+    if (['youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(hostname) && searchParams.has('v')) {
+        return { url, credentials: { type: 'youtube', id: searchParams.get('v') } }
+    } else if (hostname === 'youtu.be') {
+        return { url, credentials: { type: 'youtube', id: pathname.substring(1) } }
+    } else {
+        return null
+    }
+}
+
+const fetchMetadata = (media) => {
+    switch (media.credentials.type) {
+        case 'youtube':
+            return fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${media.credentials.id}`)
+                .then(response => response.json())
+    }
 }

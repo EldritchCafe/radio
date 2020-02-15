@@ -1,5 +1,5 @@
 <svelte:head>
-    <title>{`${ $current ? `${$current.metadata.title} ∴ ` : ''}Eldritch Radio`}</title>
+    <title>{`${ $current ? `${$current.title} ∴ ` : ''}Eldritch Radio`}</title>
 </svelte:head>
 
 <div class="app container">
@@ -28,8 +28,8 @@
     import Controls from '/components/Controls.svelte'
     import Queue from '/components/Queue.svelte'
     import Viewer from '/components/Viewer.svelte'
-    import { hashtagIterator, combinedIterator } from '/services/mastodon.js'
-    import { mkTracksIterator } from '/services/misc.js'
+    import { hashtagsIterator } from '/services/mastodon.js'
+    import { tracksIterator } from '/services/misc.js'
 
     import { domain, hashtags, queue, next, current, enqueueing, select } from '/store.js'
 
@@ -37,13 +37,10 @@
     let currentUnsubcribe = null
 
     onMount(async () => {
-        // const iterator = mkTracksIterator(hashtagIterator(get(domain), get(hashtags)[0]))
         const domainValue = get(domain)
         const hashtagsValue = get(hashtags)
 
-        const iterator = combinedIterator(
-            hashtagsValue.map(hashtag => mkTracksIterator(hashtagIterator(domainValue, hashtag)))
-        )
+        const iterator = tracksIterator(hashtagsIterator(domainValue, hashtagsValue))
 
         const { value: first } = await iterator.next()
 
