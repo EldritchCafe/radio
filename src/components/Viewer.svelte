@@ -1,4 +1,4 @@
-<div>
+<div class="playerBig">
     <div class="playerBig__player">
         <YoutubePlayer
             id={$current ? $current.data.id : null}
@@ -21,29 +21,23 @@
         LOADING TRACK
     {/if}
 
-    <div>
-        {currentTimeText}
-
-        <input
-            type="range"
-            min="0"
-            max={duration}
-            value="{currentTime}"
-            on:input={event => updateCurrentTime(event.target.value, false)}
-            on:change={event => updateCurrentTime(event.target.value, true)}
-            disabled={currentTime === null || duration === null}
-        >
-
-        {durationText}
-    </div>
-
+    <Progress
+        duration={duration}
+        currentTime={currentTime}
+        currentTimeText={currentTimeText}
+        durationText={durationText}
+        on:input={event => updateCurrentTime(event.target.value, false)}
+        on:change={event => updateCurrentTime(event.target.value, true)}
+    ></Progress>
 </div>
 
 <script>
     import { get } from 'svelte/store'
     import YoutubePlayer from '/components/YoutubePlayer'
+    import Progress from '/components/player/Progress'
     import { secondsToElapsedTime } from '/services/misc.js'
     import { paused, muted, volume, current, selectNext, loading } from '/store.js'
+
 
     let ready = null
     let ended = null

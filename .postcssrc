@@ -1,6 +1,7 @@
 {
   "modules": false,
   "plugins": {
-    "autoprefixer": true
+    "autoprefixer": true,
+    "postcss-input-range": true
   }
 }
