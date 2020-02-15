@@ -24,8 +24,6 @@
     <Progress
         duration={duration}
         currentTime={currentTime}
-        currentTimeText={currentTimeText}
-        durationText={durationText}
         on:input={event => updateCurrentTime(event.target.value, false)}
         on:change={event => updateCurrentTime(event.target.value, true)}
     ></Progress>
@@ -35,7 +33,6 @@
     import { get } from 'svelte/store'
     import YoutubePlayer from '/components/YoutubePlayer'
     import Progress from '/components/player/Progress'
-    import { secondsToElapsedTime } from '/services/misc.js'
     import { paused, muted, volume, current, selectNext, loading } from '/store.js'
 
     let ready = null
@@ -44,9 +41,6 @@
     let currentTime = null
     let duration = null
     let seek = null
-
-    $: currentTimeText = currentTime !== null ? secondsToElapsedTime(currentTime) : '--:--'
-    $: durationText = duration !== null ? secondsToElapsedTime(duration) : '--:--'
 
     $: if (ended || error) {
         selectNext()

@@ -6,8 +6,8 @@
             class="playerProgress__progressInput"
             type="range"
             min="0"
-            max={duration}
-            value="{currentTime}"
+            max={max}
+            value={value}
             on:input
             on:change
             disabled={currentTime === null || duration === null}
@@ -19,10 +19,14 @@
     </div>
 </div>
 <script>
+    import { secondsToElapsedTime } from '/services/misc.js'
+
     export let duration
     export let currentTime
-    export let currentTimeText
-    export let durationText
 
-    $: currentPercent = currentTime ? (currentTime / duration) * 100 : 0
+    $: value = currentTime != null ? currentTime : 0
+    $: max = duration != null ? duration : 100
+    $: currentPercent = currentTime != null ? (currentTime / duration) * 100 : 0
+    $: currentTimeText = currentTime != null ? secondsToElapsedTime(currentTime) : '--:--'
+    $: durationText = duration != null ? secondsToElapsedTime(duration) : '--:--'
 </script>
