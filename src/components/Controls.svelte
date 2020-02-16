@@ -30,9 +30,6 @@
 <script>
     import {
         paused,
-        muted,
-        current,
-        queue,
         canPrevious,
         canNext,
         selectPrevious,
@@ -45,9 +42,3 @@
     import Next from '/components/icons/controls/Next'
     import IconMenu from '/components/icons/Menu'
 </script>
-
-<style>
-    .cant {
-        background-color: red;
-    }
-</style>
