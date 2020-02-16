@@ -20,12 +20,22 @@
 -------------------------------------------------------------- */
 
 .header__side {
+  margin-bottom: -1rem;
   padding-bottom: .7rem;
+}
+
+.header__side:first-child {
+  margin-left: -1rem;
+}
+
+.header__side:last-child {
+  margin-right: -1rem;
 }
 
 .header__sideBtn,
 .header__sideBtn:visited {
   padding: 0;
+  padding: 1rem;
   border: none;
   background: none;
   color: $color-primary;
