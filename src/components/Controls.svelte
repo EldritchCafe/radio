@@ -1,18 +1,6 @@
 <div class="controls">
     <div class="controls-group">
-        <button on:click={() => $muted = !$muted}>
-            {#if $muted}
-                🔇
-            {:else if $volume < 20}
-                🔈
-            {:else if $volume < 80}
-                🔉
-            {:else }
-                🔊
-            {/if}
-        </button>
-
-        <input type="range" min="0" max="100" bind:value={$volume}>
+        <Volume></Volume>
     </div>
 
     <div class="controls-group">
@@ -43,7 +31,6 @@
     import {
         paused,
         muted,
-        volume,
         current,
         queue,
         canPrevious,
@@ -52,6 +39,7 @@
         selectNext,
         loading
     } from '/store.js'
+    import Volume from '/components/Volume'
 </script>
 
 <style>
