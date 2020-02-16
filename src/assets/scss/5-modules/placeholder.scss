@@ -1,0 +1,28 @@
+/* ----------------------------------------------------------- */
+/* == Animated placeholder module */
+/* ----------------------------------------------------------- */
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
+}
+
+.placeholder {
+  position: relative;
+  min-height: 1em;
+  background: #f2f2f2;
+  background: linear-gradient(to right, #eee 8%, rgb(223, 223, 223) 18%, #eee 33%);
+  background-size: 100rem 10.4rem;
+  color: transparent;
+  animation-name: placeHolderShimmer;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+
+  animation-fill-mode: forwards;
+}

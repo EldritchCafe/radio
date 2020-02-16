@@ -1,5 +1,6 @@
 <div class="playerBig">
-    <div class="playerBig__player">
+    <div class="playerBig__player" class:placeholder={!ready}>
+        {#if $current}
         <YoutubePlayer
             id={$current ? $current.media.credentials.id : null}
             class="playerBig__iframe"
@@ -13,30 +14,27 @@
             bind:duration
             bind:seek={seek}
         ></YoutubePlayer>
-
+        {/if}
         <div class="playerBig__overlay" on:click={() => $paused = !$paused}></div>
         <button class="playerBig__reduce">Reduce<IconReduce></IconReduce></button>
     </div>
 
-    {#if !ready}
-        LOADING TRACK
-    {/if}
-
     <Progress
         duration={duration}
         currentTime={currentTime}
+        ready={ready}
         on:input={event => updateCurrentTime(event.target.value, false)}
         on:change={event => updateCurrentTime(event.target.value, true)}
     ></Progress>
 
     <div class="playerTrack">
         <div class="playerTrack__infos">
-            <div class="playerTrack__name">{$current.title}</div>
-            <div class="playerTrack__referer">
-                share by <span class="playerTrack__username">{$current.referer.username}</span>
+            <div class="playerTrack__name" class:placeholder={!$current}>{#if $current}{$current.title}{/if}</div>
+            <div class="playerTrack__referer" class:placeholder={!$current}>
+                {#if $current}shared by <span class="playerTrack__username">{$current.referer.username}</span>{/if}
             </div>
         </div>
-        <button class="playerTrack__fav" aria-label="Fav"><IconHeart></IconHeart></button>
+        <button class="playerTrack__fav" class:hidden={!$current} aria-label="Fav"><IconHeart></IconHeart></button>
     </div>
 </div>
 

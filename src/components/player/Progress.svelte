@@ -14,8 +14,8 @@
         >
     </div>
     <div class="playerProgress__timecode">
-        <div class="playerProgress__timecodeItem">{currentTimeText}</div>
-        <div class="playerProgress__timecodeItem">{durationText}</div>
+        <div class="playerProgress__timecodeItem" class:placeholder={!ready}>{currentTimeText}</div>
+        <div class="playerProgress__timecodeItem" class:placeholder={!ready}>{durationText}</div>
     </div>
 </div>
 <script>
@@ -23,6 +23,7 @@
 
     export let duration
     export let currentTime
+    export let ready
 
     $: value = currentTime != null ? currentTime : 0
     $: max = duration != null ? duration : 100

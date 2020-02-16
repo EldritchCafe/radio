@@ -26,6 +26,7 @@
   display: box;
   overflow: hidden;
   margin-bottom: .8rem;
+  width: 100%;
   color: $color-secondary;
   text-overflow: ellipsis;
   font-weight: 600;
@@ -40,6 +41,7 @@
 
 .playerTrack__referer {
   overflow: hidden;
+  width: 100%;
   color: $color-grey-1;
   text-overflow: ellipsis;
   white-space: nowrap;

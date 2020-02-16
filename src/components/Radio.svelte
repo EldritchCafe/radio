@@ -6,10 +6,8 @@
     <Header></Header>
 
     <section class="viewer">
-        {#if $current}
-            <Viewer></Viewer>
-            <Controls></Controls>
-        {/if}
+        <Viewer></Viewer>
+        <Controls></Controls>
     </section>
 
     <section class="queue">
