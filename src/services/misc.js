@@ -158,7 +158,11 @@ const notKnown = cache => track => {
 
 const completeTrack = async track => {
     const metadata = await fetchMetadata(track.media)
-    return { ...track, title: metadata.title }
+    return {
+        ...track,
+        title: metadata.title,
+        cover: metadata.thumbnail_url
+    }
 }
 
 export const urlsToMedia = urls => {

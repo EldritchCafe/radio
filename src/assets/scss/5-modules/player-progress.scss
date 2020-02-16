@@ -2,9 +2,12 @@
 /* == Player progress module */
 /* ----------------------------------------------------------- */
 
+.playerBig .playerProgress {
+  margin-bottom: 3rem;
+}
+
 /* Progress bar
 -------------------------------------------------------------- */
-
 
 .playerProgress__progress {
   position: relative;

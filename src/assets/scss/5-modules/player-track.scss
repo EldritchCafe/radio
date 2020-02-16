@@ -1,0 +1,77 @@
+/* ----------------------------------------------------------- */
+/* == Player track infos module */
+/* ----------------------------------------------------------- */
+
+.playerTrack {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .8rem;
+  max-width: 100%;
+}
+
+.playerBig .playerTrack {
+  margin-bottom: 3rem;
+}
+
+/* Infos
+-------------------------------------------------------------- */
+
+.playerTrack__infos {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.playerTrack__name {
+  display: -webkit-box;
+  display: box;
+  overflow: hidden;
+  margin-bottom: .8rem;
+  color: $color-secondary;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  font-size: 1.8rem;
+  line-height: 1.16em;
+
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.playerTrack__referer {
+  overflow: hidden;
+  color: $color-grey-1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.4rem;
+}
+
+.playerTrack__username {
+  text-transform: capitalize;
+}
+
+/* Fav
+-------------------------------------------------------------- */
+
+.playerTrack__fav {
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: -.9rem;
+  margin-right: -1rem;
+  margin-left: 1rem;
+  padding: 1rem;
+  border: none;
+  background-color: transparent;
+  color: rgba($color-primary, .8);
+  font-size: 0;
+}
+
+.playerTrack__fav:hover,
+.playerTrack__fav:active,
+.playerTrack__fav:focus {
+  color: $color-primary;
+}
+
+.playerTrack__fav svg .filled {
+  display: none;
+}

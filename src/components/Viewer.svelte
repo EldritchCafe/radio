@@ -28,11 +28,24 @@
         on:input={event => updateCurrentTime(event.target.value, false)}
         on:change={event => updateCurrentTime(event.target.value, true)}
     ></Progress>
+
+    <div class="playerTrack">
+        <div class="playerTrack__infos">
+            <div class="playerTrack__name">{$current.title}</div>
+            <div class="playerTrack__referer">
+                share by <span class="playerTrack__username">{$current.referer.username}</span>
+            </div>
+        </div>
+        <button class="playerTrack__fav" aria-label="Fav"><IconHeart></IconHeart></button>
+    </div>
 </div>
+
+
 
 <script>
     import { get } from 'svelte/store'
     import IconReduce from '/components/icons/player/Reduce.svelte'
+    import IconHeart from '/components/icons/Heart.svelte'
     import YoutubePlayer from '/components/YoutubePlayer'
     import Progress from '/components/player/Progress'
     import { paused, muted, volume, current, selectNext, loading } from '/store.js'
