@@ -20,7 +20,7 @@
     "parcel-plugin-svelte": "^4.0.5",
     "postcss-input-range": "^4.0.0",
     "sass": "^1.25.0",
-    "svelte": "^3.16.7"
+    "svelte": "^3.18.2"
   },
   "dependencies": {
     "core-js-pure": "^3.6.4",
