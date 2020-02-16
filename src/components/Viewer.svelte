@@ -14,9 +14,9 @@
             bind:duration
             bind:seek={seek}
         ></YoutubePlayer>
-        {/if}
         <div class="playerBig__overlay" on:click={() => $paused = !$paused}></div>
-        <button class="playerBig__reduce">Reduce<IconReduce></IconReduce></button>
+        <button class="playerBig__reduce" class:active={ready && $paused}>Reduce<IconReduce></IconReduce></button>
+        {/if}
     </div>
 
     <Progress
