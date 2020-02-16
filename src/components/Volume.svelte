@@ -1,7 +1,7 @@
 <div class="volume">
     <div class="volume__bg"></div>
     <div class="volume__progress" style="width: {volumePercent}%;"></div>
-    <input class="volume__input" type="range" min="0" max="100" step="20" bind:value={$volume}>
+    <input class="volume__input" type="range" min="0" max="100" step="10" bind:value={$volume}>
 </div>
 
 <!-- for mask -->
