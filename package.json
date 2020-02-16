@@ -27,13 +27,14 @@
     "date-fns": "^2.9.0",
     "get-urls": "^9.2.0",
     "iter-tools": "^7.0.0-rc.0",
+    "route-parser": "0.0.5",
     "svelte-routing": "^1.4.0"
   },
   "browserslist": [
     "last 1 chrome versions"
   ],
   "staticFiles": {
-    "staticPath": "public",
+    "staticPath": "static",
     "watcherGlob": "**"
   }
 }

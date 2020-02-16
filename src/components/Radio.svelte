@@ -21,26 +21,38 @@
 
 <script>
     import { onMount, onDestroy } from 'svelte'
-    import { get } from 'svelte/store'
+    import { derived, get } from 'svelte/store'
 
     import Header from '/components/layout/Header.svelte'
     import Footer from '/components/layout/Footer.svelte'
     import Controls from '/components/Controls.svelte'
     import Queue from '/components/Queue.svelte'
     import Viewer from '/components/Viewer.svelte'
-    import { hashtagsIterator } from '/services/mastodon.js'
-    import { tracksIterator } from '/services/misc.js'
+    import { radioIterator, radioShareIterator } from '/services/radio.js'
+    import { fetchStatus } from '/services/mastodon.js'
 
     import { domain, hashtags, queue, next, current, enqueueing, select } from '/store.js'
+    import DeepSet from '/services/deep-set.js'
+
+    export let share
+
+    const cache = new DeepSet()
 
     let nextUnsubcribe = null
     let currentUnsubcribe = null
 
     onMount(async () => {
-        const domainValue = get(domain)
-        const hashtagsValue = get(hashtags)
+        let iterator
 
-        const iterator = tracksIterator(hashtagsIterator(domainValue, hashtagsValue))
+        if (share != null) {
+            const track = await fetchStatus(share.domain, share.id)
+            iterator = radioShareIterator(track, get(domain), get(hashtags), cache)
+        } else {
+            iterator = radioIterator(get(domain), get(hashtags), cache)
+        }
+
+        // generated multiples times cannot usable and don't free resources
+        // const iterator = derived([domain, hashtags], ([$domain, $hashtags]) => radioIterator($domain, $hashtags))
 
         const { value: first } = await iterator.next()
 

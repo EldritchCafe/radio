@@ -1,16 +1,14 @@
-<Radio />
+<Radio share={refererCredentials} />
 
 <script>
-    import { onMount } from 'svelte'
     import Radio from '/components/Radio.svelte'
-    import { fetchStatus } from '/services/mastodon.js'
 
     export let domain
-    export let statusId
+    export let id
 
-
-    onMount(async () => {
-        const status = await fetchStatus(domain, statusId)
-        console.log(`Status ${statusId} from ${domain} shared`)
-    })
+    const refererCredentials = {
+        type: 'mastodon',
+        domain,
+        id
+    }
 </script>

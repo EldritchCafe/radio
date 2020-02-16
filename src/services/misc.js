@@ -1,4 +1,3 @@
-import getUrls from 'get-urls'
 import { execPipe, asyncFilter, asyncMap, map, findOr } from 'iter-tools'
 
 export const tap = f => x => {
@@ -92,129 +91,82 @@ export async function* raceIterator(iterators) {
     }
 }
 
-const mkMapSet = () => ({ set: new Set(), children: new Map() })
-
-const pathSet = () => {
-    const root = mkMapSet()
-
-    const has = (keys, value) => {
-        let x = root
-
-        for (const key of keys) {
-            if (x.children.has(key)) {
-                x = x.children.get(key)
-            } else {
-                return false
-            }
-        }
-
-        return x.set.has(value)
-    }
-
-    const add = (keys, value) => {
-        let x = root
-
-        for (const key of keys) {
-            if (!x.children.has(key)) {
-                x.children.set(key, mkMapSet())
-            }
-
-            x = x.children.get(key)
-        }
-
-        x.set.add(value)
-    }
-
-    return { root, has, add }
-}
-
-export async function* tracksIterator(statusesIterator) {
-    const known = pathSet()
-
+export async function* tracksIterator(statusesIterator, cache) {
     yield* execPipe(
         statusesIterator,
-        asyncFilter(knownByReferer(known)),
-        asyncMap(processReferer),
-        asyncFilter(knownByMedia(known)),
-        asyncMap(processMedia)
+        asyncFilter(track => track != null), // should not be necessary
+        asyncFilter(notKnown(cache)),
+        asyncMap(completeTrack)
     )
 }
 
-const knownByReferer = known => track => {
+const notKnown = cache => track => {
     if (!track) {
-        console.error(`No status, should not happen here`)
-        return false
-    } else {
-        switch (track.referer.credentials.type) {
-            default:
-                throw new Error()
-
-            case 'mastodon':
-                const path = [
-                    'referer',
-                    'mastodon',
-                    track.referer.credentials.domain
-                ]
-
-                const id = track.referer.credentials.id
-
-                if (known.has(path, id)) {
-                    console.log(`Drop already processed referer ${id}`)
-                    return false
-                } else {
-                    known.add(path, id)
-                    return true
-                }
-        }
-    }
-}
-
-const knownByMedia = known => track => {
-    if (track !== null) {
-        switch (track.media.credentials.type) {
-            default:
-                throw new Error()
-
-            case 'youtube':
-                const path = [
-                    'media',
-                    'youtube'
-                ]
-
-                const id = track.media.credentials.id
-
-                if (known.has(path, id)) {
-                    console.log(`Drop already processed media ${id}`)
-                    return false
-                } else {
-                    known.add(path, id)
-                    return true
-                }
-        }
-    } else {
+        console.error(`No track, should not happen here`)
         return false
     }
+
+    const isKnown = (values) => {
+        if (cache.has(values)) {
+            console.log(`Drop already processed ${values.join(':')}`)
+            return true
+        } else {
+            cache.add(values)
+            return false
+        }
+    }
+
+    switch (track.referer.credentials.type) {
+        default:
+            throw new Error()
+
+        case 'mastodon':
+            if (isKnown([
+                'referer',
+                'mastodon',
+                track.referer.credentials.domain,
+                track.referer.credentials.id
+            ])) {
+                return false
+            }
+
+            break;
+    }
+
+    if (track.media == null) {
+        return false
+    }
+
+    switch (track.media.credentials.type) {
+        default:
+            throw new Error()
+
+        case 'youtube':
+            if (isKnown([
+                'media',
+                'youtube',
+                track.media.credentials.id
+            ])) {
+                return false
+            }
+
+            break
+    }
+
+    return true
 }
 
-const processReferer = track => {
-    const urls = getUrls(track.content)
+const completeTrack = async track => {
+    const metadata = await fetchMetadata(track.media)
+    return { ...track, title: metadata.title }
+}
 
-    const media = execPipe(
+export const urlsToMedia = urls => {
+    return execPipe(
         urls,
         map(parseSource),
         findOr(null, x => x !== null)
     )
-
-    if (media) {
-        return { ...track, media }
-    } else {
-        return null
-    }
-}
-
-const processMedia = async track => {
-    const metadata = await fetchMetadata(track.media)
-    return { ...track, title: metadata.title }
 }
 
 const parseSource = (url) => {

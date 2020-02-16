@@ -1,5 +1,6 @@
 import Observable from 'core-js-pure/features/observable'
-import { observableToAsyncIterator, raceIterator } from '/services/misc.js'
+import getUrls from 'get-urls'
+import { observableToAsyncIterator, raceIterator, urlsToMedia } from '/services/misc.js'
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 
@@ -13,7 +14,9 @@ function parseLinkHeader(link) {
     return links
 }
 
-export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statuses/${id}`).then(x => x.json())
+export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statuses/${id}`)
+    .then(response => response.json())
+    .then(status => processStatus(domain, status))
 
 // Observable<{ domain : string, hashtag : string, status : Status}>
 export const hashtagStreamingObservable = (domain, hashtag) => {
@@ -43,6 +46,7 @@ export const hashtagStreamingObservable = (domain, hashtag) => {
             eventSource.removeEventListener('open', onOpen)
             eventSource.removeEventListener('update', onStatus)
             eventSource.removeEventListener('error', onError)
+            eventSource.close()
         }
     })
 }
@@ -92,14 +96,13 @@ export async function* hashtagsIterator (domain, hashtags) {
 }
 
 const processStatus = (domain, status) => ({
-    title: null,
-    username: status.account.username,
+    title: '',
     date: new Date(status.createdAt),
-    content: status.content,
     referer: {
+        username: status.account.username,
         url: status.url,
         credentials: { type: 'mastodon', domain, id: status.id }
     },
-    media: null
+    media: urlsToMedia(getUrls(status.content))
 })
 

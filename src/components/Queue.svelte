@@ -4,7 +4,7 @@
     {#if $next}
         <div class="entry" on:click={() => select($next)}>
             <div class="title">{$next.title}</div>
-            <div class="user">by {$next.username}</div>
+            <div class="user">by {$next.referer.username}</div>
         </div>
     {/if}
 
@@ -18,7 +18,7 @@
     {#each history as track}
         <div class="entry" class:active={track === $current} on:click={() => select(track)}>
             <div class>{track.title}</div>
-            <div class>shared by {track.username}</div>
+            <div class>shared by {track.referer.username}</div>
         </div>
     {/each}
 </div>
