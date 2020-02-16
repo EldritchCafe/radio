@@ -1,0 +1,106 @@
+/* ----------------------------------------------------------- */
+/* == control module */
+/* ----------------------------------------------------------- */
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Volume
+-------------------------------------------------------------- */
+
+.controls__volume {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: 1rem;
+  padding-top: .1rem;
+}
+
+/* Controls
+-------------------------------------------------------------- */
+
+.controls__controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.controls__prevnext {
+  padding: 1rem;
+  border: none;
+  border-radius: .2rem;
+  background: none;
+  color: $color-primary;
+  font-size: 0;
+}
+
+.controls__prevnext.disabled {
+  color: rgba($color-primary, .4);
+}
+
+.controls__prevnext svg {
+  width: 1.8rem;
+  height: 2rem;
+}
+
+.playerBig .controls__prevnext svg {
+  width: 2.1rem;
+  height: 2.2rem;
+}
+
+.controls__playpause {
+  margin: 0 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 4.2rem;
+  background: none;
+  color: $color-primary;
+  font-size: 0;
+}
+
+.controls__playpause svg {
+  width: 4.6rem;
+  height: 4.6rem;
+}
+
+.playerBig .controls__playpause {
+  margin: 0 3rem;
+}
+
+.playerBig .controls__playpause svg {
+  width: 5.6rem;
+  height: 5.6rem;
+}
+
+.controls__playpause.disabled {
+  color: rgba($color-primary, .4);
+}
+
+/* Menu
+-------------------------------------------------------------- */
+
+.controls__menu {
+  margin-right: -1rem;
+}
+
+.controls__menuBtn {
+  padding: 1rem;
+  border: none;
+  background: none;
+  color: $color-primary;
+  font-size: 0;
+}
+
+.controls__menuBtn svg {
+  width: 2.5rem;
+  height: .5rem;
+}
+
+.playerBig .controls__menuBtn svg {
+  width: 3.2rem;
+  height: .6rem;
+}

@@ -7,7 +7,6 @@
 
     <section class="viewer">
         <Viewer></Viewer>
-        <Controls></Controls>
     </section>
 
     <section class="queue">
@@ -23,7 +22,6 @@
 
     import Header from '/components/layout/Header.svelte'
     import Footer from '/components/layout/Footer.svelte'
-    import Controls from '/components/Controls.svelte'
     import Queue from '/components/Queue.svelte'
     import Viewer from '/components/Viewer.svelte'
     import { radioIterator, radioShareIterator } from '/services/radio.js'

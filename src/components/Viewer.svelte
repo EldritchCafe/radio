@@ -36,12 +36,15 @@
         </div>
         <button class="playerTrack__fav" class:hidden={!$current} aria-label="Fav"><IconHeart></IconHeart></button>
     </div>
+
+    <Controls></Controls>
 </div>
 
 
 
 <script>
     import { get } from 'svelte/store'
+    import Controls from '/components/Controls.svelte'
     import IconReduce from '/components/icons/player/Reduce.svelte'
     import IconHeart from '/components/icons/Heart.svelte'
     import YoutubePlayer from '/components/YoutubePlayer'
