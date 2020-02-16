@@ -59,6 +59,10 @@ button:focus {
   box-shadow: $focus-ring;
 }
 
+button {
+  cursor: pointer;
+}
+
 /* lists
 -------------------------------------------------------------- */
 
