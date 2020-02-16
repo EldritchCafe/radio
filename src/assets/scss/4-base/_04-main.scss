@@ -51,9 +51,11 @@ a:hover {
   text-decoration: underline;
 }
 
-a:focus {
+a:active,
+a:focus,
+button:active,
+button:focus {
   outline: none;
-  border-radius: .3rem;
   box-shadow: $focus-ring;
 }
 
