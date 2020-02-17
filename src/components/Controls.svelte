@@ -6,8 +6,9 @@
     <div class="controls__controls">
         <button
             class="controls__prevnext"
-            class:disabled={!$canPrevious} on:click={() => selectPrevious()}
-            disabled={!$canPrevious} on:click={() => selectPrevious()}
+            class:disabled={!$canPrevious}
+            disabled={!$canPrevious}
+            on:click={() => selectPrevious()}
             aria-label="Prev"
             title="Previous song"
         ><Prev></Prev></button>
