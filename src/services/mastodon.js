@@ -97,7 +97,7 @@ export async function* hashtagsIterator (domain, hashtags) {
 
 const processStatus = (domain, status) => ({
     title: '',
-    date: new Date(status.createdAt),
+    date: new Date(status.created_at),
     referer: {
         username: status.account.username,
         url: status.url,
