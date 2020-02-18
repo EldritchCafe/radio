@@ -1,5 +1,10 @@
-import { writable, derived, get } from 'svelte/store'
-import { writableLocalStorage } from '/services/svelte.js'
+import { get, writable, derived, scan, wait, startWith, writableLocalStorage } from '/services/store.js'
+import { radioIterator, radioShareIterator } from '/services/radio.js'
+import DeepSet from '/services/deep-set.js'
+import { distinct } from './services/store'
+
+
+const cache = new DeepSet()
 
 export const domain = writableLocalStorage('domain', 'eldritch.cafe')
 
@@ -14,10 +19,43 @@ export const paused = writable(true)
 export const muted = writableLocalStorage('muted', false)
 export const volume = writableLocalStorage('volume', 100)
 
-export const queue = writable([])
-export const next = writable(null)
 export const current = writable(null)
 export const enqueueing = writable(false)
+
+
+export const iterator = derived([domain, hashtags], ([$domain, $hashtags], set) => {
+    const iterator = radioIterator($domain, $hashtags, cache)
+    set(iterator)
+
+    return () => {
+        iterator.return()
+    }
+}, null)
+
+
+export const next = derived([iterator, current], ([$iterator, $current]) => ({ $iterator, $current }))
+    .pipe(scan(($nextPromise, { $iterator, $current }) => {
+        return $nextPromise.then($next => {
+            if ($next == null || $next === $current) {
+                enqueueing.set(true)
+                return $iterator.next().then(({ done, value }) => {
+                    enqueueing.set(false)
+                    return value
+                })
+            } else {
+                return $nextPromise
+            }
+        })
+    }, Promise.resolve(null)))
+    .pipe(wait(x => x))
+    // distinct but with strict check
+    .pipe(distinct())
+    .pipe(startWith(null))
+
+
+export const queue = next
+    .pipe(scan((a, x) => x == null ? a : [...a, x], []))
+
 
 export const loading = writable(false)
 

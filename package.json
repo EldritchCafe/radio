@@ -28,6 +28,7 @@
     "get-urls": "^9.2.0",
     "iter-tools": "^7.0.0-rc.0",
     "route-parser": "0.0.5",
+    "svelte-pipeable-store": "^1.0.3",
     "svelte-routing": "^1.4.0"
   },
   "browserslist": [

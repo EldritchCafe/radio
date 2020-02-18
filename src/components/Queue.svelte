@@ -6,10 +6,14 @@
             <div class="title">{$next.title}</div>
             <div class="user">shared by {$next.referer.username} <DistanceDate date={$next.date} /></div>
         </div>
+    {:else}
+        NO NEXT TRACK
     {/if}
 
+
+
     {#if $enqueueing}
-        LOADING NEXT
+        ENQUEING
     {/if}
 
 
