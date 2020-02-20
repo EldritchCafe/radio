@@ -12,8 +12,10 @@
 </svg>
 
 <script>
-    import { volume } from '/store.js'
+    import { getContext } from 'svelte'
+
+    const volume = getContext('volume')
 
     // to fix visual glitch
-    $: volumePercent = $volume ? $volume -2 : 0
+    $: volumePercent = $volume - 2
 </script>

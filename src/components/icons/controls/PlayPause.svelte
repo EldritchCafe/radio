@@ -9,9 +9,9 @@
 </button>
 
 <script>
-    import {
-        paused,
-        current,
-        loading
-    } from '/store.js'
+    import { getContext } from 'svelte'
+
+    const paused = getContext('paused')
+    const current = getContext('current')
+    const loading = getContext('loading')
 </script>

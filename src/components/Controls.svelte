@@ -29,17 +29,16 @@
 </div>
 
 <script>
-    import {
-        paused,
-        canPrevious,
-        canNext,
-        selectPrevious,
-        selectNext,
-        loading
-    } from '/store.js'
+    import { getContext } from 'svelte'
     import Volume from '/components/Volume'
     import PlayPause from '/components/icons/controls/PlayPause'
     import Prev from '/components/icons/controls/Prev'
     import Next from '/components/icons/controls/Next'
     import IconMenu from '/components/icons/Menu'
+
+    const paused = getContext('paused')
+    const canPrevious = getContext('canPrevious')
+    const canNext = getContext('canNext')
+    const selectPrevious = getContext('selectPrevious')
+    const selectNext = getContext('selectNext')
 </script>

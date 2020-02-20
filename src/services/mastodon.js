@@ -18,6 +18,10 @@ export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statu
     .then(response => response.json())
     .then(status => processStatus(domain, status))
 
+export async function* statusIterator({ domain, id }) {
+    yield await fetchStatus(domain, id)
+}
+
 // Observable<{ domain : string, hashtag : string, status : Status}>
 export const hashtagStreamingObservable = (domain, hashtag) => {
     return new Observable(observer => {

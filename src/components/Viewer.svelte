@@ -43,13 +43,19 @@
 
 
 <script>
-    import { get } from 'svelte/store'
+    import { getContext } from 'svelte'
     import Controls from '/components/Controls.svelte'
     import IconReduce from '/components/icons/player/Reduce.svelte'
     import IconHeart from '/components/icons/Heart.svelte'
     import YoutubePlayer from '/components/YoutubePlayer'
     import Progress from '/components/player/Progress'
-    import { paused, muted, volume, current, selectNext, loading } from '/store.js'
+
+    const paused = getContext('paused')
+    const muted = getContext('muted')
+    const volume = getContext('volume')
+    const current = getContext('current')
+    const loading = getContext('loading')
+    const selectNext = getContext('selectNext')
 
     let ready = null
     let ended = null

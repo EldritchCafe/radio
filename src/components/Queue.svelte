@@ -28,8 +28,14 @@
 </div>
 
 <script>
-    import { queue, next, current, enqueueing, select } from '/store.js'
+    import { getContext } from 'svelte'
     import DistanceDate from '/components/DistanceDate.svelte'
+
+    const current = getContext('current')
+    const enqueueing = getContext('enqueueing')
+    const next = getContext('next')
+    const queue = getContext('queue')
+    const select = getContext('select')
 
     $: history = $queue.filter(x => x !== $next).reverse()
 </script>
