@@ -1,0 +1,63 @@
+/* ----------------------------------------------------------- */
+/* == track module */
+/* ----------------------------------------------------------- */
+
+.track {
+  position: relative;
+  display: flex;
+  padding: 1rem 0;
+}
+
+.track--active::before {
+  position: absolute;
+  top: 0;
+  top: calc(50% - .5rem);
+  left: -2.1rem;
+  width: 1rem;
+  height: 1rem;
+  background: no-repeat url("/assets/img/playbar.svg");
+  background-position: left center;
+  background-size: 1rem 1rem;
+  content: "";
+}
+
+.track__main {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.track__title {
+  overflow: hidden;
+  color: $color-secondary;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1.14em;
+}
+
+.track--active .track__title {
+  font-weight: bold;
+}
+
+.track__subtitle {
+  margin-top: .2rem;
+  color: $color-grey-1;
+  font-size: 1.2rem;
+}
+
+.track__menu {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: -1rem;
+  margin-left: 1rem;
+  padding: 1rem;
+  border: none;
+  background: none;
+  color: $color-primary;
+  font-size: 0;
+}
+
+.track__menu svg {
+  width: 2rem;
+}

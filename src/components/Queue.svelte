@@ -1,35 +1,55 @@
 <div>
-    <h6>PLAY NEXT</h6>
-
-    {#if $next}
-        <div class="entry" on:click={() => select($next)}>
-            <div class="title">{$next.title}</div>
-            <div class="user">shared by {$next.referer.username} <DistanceDate date={$next.date} /></div>
+    <div class="queue__section">
+        <div class="queue__sectionTitle">Next song</div>
+        <div class="track" on:click={() => select($next)}>
+            <div class="track__main">
+                <div class="track__title" class:placeholder={!$next}>
+                    {#if $next}{$next.title}{/if}
+                </div>
+                <div class="track__subtitle" class:placeholder={!$next}>
+                {#if $next}
+                    shared by {$next.referer.username} • 
+                    <DistanceDate date={$next.date} />
+                {/if}
+                </div>
+            </div>
+            {#if $next}
+                <button class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
+            {/if}
         </div>
-    {:else}
-        NO NEXT TRACK
-    {/if}
+    </div>
 
 
+    <div class="queue__section">
+        <div class="queue__sectionTitle">History</div>
+        {#each history as track}
+            <div class="track" class:track--active={track === $current} on:click={() => select(track)}>
+                <div class="track__main">
+                    <div class="track__title">{track.title}</div>
+                    <div class="track__subtitle">
+                        shared by {track.referer.username} • 
+                        <DistanceDate date={track.date} />
+                    </div>
+                </div>
+                <button class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
+            </div>
+        {/each}
+        {#if history.length === 0}
+            <div class="track">
+                <div class="track__main">
+                    <div class="track__title placeholder"></div>
+                    <div class="track__subtitle placeholder"></div>
+                </div>
+            </div>
+        {/if}
 
-    {#if $enqueueing}
-        ENQUEING
-    {/if}
-
-
-    <h6>HISTORY</h6>
-
-    {#each history as track}
-        <div class="entry" class:active={track === $current} on:click={() => select(track)}>
-            <div class>{track.title}</div>
-            <div class>shared by {track.referer.username} <DistanceDate date={track.date} /></div>
-        </div>
-    {/each}
+    </div>
 </div>
 
 <script>
     import { getContext } from 'svelte'
-    import DistanceDate from '/components/DistanceDate.svelte'
+    import DistanceDate from '/components/DistanceDate'
+    import IconMenu from '/components/icons/Menu'
 
     const current = getContext('current')
     const enqueueing = getContext('enqueueing')
