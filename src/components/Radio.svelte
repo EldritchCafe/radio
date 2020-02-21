@@ -40,7 +40,6 @@
     ])
 
     const paused = writable(true)
-    const muted = writableLocalStorage('muted', false)
     const volume = writableLocalStorage('volume', 100)
 
     const current = writable(null)
@@ -116,7 +115,6 @@
     }
 
     setContext('paused', paused)
-    setContext('muted', muted)
     setContext('volume', volume)
     setContext('domain', domain)
     setContext('hashtags', hashtags)

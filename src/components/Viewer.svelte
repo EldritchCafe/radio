@@ -5,7 +5,6 @@
             id={$current ? $current.media.credentials.id : null}
             class="playerBig__iframe"
             paused={$paused}
-            muted={$muted}
             volume={$volume}
             bind:ready
             bind:ended
@@ -51,7 +50,6 @@
     import Progress from '/components/player/Progress'
 
     const paused = getContext('paused')
-    const muted = getContext('muted')
     const volume = getContext('volume')
     const current = getContext('current')
     const loading = getContext('loading')

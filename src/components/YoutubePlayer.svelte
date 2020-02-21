@@ -19,12 +19,10 @@
     // input props
     export let id
     export let paused
-    export let muted
     export let volume
 
     $: load(id)
     $: setPaused(paused)
-    $: setMuted(muted)
     $: setVolume(volume)
 
     const { enqueue, run } = queue()
@@ -55,18 +53,6 @@
         }
     })
 
-    const setMuted = muted => enqueue(player => {
-        if (muted) {
-            if (!player.isMuted()) {
-                player.mute()
-            }
-        } else {
-            if (player.isMuted()) {
-                player.unMute()
-            }
-        }
-    })
-
     const setVolume = volume => enqueue(player => {
         player.setVolume(volume)
     })
@@ -80,6 +66,10 @@
             element.id = Math.random().toString(16).slice(2, 8)
 
             const onReady = ({ target: player }) => {
+                if (player.isMuted()) {
+                    player.unMute()
+                }
+
                 run(player)
             }
 
