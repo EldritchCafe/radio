@@ -33,7 +33,7 @@
                 {#if $current}shared by <span class="playerTrack__username">{$current.referer.username}</span>{/if}
             </div>
         </div>
-        <button class="playerTrack__fav" class:hidden={!$current} aria-label="Fav"><IconHeart></IconHeart></button>
+        <!--<button class="playerTrack__fav" class:hidden={!$current} aria-label="Fav"><IconHeart></IconHeart></button>-->
     </div>
 
     <Controls></Controls>
