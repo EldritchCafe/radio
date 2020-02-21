@@ -21,6 +21,10 @@
   content: "";
 }
 
+.track--playing::before {
+  background-image: url("/assets/img/playbar-animate.svg");
+}
+
 .track__main {
   flex-grow: 1;
   min-width: 0;

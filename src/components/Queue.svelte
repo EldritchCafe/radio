@@ -23,7 +23,7 @@
     <div class="queue__section">
         <div class="queue__sectionTitle">History</div>
         {#each history as track}
-            <div class="track" class:track--active={track === $current} on:click={() => select(track)}>
+            <div class="track" class:track--active={track === $current} class:track--playing={!$paused} on:click={() => select(track)}>
                 <div class="track__main">
                     <div class="track__title">{track.title}</div>
                     <div class="track__subtitle">
@@ -42,7 +42,6 @@
                 </div>
             </div>
         {/if}
-
     </div>
 </div>
 
@@ -56,6 +55,7 @@
     const next = getContext('next')
     const queue = getContext('queue')
     const select = getContext('select')
+    const paused = getContext('paused')
 
     $: history = $queue.filter(x => x !== $next).reverse()
 </script>
