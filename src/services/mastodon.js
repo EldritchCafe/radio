@@ -1,6 +1,6 @@
 import Observable from 'core-js-pure/features/observable'
 import getUrls from 'get-urls'
-import { observableToAsyncIterator, raceIterator, urlsToMedia } from '/services/misc.js'
+import { urlsToMedia } from '/services/misc.js'
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 
@@ -22,7 +22,6 @@ export async function* statusIterator({ domain, id }) {
     yield await fetchStatus(domain, id)
 }
 
-// Observable<{ domain : string, hashtag : string, status : Status}>
 export const hashtagStreamingObservable = (domain, hashtag) => {
     return new Observable(observer => {
         const onOpen = () => {
@@ -47,10 +46,23 @@ export const hashtagStreamingObservable = (domain, hashtag) => {
         eventSource.addEventListener('error', onError)
 
         return () => {
+            console.log(`Streaming ${domain} #${hashtag} : closed`)
             eventSource.removeEventListener('open', onOpen)
             eventSource.removeEventListener('update', onStatus)
             eventSource.removeEventListener('error', onError)
             eventSource.close()
+        }
+    })
+}
+
+export const hashtagsStreamingObservable = (domain, hashtags) => {
+    return new Observable(observer => {
+        const subscriptions = hashtags
+            .map(hashtag => hashtagStreamingObservable(domain, hashtag))
+            .map(observable => observable.subscribe(observer))
+
+        return () => {
+            subscriptions.forEach(subscription => subscription.unsubscribe())
         }
     })
 }
@@ -73,31 +85,53 @@ export async function* hashtagTimelineIterator (domain, hashtag) {
     }
 }
 
-export const hashtagIterator = (domain, hashtag) => {
-    return raceIterator([
-        observableToAsyncIterator(hashtagStreamingObservable(domain, hashtag)),
-        hashtagTimelineIterator(domain, hashtag)
-    ])
-}
-
-export async function* hashtagsIterator (domain, hashtags) {
-    const iterators = hashtags.map(hashtag => hashtagIterator(domain, hashtag))
-    const values = iterators.map(iterator => iterator.next())
+export async function* hashtagsTimelineIterator (domain, hashtags) {
+    const iterators = hashtags.map(hashtag => hashtagTimelineIterator(domain, hashtag))
+    const promises = iterators.map(iterator => iterator.next())
 
     while (true) {
-        const promises = values.map((promise, index) => promise.then(result => ({ index, result })))
-        const promisesValues = await Promise.all(promises)
+        const results = (await Promise.all(promises))
+            .map((result, index) => ({ index, result }))
+            .filter(({ result }) => !result.done)
 
-        const sorted = promisesValues
-            .sort((a, b) =>{
-                a.result.value.date - b.result.value.date
-            })
+        if (results.length > 0) {
+            const sorted = results.sort((a, b) => b.result.value.date - a.result.value.date)
+            const { index, result: { value } } = sorted[0]
 
-        const { index, result: { done, value } } = sorted[0]
-        values[index] = iterators[index].next()
-        yield value
+            promises[index] = iterators[index].next()
+            yield value
+        } else {
+            break
+        }
+    }
+
+}
+
+export async function* hashtagsIterator(domain, hashtags) {
+    const buffer = []
+
+    const streamingSubscription = hashtagsStreamingObservable(domain, hashtags).subscribe({
+        next: value => buffer.push(value),
+        error: error => console.error(error),
+        complete: () => console.log('complete')
+    })
+
+    const timelineGenerator = hashtagsTimelineIterator(domain, hashtags)
+
+    try {
+        while (true) {
+            if (buffer.length > 0) {
+                yield buffer.pop()
+            } else {
+                yield (await timelineGenerator.next()).value
+            }
+        }
+    } finally {
+        streamingSubscription.unsubscribe()
+        timelineGenerator.return()
     }
 }
+
 
 const processStatus = (domain, status) => ({
     title: '',

@@ -91,13 +91,17 @@ export async function* raceIterator(iterators) {
     }
 }
 
-export async function* tracksIterator(statusesIterator, cache) {
-    yield* execPipe(
-        statusesIterator,
-        asyncFilter(track => track != null), // should not be necessary
-        asyncFilter(notKnown(cache)),
-        asyncMap(completeTrack)
-    )
+export async function* tracksIterator(statusesGenerator, cache) {
+    try {
+        yield* execPipe(
+            statusesGenerator,
+            asyncFilter(track => track != null), // should not be necessary
+            asyncFilter(notKnown(cache)),
+            asyncMap(completeTrack)
+        )
+    } finally {
+        statusesGenerator.return()
+    }
 }
 
 const notKnown = cache => track => {
