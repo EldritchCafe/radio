@@ -59,18 +59,3 @@
 
     $: history = $queue.filter(x => x !== $next).reverse()
 </script>
-
-<style>
-    .entry {
-        padding: 1em 2em;
-        cursor: pointer;
-    }
-
-    .entry.active {
-        background-color: plum;
-    }
-
-    .entry.active::before {
-        content: "▶️";
-    }
-</style>
