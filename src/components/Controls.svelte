@@ -25,7 +25,13 @@
 
     <div class="controls__menu">
         <Popper>
-            <button slot="btn" class="controls__menuBtn" aria-label="track menu"><IconMenu></IconMenu></button>
+            <button
+                slot="btn"
+                class="controls__menuBtn"
+                disabled={!$current}
+                class:disabled={!$current}
+                aria-label="track menu"
+            ><IconMenu></IconMenu>{!!$current}</button>
             <div slot="content" class="contextMenu__list">
                 {#if $current}
                     <ContextMenu track={$current}></ContextMenu>

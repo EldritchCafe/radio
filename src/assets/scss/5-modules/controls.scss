@@ -96,6 +96,10 @@
   font-size: 0;
 }
 
+.controls__menuBtn.disabled {
+  color: rgba($color-primary, .4);
+}
+
 .controls__menuBtn svg {
   width: 2.5rem;
   height: .5rem;
