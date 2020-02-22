@@ -144,15 +144,17 @@ input[type="checkbox"] {
   width: 1.6rem;
   height: 1.6rem;
   border: .1rem solid $color-grey-2;
-  border-radius: .2rem;
-  background: no-repeat url("data:image/svg+xml,%3Csvg width='10' height='9' viewBox='0 0 10 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.452.833L3.75 5.653 1.548 3.565 0 5.113 3.75 8.75 10 2.381 8.452.833z' fill='%23635776'/%3E%3C/svg%3E%0A");
+  border-radius: .3rem;
+  background: no-repeat url("data:image/svg+xml,%3Csvg width='10' height='9' viewBox='0 0 10 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.452.833L3.75 5.653 1.548 3.565 0 5.113 3.75 8.75 10 2.381 8.452.833z' fill='%23fff'/%3E%3C/svg%3E%0A");
   background-position: center;
   background-size: 0 0;
   vertical-align: top;
-  transition: .2s background cubic-bezier(.64, 1.93, .55, 1.94);
+  transition: .15s all, .2s background-size cubic-bezier(.64, 1.93, .55, 1.94);
 }
 
 input[type="checkbox"]:checked {
+  border-color: $color-primary;
+  background-color: $color-primary;
   background-size: 1rem .8rem;
 }
 
