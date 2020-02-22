@@ -17,7 +17,7 @@
                 <Popper>
                     <button slot="btn" class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
                     <div slot="content" class="contextMenu__list">
-                        <ContextMenu shareUrl={$next.shareUrl}></ContextMenu>
+                        <ContextMenu track={$next}></ContextMenu>
                     </div>
                 </Popper>
             {/if}
@@ -39,7 +39,7 @@
                 <Popper>
                     <button slot="btn" class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
                     <div slot="content" class="contextMenu__list">
-                        <ContextMenu shareUrl={track.shareUrl}></ContextMenu>
+                        <ContextMenu track={track}></ContextMenu>
                     </div>
                 </Popper>
             </div>

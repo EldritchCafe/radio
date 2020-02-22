@@ -28,7 +28,7 @@
             <button slot="btn" class="controls__menuBtn" aria-label="track menu"><IconMenu></IconMenu></button>
             <div slot="content" class="contextMenu__list">
                 {#if $current}
-                    <ContextMenu shareUrl={$current.shareUrl}></ContextMenu>
+                    <ContextMenu track={$current}></ContextMenu>
                 {/if}
             </div>
         </Popper>
