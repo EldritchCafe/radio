@@ -25,7 +25,7 @@
     </div>
     {#if !isBigPlayer}
     <div class="playerMini">
-        <div class="playerCover" class:placeholder={$current}>
+        <div class="playerCover" class:placeholder={!$current}>
             {#if $current}
                 <img 
                     class="playerCover__img" 
