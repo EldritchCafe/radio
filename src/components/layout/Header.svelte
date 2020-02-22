@@ -3,7 +3,7 @@
         <button class="header__sideBtn">About</button>
     </div>
     <h1 class="header__title">
-        <img src="{ logo }" alt="Eldritch Radio">
+        <a class="header__titleLink" href="/"><img src="{ logo }" alt="Eldritch Radio"></a>
     </h1>
     <div class="header__side txtright">
         <button class="header__sideBtn">Settings</button>

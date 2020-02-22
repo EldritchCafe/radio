@@ -6,14 +6,19 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-top: 5.7rem;
-  padding-bottom: 6rem;
+  padding-top: 4.7rem;
+  padding-bottom: 5rem;
 }
 
 .header__title {
   margin: 0;
   text-align: center;
   font-size: 2rem;
+}
+
+.header__titleLink {
+  display: inline-block;
+  padding: 1rem;
 }
 
 /* Side
