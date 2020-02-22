@@ -86,6 +86,14 @@
 
                         break
 
+                    case STATE.PLAYING:
+                        paused = false
+                        break
+
+                    case STATE.PAUSED:
+                        paused = true
+                        break
+
                     case STATE.ENDED:
                         ended = true
                         break
