@@ -1,0 +1,20 @@
+<svg width="660" height="662" viewBox="0 0 660 662" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style>
+      .bg {
+        fill: #453959;
+      }
+      .play {
+          fill: #fff;
+      }
+      @media (prefers-color-scheme: dark) {
+        .bg {
+          fill: #fff;
+        }
+        .play {
+            fill: #453959;
+        }
+      }
+    </style>
+  <path class="bg" fill="#453959" d="M660 .25V504L0 660.25V157.501L660 .251z" />
+  <path class="play" fill="#fff" fill-rule="evenodd" clip-rule="evenodd" d="M454.851 330.657a1.001 1.001 0 010 1.686l-178.107 113.79a1 1 0 01-1.539-.842V217.709a1 1 0 011.539-.842l178.107 113.79z"/>
+</svg>
