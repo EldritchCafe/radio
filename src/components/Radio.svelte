@@ -1,5 +1,5 @@
 <svelte:head>
-    <title>{`${ $current ? `${$current.title} ∴ ` : ''}Eldritch Radio`}</title>
+    <title>{`${ $current ? `${$current.media.title} ∴ ` : ''}Eldritch Radio`}</title>
 </svelte:head>
 
 <div class="app container">
@@ -69,7 +69,7 @@
                     return $iterator.next().then(({ done, value }) => {
                         enqueueing.set(false)
                         return value
-                    })
+                    }).catch(console.error)
                 } else {
                     return $nextPromise
                 }
@@ -94,7 +94,7 @@
 
 
     const select = track => {
-        console.log(`Select ${track.title}`)
+        console.log(`Select ${track.media.title}`)
         current.set(track)
     }
 

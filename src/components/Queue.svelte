@@ -4,12 +4,12 @@
         <div class="track" on:click={() => select($next)}>
             <div class="track__main">
                 <div class="track__title" class:placeholder={!$next}>
-                    {#if $next}{$next.title}{/if}
+                    {#if $next}{$next.media.title}{/if}
                 </div>
                 <div class="track__subtitle" class:placeholder={!$next}>
                 {#if $next}
-                    shared by {$next.referer.username} • 
-                    <DistanceDate date={$next.date} />
+                    shared by {$next.referer.username} •
+                    <DistanceDate date={$next.referer.date} />
                 {/if}
                 </div>
             </div>
@@ -25,10 +25,10 @@
         {#each history as track}
             <div class="track" class:track--active={track === $current} class:track--playing={!$paused} on:click={() => select(track)}>
                 <div class="track__main">
-                    <div class="track__title">{track.title}</div>
+                    <div class="track__title">{track.media.title}</div>
                     <div class="track__subtitle">
-                        shared by {track.referer.username} • 
-                        <DistanceDate date={track.date} />
+                        shared by {track.referer.username} •
+                        <DistanceDate date={track.referer.date} />
                     </div>
                 </div>
                 <button class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>

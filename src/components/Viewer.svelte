@@ -28,7 +28,7 @@
 
     <div class="playerTrack">
         <div class="playerTrack__infos">
-            <div class="playerTrack__name" class:placeholder={!$current}>{#if $current}{$current.title}{/if}</div>
+            <div class="playerTrack__name" class:placeholder={!$current}>{#if $current}{$current.media.title}{/if}</div>
             <div class="playerTrack__referer" class:placeholder={!$current}>
                 {#if $current}shared by <span class="playerTrack__username">{$current.referer.username}</span>{/if}
             </div>

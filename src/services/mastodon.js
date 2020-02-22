@@ -4,11 +4,11 @@ import { urlsToMedia } from '/services/misc.js'
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 
-function parseLinkHeader(link) {
-    const links = {}
+function parseLinkHeader(linkHeader) {
+    const links = new Map()
 
-    for (const [ , url, name ] of link.matchAll(LINK_RE)) {
-        links[name] = url
+    for (const [ , url, name ] of linkHeader.matchAll(LINK_RE)) {
+        links.set(name, url)
     }
 
     return links
@@ -74,7 +74,7 @@ export async function* hashtagTimelineIterator (domain, hashtag) {
         const response = await fetch(nextLink)
 
         nextLink = response.headers.has('link')
-            ? parseLinkHeader(response.headers.get('link')).next
+            ? parseLinkHeader(response.headers.get('link')).get('next')
             : null
 
         const statuses = await response.json()
@@ -132,15 +132,11 @@ export async function* hashtagsIterator(domain, hashtags) {
     }
 }
 
-
 const processStatus = (domain, status) => ({
-    title: '',
+    username: status.account.username,
+    content: status.content,
     date: new Date(status.created_at),
-    referer: {
-        username: status.account.username,
-        url: status.url,
-        credentials: { type: 'mastodon', domain, id: status.id }
-    },
-    media: urlsToMedia(getUrls(status.content))
+    url: status.url,
+    credentials: { type: 'mastodon', domain, id: status.id }
 })
 

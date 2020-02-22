@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "lib": [
+            "dom",
+            "esnext"
+        ],
+        "downlevelIteration": true
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
