@@ -27,7 +27,9 @@
         <Popper>
             <button slot="btn" class="controls__menuBtn" aria-label="track menu"><IconMenu></IconMenu></button>
             <div slot="content" class="contextMenu__list">
-                <ContextMenu></ContextMenu>
+                {#if $current}
+                    <ContextMenu shareUrl={$current.shareUrl}></ContextMenu>
+                {/if}
             </div>
         </Popper>
     </div>
@@ -43,6 +45,7 @@
     import Popper from '/components/PopperMenu'
     import ContextMenu from '/components/ContextMenu'
 
+    const current = getContext('current')
     const paused = getContext('paused')
     const canPrevious = getContext('canPrevious')
     const canNext = getContext('canNext')

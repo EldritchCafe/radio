@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.0.6",
+    "copy-to-clipboard": "^3.2.1",
     "core-js-pure": "^3.6.4",
     "date-fns": "^2.9.0",
     "get-urls": "^9.2.0",
@@ -32,6 +33,7 @@
     "micromodal": "^0.4.2",
     "route-parser": "0.0.5",
     "svelte-pipeable-store": "^1.0.3",
+    "svelte-portal": "^0.1.0",
     "svelte-routing": "^1.4.0"
   },
   "browserslist": [

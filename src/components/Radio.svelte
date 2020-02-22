@@ -15,7 +15,6 @@
 
     <Footer></Footer>
 
-    <ShareModal></ShareModal>
 </div>
 
 <script>
@@ -24,7 +23,6 @@
     import Footer from '/components/layout/Footer.svelte'
     import Queue from '/components/Queue.svelte'
     import Viewer from '/components/Viewer.svelte'
-    import ShareModal from '/components/ShareModal.svelte'
     import { get, writable, writableLocalStorage, derived, scan, wait, startWith, distinct } from '/services/store.js'
     import { radioIterator, radioShareIterator } from '/services/radio.js'
     import DeepSet from '/services/deep-set.js'
