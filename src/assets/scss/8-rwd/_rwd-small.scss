@@ -3,4 +3,17 @@
 /* ----------------------------------------------------------- */
 
 @media (max-width: $small) {
+  /* Header
+    -------------------------------------------------------------- */
+
+  .header {
+    align-items: center;
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .header__side {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
 }
