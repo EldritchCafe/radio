@@ -1,0 +1,37 @@
+/* ----------------------------------------------------------- */
+/* == share modal module */
+/* ----------------------------------------------------------- */
+
+.modalShare__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+/* Input
+-------------------------------------------------------------- */
+
+.modalShare__input {
+  color: $color-secondary;
+}
+
+/* Big player checkbox
+-------------------------------------------------------------- */
+
+.modalShare__bigplayer label {
+  margin: 0;
+}
+
+/* copy button
+-------------------------------------------------------------- */
+
+.modalShare__copy {
+  margin-left: 1rem;
+  padding: .8rem 1.6rem;
+  border: none;
+  border-radius: .3rem;
+  background-color: rgba($color-primary, .15);
+  color: $color-primary;
+  font-size: 1.3rem;
+}

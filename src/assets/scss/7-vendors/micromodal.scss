@@ -1,0 +1,115 @@
+/**************************\
+  Basic Modal Styles
+\**************************/
+
+.modal {
+  position: relative;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.modal[aria-hidden="true"] {
+  display: none;
+}
+
+.modal__overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  background: rgba(0, 0, 0, .6);
+}
+
+.modal__container {
+  position: relative;
+  z-index: 21;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 3rem;
+  max-width: 50rem;
+  max-height: 100vh;
+  width: 100%;
+  border-radius: .5rem;
+  background-color: #fff;
+}
+
+.modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal__title {
+  margin-bottom: 2rem;
+  color: $color-primary;
+  text-align: center;
+  font-weight: bold;
+  font-style: normal;
+  font-size: 1.8rem;
+  line-height: 1.6em;
+}
+
+.modal__close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 3rem;
+}
+
+.modal__close:before {
+  content: "\2715";
+}
+
+.modal__btn {
+  -webkit-appearance: button;
+  overflow: visible;
+  margin: 0;
+  padding-top: .5rem;
+  padding-right: 1rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  border-width: 0;
+  border-style: none;
+  border-radius: .25rem;
+  background-color: #e6e6e6;
+  color: rgba(0, 0, 0, .8);
+  text-transform: none;
+  font-size: .875rem;
+  line-height: 1.15;
+  cursor: pointer;
+  transition: -webkit-transform .25s ease-out;
+  transition: transform .25s ease-out;
+  transition: transform .25s ease-out, -webkit-transform .25s ease-out;
+  transform: translateZ(0);
+
+  will-change: transform;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+}
+
+.modal__btn:focus,
+.modal__btn:hover {
+  transform: scale(1.05);
+
+  -webkit-transform: scale(1.05);
+}
+
+.modal__btn-primary {
+  background-color: #00449e;
+  color: #fff;
+}

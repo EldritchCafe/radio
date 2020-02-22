@@ -70,6 +70,7 @@
 @import "5-modules/queue";
 @import "5-modules/track";
 @import "5-modules/context-menu";
+@import "5-modules/modal-share";
 
 
 // --------------------------------------------------------------
@@ -86,7 +87,7 @@
 // Tips: load vendor from your package manager and override CSS here (e.g. o-vendor-name.scss)
 // In this context, "o" means "override" and you can use it as a convention.
 
-// @import '7-vendors/o-vendor.scss';
+@import "7-vendors/micromodal.scss";
 
 
 // --------------------------------------------------------------

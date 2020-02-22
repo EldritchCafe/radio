@@ -1,10 +1,10 @@
-<span bind:this={btn} on:click={() => openMenu()}>
+<span bind:this={btn} on:click={() => open()}>
     <slot name="btn">
         <button>button</button>
     </slot>
 </span>
 
-<div class="contextMenu__overlay" class:active={isActive} on:click={() => closeMenu()}></div>
+<div class="contextMenu__overlay" class:active={isActive} on:click={() => close()}></div>
 <div class="contextMenu" bind:this={content} class:active={isActive}>
     <slot name="content">
         No content
@@ -12,7 +12,7 @@
 </div>
 
 <script>
-import { onMount } from 'svelte';
+import { onMount, setContext } from 'svelte'
 import { createPopper } from '@popperjs/core';
 import detectOverflow from '@popperjs/core/lib/utils/detectOverflow.js';
 
@@ -20,13 +20,16 @@ let btn
 let content
 let isActive = false
 
-function openMenu () {
+export function open () {
     isActive = true
 }
 
-function closeMenu () {
+export function close () {
     isActive = false
 }
+
+setContext('openMenu', open)
+setContext('closeMenu', close)
 
 onMount(() => {
     createPopper(btn, content, {
