@@ -1,0 +1,65 @@
+/* ----------------------------------------------------------- */
+/* == Player layout */
+/* ----------------------------------------------------------- */
+
+/* Small player
+-------------------------------------------------------------- */
+
+.player {
+  display: grid;
+  margin-bottom: 5rem;
+
+  grid-template-columns: 1fr 2fr;
+  grid-column-gap: 2rem;
+  grid-row-gap: 0;
+}
+
+.playerBig__player,
+.playerMini {
+  grid-area: 1 / 1 / 4 / 2;
+}
+
+.playerTrack {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.playerProgress {
+  grid-area: 2 / 2 / 3 / 3;
+}
+
+.controls {
+  grid-area: 3 / 2 / 4 / 3;
+}
+
+/* Big player
+-------------------------------------------------------------- */
+
+.playerBig {
+  display: grid;
+  margin-bottom: 6rem;
+
+  grid-template-columns: 1fr;
+  grid-row-gap: 0;
+  grid-column-gap: 0;
+}
+
+.playerBig .playerBig__player,
+.playerBig .playerMini {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.playerBig .playerMini {
+  display: none;
+}
+
+.playerBig .playerTrack {
+  grid-area: 3 / 1 / 4 / 2;
+}
+
+.playerBig .playerProgress {
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+.playerBig .controls {
+  grid-area: 4 / 1 / 5 / 2;
+}

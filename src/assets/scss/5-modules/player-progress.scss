@@ -17,11 +17,12 @@
   position: absolute;
   width: 100%;
   height: .5rem;
-  border-radius: .2rem;
+  border-radius: .5rem;
   background-color: #e5e5e5;
 }
 
 .playerBig .playerProgress__progressBg {
+  border-radius: .2rem;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -30,8 +31,8 @@
   position: absolute;
   width: 0;
   height: .5rem;
-  border-top-left-radius: .2rem;
-  border-bottom-left-radius: .2rem;
+  border-top-left-radius: .5rem;
+  border-bottom-left-radius: .5rem;
   background-color: $color-primary;
 }
 
@@ -50,7 +51,7 @@
   width: 100%;
   height: .5rem;
   border: none;
-  border-radius: .2rem;
+  border-radius: .5rem;
   background-color: transparent;
   box-shadow: none;
   cursor: pointer;

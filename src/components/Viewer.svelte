@@ -1,5 +1,5 @@
-<div class="playerBig">
-    <div class="playerBig__player" class:placeholder={!ready}>
+<div class="player" class:playerBig={isBigPlayer}>
+    <div class="playerBig__player" class:placeholder={!ready} class:hidden={!isBigPlayer}>
         {#if $current}
         <YoutubePlayer
             id={$current ? $current.media.credentials.id : null}
@@ -14,9 +14,34 @@
             bind:seek={seek}
         ></YoutubePlayer>
         <div class="playerBig__overlay" on:click={() => $paused = !$paused}></div>
-        <button class="playerBig__reduce" class:active={ready && $paused}>Reduce<IconReduce></IconReduce></button>
+        <button
+            class="playerBig__reduce"
+            class:active={ready && $paused}
+            on:click|stopPropagation={() => switchBigPlayer()}
+        >
+            Reduce<IconReduce></IconReduce>
+        </button>
         {/if}
     </div>
+    {#if !isBigPlayer}
+    <div class="playerMini">
+        <div class="playerCover" class:placeholder={$current}>
+            {#if $current}
+                <img 
+                    class="playerCover__img" 
+                    src={'https://img.youtube.com/vi/' + $current.media.credentials.id + '/mqdefault.jpg'}
+                    alt="cover"
+                >
+                <button
+                    class="playerCover__expand"
+                    aria-label="Expand player"
+                    title="Expand player"
+                    on:click={() => switchBigPlayer()}
+                ><IconExpand></IconExpand></button>
+            {/if}
+        </div>
+    </div>
+    {/if}
 
     <Progress
         duration={duration}
@@ -36,7 +61,7 @@
         <!--<button class="playerTrack__fav" class:hidden={!$current} aria-label="Fav"><IconHeart></IconHeart></button>-->
     </div>
 
-    <Controls></Controls>
+    <Controls isBigPlayer={isBigPlayer}></Controls>
 </div>
 
 
@@ -45,6 +70,7 @@
     import { getContext } from 'svelte'
     import Controls from '/components/Controls.svelte'
     import IconReduce from '/components/icons/player/Reduce.svelte'
+    import IconExpand from '/components/icons/player/Expand.svelte'
     import IconHeart from '/components/icons/Heart.svelte'
     import YoutubePlayer from '/components/YoutubePlayer'
     import Progress from '/components/player/Progress'
@@ -61,6 +87,7 @@
     let currentTime = null
     let duration = null
     let seek = null
+    let isBigPlayer = false
 
     $: if (ended || error) {
         selectNext()
@@ -69,5 +96,13 @@
     const updateCurrentTime = (seconds, seekAhead) => {
         seek(seconds, seekAhead)
         currentTime = seconds
+    }
+
+    const switchBigPlayer = () => {
+        
+        isBigPlayer = !isBigPlayer
+        console.log('switch player');
+        console.log($current.media);
+        
     }
 </script>

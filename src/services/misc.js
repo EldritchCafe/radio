@@ -88,7 +88,6 @@ export async function* tracksIterator(refererGenerator, cache) {
                     referer,
                     media: {
                         title: metadata.title,
-                        cover: metadata.thumbnail_url,
                         url: mediaUrl,
                         credentials: mediaCredentials
                     }
