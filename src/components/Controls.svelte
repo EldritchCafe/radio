@@ -24,7 +24,12 @@
     </div>
 
     <div class="controls__menu">
-        <button class="controls__menuBtn" aria-label="track menu"><IconMenu></IconMenu></button>
+        <Popper>
+            <button slot="btn" class="controls__menuBtn" aria-label="track menu"><IconMenu></IconMenu></button>
+            <div slot="content" class="contextMenu__list">
+                <ContextMenu></ContextMenu>
+            </div>
+        </Popper>
     </div>
 </div>
 
@@ -35,6 +40,8 @@
     import Prev from '/components/icons/controls/Prev'
     import Next from '/components/icons/controls/Next'
     import IconMenu from '/components/icons/Menu'
+    import Popper from '/components/PopperMenu'
+    import ContextMenu from '/components/ContextMenu'
 
     const paused = getContext('paused')
     const canPrevious = getContext('canPrevious')

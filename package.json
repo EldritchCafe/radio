@@ -24,6 +24,7 @@
     "typescript": "^3.8.2"
   },
   "dependencies": {
+    "@popperjs/core": "^2.0.6",
     "core-js-pure": "^3.6.4",
     "date-fns": "^2.9.0",
     "get-urls": "^9.2.0",

@@ -1,0 +1,63 @@
+/* ----------------------------------------------------------- */
+/* == context menu module */
+/* ----------------------------------------------------------- */
+
+/* Overlay
+-------------------------------------------------------------- */
+
+.contextMenu__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.contextMenu__overlay.active {
+  display: block;
+}
+
+/* Menu
+-------------------------------------------------------------- */
+
+.contextMenu {
+  z-index: 10;
+  visibility: hidden;
+  overflow: hidden;
+  min-width: 15rem;
+  border-radius: .3rem;
+  background-color: $color-primary;
+  color: $color-light-text;
+  opacity: 0;
+}
+
+.contextMenu.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.contextMenu__item,
+.contextMenu__item:link,
+.contextMenu__item:visited {
+  display: block;
+  padding: 1.2rem 2rem;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: $color-light-text;
+  text-align: left;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: .1s all;
+}
+
+.contextMenu__item:hover,
+.contextMenu__item:active,
+.contextMenu__item:focus {
+  background-color: $color-secondary;
+}

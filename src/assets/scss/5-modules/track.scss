@@ -5,6 +5,7 @@
 .track {
   position: relative;
   display: flex;
+  margin-right: -1rem;
   padding: 1rem 0;
 }
 
@@ -28,6 +29,7 @@
 .track__main {
   flex-grow: 1;
   min-width: 0;
+  cursor: pointer;
 }
 
 .track__title {
@@ -53,7 +55,6 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  margin-right: -1rem;
   margin-left: 1rem;
   padding: 1rem;
   border: none;

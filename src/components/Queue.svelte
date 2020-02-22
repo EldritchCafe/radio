@@ -1,8 +1,8 @@
 <div>
     <div class="queue__section">
         <div class="queue__sectionTitle">Next song</div>
-        <div class="track" on:click={() => select($next)}>
-            <div class="track__main">
+        <div class="track">
+            <div class="track__main" on:click={() => select($next)}>
                 <div class="track__title" class:placeholder={!$next}>
                     {#if $next}{$next.media.title}{/if}
                 </div>
@@ -14,7 +14,12 @@
                 </div>
             </div>
             {#if $next}
-                <button class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
+                <Popper>
+                    <button slot="btn" class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
+                    <div slot="content" class="contextMenu__list">
+                        <ContextMenu></ContextMenu>
+                    </div>
+                </Popper>
             {/if}
         </div>
     </div>
@@ -23,15 +28,20 @@
     <div class="queue__section">
         <div class="queue__sectionTitle">History</div>
         {#each history as track}
-            <div class="track" class:track--active={track === $current} class:track--playing={!$paused} on:click={() => select(track)}>
-                <div class="track__main">
+            <div class="track" class:track--active={track === $current} class:track--playing={!$paused}>
+                <div class="track__main" on:click={() => select(track)}>
                     <div class="track__title">{track.media.title}</div>
                     <div class="track__subtitle">
                         shared by {track.referer.username} •
                         <DistanceDate date={track.referer.date} />
                     </div>
                 </div>
-                <button class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
+                <Popper>
+                    <button slot="btn" class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
+                    <div slot="content" class="contextMenu__list">
+                        <ContextMenu></ContextMenu>
+                    </div>
+                </Popper>
             </div>
         {/each}
         {#if history.length === 0}
@@ -49,6 +59,8 @@
     import { getContext } from 'svelte'
     import DistanceDate from '/components/DistanceDate'
     import IconMenu from '/components/icons/Menu'
+    import Popper from '/components/PopperMenu'
+    import ContextMenu from '/components/ContextMenu'
 
     const current = getContext('current')
     const enqueueing = getContext('enqueueing')
