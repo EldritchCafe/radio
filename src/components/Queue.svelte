@@ -8,7 +8,7 @@
                 </div>
                 <div class="track__subtitle" class:placeholder={!$next}>
                 {#if $next}
-                    shared by {$next.referer.username} •
+                    shared by <span class="track__username">{$next.referer.username}</span> •
                     <DistanceDate date={$next.referer.date} />
                 {/if}
                 </div>
@@ -32,7 +32,7 @@
                 <div class="track__main" on:click={() => select(track)}>
                     <div class="track__title">{track.media.title}</div>
                     <div class="track__subtitle">
-                        shared by {track.referer.username} •
+                        shared by <span class="track__username">{track.referer.username}</span> •
                         <DistanceDate date={track.referer.date} />
                     </div>
                 </div>
