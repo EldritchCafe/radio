@@ -1,6 +1,6 @@
-/**************************\
-  Basic Modal Styles
-\**************************/
+/* ----------------------------------------------------------- */
+/* == modal style */
+/* ----------------------------------------------------------- */
 
 .modal {
   position: relative;
@@ -14,10 +14,6 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
-
-.modal[aria-hidden="true"] {
-  display: none;
 }
 
 .modal__overlay {
@@ -35,8 +31,10 @@
   z-index: 21;
   overflow-y: auto;
   box-sizing: border-box;
+  margin-right: 1rem;
+  margin-left: 1rem;
   padding: 3rem;
-  max-width: 50rem;
+  max-width: 52rem;
   max-height: 100vh;
   width: 100%;
   border-radius: .5rem;
