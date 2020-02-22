@@ -14,7 +14,7 @@
                 </div>
             </div>
             {#if $next}
-                <Popper>
+                <Popper needOffset={true}>
                     <button slot="btn" class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
                     <div slot="content" class="contextMenu__list">
                         <ContextMenu track={$next}></ContextMenu>
@@ -36,7 +36,7 @@
                         <DistanceDate date={track.referer.date} />
                     </div>
                 </div>
-                <Popper>
+                <Popper needOffset={true}>
                     <button slot="btn" class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
                     <div slot="content" class="contextMenu__list">
                         <ContextMenu track={track}></ContextMenu>

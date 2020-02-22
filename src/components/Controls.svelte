@@ -24,7 +24,7 @@
     </div>
 
     <div class="controls__menu">
-        <Popper>
+        <Popper needOffset={false}>
             <button
                 slot="btn"
                 class="controls__menuBtn"

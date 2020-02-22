@@ -19,6 +19,7 @@ import detectOverflow from '@popperjs/core/lib/utils/detectOverflow.js';
 let btn
 let content
 let isActive = false
+export let needOffset
 
 export function open () {
     isActive = true
@@ -39,7 +40,11 @@ onMount(() => {
             name: 'offset',
             options: {
                 offset: ({ reference, popper }) => {
-                    return [-10, -reference.width - 5];
+                    if (needOffset) {
+                        return [-10, -reference.width - 5];
+                    } else {
+                        return [5, -reference.width - 5];
+                    }
                 }
             }
         },
