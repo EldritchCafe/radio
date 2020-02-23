@@ -6,7 +6,7 @@
     <Header></Header>
 
     <section class="viewer">
-        <Viewer></Viewer>
+        <Viewer large={large}></Viewer>
     </section>
 
     <section class="queue">
@@ -28,6 +28,7 @@
     import DeepSet from '/services/deep-set.js'
 
     export let share
+    export let large
 
     const cache = new DeepSet()
 

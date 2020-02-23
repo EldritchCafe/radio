@@ -1,5 +1,5 @@
-<div class="player" class:playerBig={isBigPlayer}>
-    <div class="playerBig__player" class:placeholder={!ready} class:hidden={!isBigPlayer}>
+<div class="player" class:playerBig={large}>
+    <div class="playerBig__player" class:placeholder={!ready} class:hidden={!large}>
         {#if $current}
         <YoutubePlayer
             id={$current ? $current.media.credentials.id : null}
@@ -23,12 +23,12 @@
         </button>
         {/if}
     </div>
-    {#if !isBigPlayer}
+    {#if !large}
     <div class="playerMini">
         <div class="playerCover" class:placeholder={!$current}>
             {#if $current}
-                <img 
-                    class="playerCover__img" 
+                <img
+                    class="playerCover__img"
                     src={'https://img.youtube.com/vi/' + $current.media.credentials.id + '/mqdefault.jpg'}
                     alt="cover"
                 >
@@ -61,7 +61,7 @@
         <!--<button class="playerTrack__fav" class:hidden={!$current} aria-label="Fav"><IconHeart></IconHeart></button>-->
     </div>
 
-    <Controls isBigPlayer={isBigPlayer}></Controls>
+    <Controls large={large}></Controls>
 </div>
 
 
@@ -75,6 +75,8 @@
     import YoutubePlayer from '/components/YoutubePlayer'
     import Progress from '/components/player/Progress'
 
+    export let large
+
     const paused = getContext('paused')
     const volume = getContext('volume')
     const current = getContext('current')
@@ -87,7 +89,6 @@
     let currentTime = null
     let duration = null
     let seek = null
-    let isBigPlayer = false
 
     $: if (ended || error) {
         selectNext()
@@ -99,10 +100,6 @@
     }
 
     const switchBigPlayer = () => {
-        
-        isBigPlayer = !isBigPlayer
-        console.log('switch player');
-        console.log($current.media);
-        
+        large = !large
     }
 </script>
