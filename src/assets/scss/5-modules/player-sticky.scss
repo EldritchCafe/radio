@@ -1,0 +1,122 @@
+/* ----------------------------------------------------------- */
+/* == Player sticky */
+/* ----------------------------------------------------------- */
+
+.playerSticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding: .7rem 0;
+  width: 100%;
+  border-bottom: .1rem solid rgba($color-primary, .15);
+  background-color: $color-bg;
+  transition: .15s;
+  transform: translateY(0);
+}
+
+.playerSticky.hidden {
+  display: block;
+  transform: translateY(-103%);
+}
+
+.playerSticky > .container {
+  position: relative;
+  display: flex;
+}
+
+/* Cover
+-------------------------------------------------------------- */
+
+.playerSticky__cover {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  margin-right: 2rem;
+  width: 4.6rem;
+  height: 4.6rem;
+  border-radius: .3rem;
+  background: rgba($color-primary, .15);
+}
+
+.playerSticky__coverImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+/* Controls
+-------------------------------------------------------------- */
+
+.playerSticky .controls {
+  flex-shrink: 0;
+  margin-right: 3rem;
+}
+
+.playerSticky .controls__menu {
+  display: none;
+}
+
+.playerSticky .controls__volume {
+  position: absolute;
+  right: .7rem;
+}
+
+.playerSticky .controls__prevnext {
+  padding: .5rem;
+}
+
+.playerSticky .controls__playpause {
+  margin: 0 .5rem;
+}
+
+.playerSticky .controls__playpause svg {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Infos part
+-------------------------------------------------------------- */
+
+.playerSticky__infos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  margin-right: 7.3rem;
+}
+
+.playerSticky__track {
+  margin-top: .5rem;
+  color: $color-secondary;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2em;
+}
+
+.playerSticky__referer {
+  font-size: .9rem;
+  line-height: 1.2em;
+}
+
+.playerSticky .playerProgress {
+  margin: .5rem 0;
+}
+
+.playerSticky .playerProgress__timecode {
+  display: none;
+}
+
+.playerSticky .playerProgress__progressBg,
+.playerSticky .playerProgress__progressBgProgress,
+.playerSticky .playerProgress__progressInput {
+  height: .2rem;
+}
+
+.playerSticky .playerProgress__progressInput::range-lower {
+  height: .2rem;
+}

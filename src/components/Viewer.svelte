@@ -23,8 +23,7 @@
         </button>
         {/if}
     </div>
-    {#if !large}
-    <div class="playerMini">
+    <div class="playerMini" class:hidden="{large}">
         <div class="playerCover" class:placeholder={!$current}>
             {#if $current}
                 <img
@@ -41,7 +40,6 @@
             {/if}
         </div>
     </div>
-    {/if}
 
     <Progress
         duration={duration}
@@ -65,6 +63,33 @@
 </div>
 
 
+<!-- Sticky player -->
+<div class="playerSticky" class:hidden={!sticky}>
+    <div class="container">
+        {#if $current}
+            <div class="playerSticky__cover">
+                <img
+                    class="playerSticky__coverImg"
+                    src={'https://img.youtube.com/vi/' + $current.media.credentials.id + '/mqdefault.jpg'}
+                    alt="cover"
+                >
+            </div>
+            <Controls large={false}></Controls>
+            <div class="playerSticky__infos">
+                <div class="playerSticky__track">{$current.media.title}</div>
+                <Progress
+                    duration={duration}
+                    currentTime={currentTime}
+                    ready={ready}
+                    on:input={event => updateCurrentTime(event.target.value, false)}
+                    on:change={event => updateCurrentTime(event.target.value, true)}
+                ></Progress>
+                <div class="playerSticky__referer">shared by <span class="playerTrack__username">{$current.referer.username}</div>
+            </div>
+        {/if}
+    </div>
+</div>
+
 
 <script>
     import { getContext } from 'svelte'
@@ -76,6 +101,7 @@
     import Progress from '/components/player/Progress'
 
     export let large
+    export let sticky
 
     const paused = getContext('paused')
     const volume = getContext('volume')
@@ -102,4 +128,5 @@
     const switchBigPlayer = () => {
         large = !large
     }
+
 </script>

@@ -5,8 +5,10 @@
 <div class="app container">
     <Header></Header>
 
-    <section class="viewer">
-        <Viewer large={large}></Viewer>
+    <section class="viewer" bind:this={viewerEl}>
+        <div class="container">
+            <Viewer large={large} sticky={sticky}></Viewer>
+        </div>
     </section>
 
     <section class="queue">
@@ -18,7 +20,7 @@
 </div>
 
 <script>
-    import { setContext } from 'svelte'
+    import { setContext, onMount } from 'svelte'
     import Header from '/components/layout/Header.svelte'
     import Footer from '/components/layout/Footer.svelte'
     import Queue from '/components/Queue.svelte'
@@ -29,6 +31,8 @@
 
     export let share
     export let large
+    let viewerEl
+    let sticky
 
     const cache = new DeepSet()
 
@@ -135,4 +139,15 @@
     $: if ($queue.length === 1 && $next != null && $current == null) {
         select($next)
     }
+
+    onMount(() => {
+        const stickyObserver = new IntersectionObserver( 
+            ([e]) => {
+                sticky = (e.intersectionRatio === 0) 
+            },
+            {threshold: [0]}
+        )
+
+        stickyObserver.observe(viewerEl)
+    })
 </script>
