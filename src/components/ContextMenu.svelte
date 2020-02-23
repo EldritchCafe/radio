@@ -18,7 +18,7 @@
                             <input type="checkbox" id="bigplayer_active" bind:checked={isBigPlayer}>
                             <label for="bigplayer_active">active big player</label>
                         </div>
-                        <button class="modalShare__copy" on:click={() => copyUrl()}>copy</button>
+                        <button class="modalShare__copy" on:click={() => copyUrl()}>{ copied ? 'copied' : 'copy' }</button>
                     </div>
                 </div>
             </div>
@@ -35,6 +35,8 @@
 
     let open = false
     let isBigPlayer = false
+    let copied = false
+
     $: shareUrlInput = track.shareUrl + (isBigPlayer ? '?large' : '')
 
     const closeMenu = getContext('closeMenu')
@@ -50,5 +52,7 @@
 
     function copyUrl () {
         copy(shareUrlInput)
+        copied = true
+        setTimeout(() => copied = false, 2000)
     }
 </script>
