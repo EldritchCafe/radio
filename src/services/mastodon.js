@@ -1,7 +1,3 @@
-import Observable from 'core-js-pure/features/observable'
-import getUrls from 'get-urls'
-import { urlsToMedia } from '/services/misc.js'
-
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 
 function parseLinkHeader(linkHeader) {
