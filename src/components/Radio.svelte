@@ -6,9 +6,7 @@
     <Header></Header>
 
     <section class="viewer" bind:this={viewerEl}>
-        <div class="container">
-            <Viewer large={large} sticky={sticky}></Viewer>
-        </div>
+        <Viewer large={large} sticky={sticky}></Viewer>
     </section>
 
     <section class="queue">
