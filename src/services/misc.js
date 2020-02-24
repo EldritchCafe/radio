@@ -25,6 +25,7 @@ export const queue = () => {
 
     const enqueue = f => {
         promise = promise.then(tap(f))
+        return promise
     }
 
     return { enqueue, run: deferred.resolve }
@@ -89,6 +90,7 @@ export async function* tracksIterator(refererGenerator, cache) {
                     media: {
                         title: metadata.title,
                         url: mediaUrl,
+                        cover: `https://img.youtube.com/vi/${mediaCredentials.id}/mqdefault.jpg`,
                         credentials: mediaCredentials
                     }
                 }

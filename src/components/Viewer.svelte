@@ -2,16 +2,18 @@
     <div class="playerBig__player" class:placeholder={!ready} class:hidden={!large}>
         {#if $current}
         <YoutubePlayer
-            id={$current ? $current.media.credentials.id : null}
+            bind:this={player}
+            id={$current.media.credentials.id}
             class="playerBig__iframe"
             paused={$paused}
             volume={$volume}
-            bind:ready
-            bind:ended
-            bind:error
-            bind:currentTime
-            bind:duration
-            bind:seek={seek}
+            on:canplay={onCanPlay}
+            on:play={onPlay}
+            on:pause={onPause}
+            on:timeupdate={onTimeUpdate}
+            on:durationchange={onDurationChange}
+            on:ended={onEnded}
+            on:error={onError}
         ></YoutubePlayer>
         <div class="playerBig__overlay" on:click={() => $paused = !$paused}></div>
         <button
@@ -28,7 +30,7 @@
             {#if $current}
                 <img
                     class="playerCover__img"
-                    src={'https://img.youtube.com/vi/' + $current.media.credentials.id + '/mqdefault.jpg'}
+                    src={$current.media.cover}
                     alt="cover"
                 >
                 <button
@@ -42,11 +44,11 @@
     </div>
 
     <Progress
-        duration={duration}
         currentTime={currentTime}
+        duration={duration}
         ready={ready}
-        on:input={event => updateCurrentTime(event.target.value, false)}
-        on:change={event => updateCurrentTime(event.target.value, true)}
+        on:input={event => seek(event.target.value, true)}
+        on:change={event => seek(event.target.value, true)}
     ></Progress>
 
     <div class="playerTrack">
@@ -81,8 +83,8 @@
                     duration={duration}
                     currentTime={currentTime}
                     ready={ready}
-                    on:input={event => updateCurrentTime(event.target.value, false)}
-                    on:change={event => updateCurrentTime(event.target.value, true)}
+                    on:input={event => seek(event.target.value, true)}
+                    on:change={event => seek(event.target.value, true)}
                 ></Progress>
                 <div class="playerSticky__referer">shared by <span class="playerTrack__username">{$current.referer.username}</div>
             </div>
@@ -103,6 +105,8 @@
     export let large
     export let sticky
 
+    let player
+
     const paused = getContext('paused')
     const volume = getContext('volume')
     const current = getContext('current')
@@ -110,23 +114,43 @@
     const selectNext = getContext('selectNext')
 
     let ready = null
-    let ended = null
-    let error = null
     let currentTime = null
     let duration = null
-    let seek = null
 
-    $: if (ended || error) {
+    const onCanPlay = () => {
+        ready = true
+    }
+
+    const onPlay = () => {
+        $paused = false
+    }
+
+    const onPause = () => {
+        $paused = true
+    }
+
+    const onTimeUpdate = event => {
+        currentTime = event.detail
+    }
+
+    const onDurationChange = event => {
+        duration = event.detail
+    }
+
+    const onEnded = () => {
         selectNext()
     }
 
-    const updateCurrentTime = (seconds, seekAhead) => {
-        seek(seconds, seekAhead)
-        currentTime = seconds
+    const onError = event => {
+        console.error(event.detail)
+        selectNext()
+    }
+
+    const seek = (seconds, seekAhead) => {
+        player.seek(seconds, seekAhead)
     }
 
     const switchBigPlayer = () => {
         large = !large
     }
-
 </script>

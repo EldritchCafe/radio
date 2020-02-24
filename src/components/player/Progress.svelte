@@ -10,7 +10,7 @@
             value={value}
             on:input
             on:change
-            disabled={currentTime === null || duration === null}
+            disabled={disabled}
         >
     </div>
     <div class="playerProgress__timecode">
@@ -21,13 +21,16 @@
 <script>
     import { secondsToElapsedTime } from '/services/misc.js'
 
-    export let duration
-    export let currentTime
     export let ready
+    export let currentTime
+    export let duration
 
     $: value = currentTime != null ? currentTime : 0
-    $: max = duration != null ? duration : 100
-    $: currentPercent = currentTime != null ? (currentTime / duration) * 100 : 0
+    $: max = duration != null ? duration : 0
+    $: disabled = currentTime == null || duration == null
+
     $: currentTimeText = currentTime != null ? secondsToElapsedTime(currentTime) : '--:--'
     $: durationText = duration != null ? secondsToElapsedTime(duration) : '--:--'
+
+    $: currentPercent = currentTime != null ? (currentTime / duration) * 100 : 0
 </script>
