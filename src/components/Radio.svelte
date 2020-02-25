@@ -23,7 +23,7 @@
     import Footer from '/components/layout/Footer.svelte'
     import Queue from '/components/Queue.svelte'
     import Viewer from '/components/Viewer.svelte'
-    import { get, writable, writableLocalStorage, derived, scan, wait, startWith, distinct } from '/services/store.js'
+    import { get, writable, writableStorage, derived, scan, wait, startWith } from '/services/store.js'
     import { radioIterator, radioShareIterator } from '/services/radio.js'
     import DeepSet from '/services/deep-set.js'
 
@@ -34,9 +34,9 @@
 
     const cache = new DeepSet()
 
-    const domain = writableLocalStorage('domain', 'eldritch.cafe')
+    const domain = writableStorage(localStorage, 'domain', 'eldritch.cafe')
 
-    const hashtags = writableLocalStorage('hashtags', [
+    const hashtags = writableStorage(localStorage, 'hashtags', [
         'np',
         'nowplaying',
         'tootradio',
@@ -44,7 +44,7 @@
     ])
 
     const paused = writable(true)
-    const volume = writableLocalStorage('volume', 100)
+    const volume = writableStorage(localStorage, 'volume', 100)
 
     const current = writable(null)
     const enqueueing = writable(false)
@@ -66,22 +66,28 @@
     }, null)
 
     const next = derived([iterator, current], ([$iterator, $current]) => ({ $iterator, $current }))
-        .pipe(scan(($nextPromise, { $iterator, $current }) => {
-            return $nextPromise.then($next => {
-                if ($next == null || $next === $current) {
-                    enqueueing.set(true)
-                    return $iterator.next().then(({ done, value }) => {
-                        enqueueing.set(false)
-                        return value
-                    }).catch(console.error)
-                } else {
-                    return $nextPromise
-                }
+        .pipe(source => {
+            let $next = null
+
+            return writable(undefined, set => {
+                source.subscribe(({ $iterator, $current }) => {
+                    if ($current !== null && $next === $current) {
+                        $next = null
+                        set($next)
+                    }
+
+                    if ($next === null) {
+                        enqueueing.set(true)
+
+                        $iterator.next().then(({ done, value }) => {
+                            enqueueing.set(false)
+                            $next = value
+                            set($next)
+                        }).catch(console.error)
+                    }
+                })
             })
-        }, Promise.resolve(null)))
-        .pipe(wait(x => x))
-        // distinct but with strict check
-        .pipe(distinct())
+        })
         .pipe(startWith(null))
 
 
@@ -139,9 +145,9 @@
     }
 
     onMount(() => {
-        const stickyObserver = new IntersectionObserver( 
+        const stickyObserver = new IntersectionObserver(
             ([e]) => {
-                sticky = (e.intersectionRatio === 0) 
+                sticky = (e.intersectionRatio === 0)
             },
             {threshold: [0]}
         )
