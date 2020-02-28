@@ -1,6 +1,6 @@
 <header class="header">
     <div class="header__side">
-        <button class="header__sideBtn">About</button>
+        <About></About>
     </div>
     <h1 class="header__title">
         <a class="header__titleLink" href="/"><img src="{ logo }" alt="Eldritch Radio"></a>
@@ -12,4 +12,5 @@
 
 <script>
     import logo from '/assets/img/logo.svg'
+    import About from '/components/About'
 </script>

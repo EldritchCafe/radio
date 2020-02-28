@@ -1,0 +1,113 @@
+/* ----------------------------------------------------------- */
+/* == Context page */
+/* ----------------------------------------------------------- */
+
+/* Body
+-------------------------------------------------------------- */
+
+.contextEnabled {
+  position: fixed;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+/* Context
+-------------------------------------------------------------- */
+
+.context {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  overflow-y: auto;
+  padding: 2rem 0;
+  width: 100%;
+  height: 100%;
+  background-color: $color-bg;
+}
+
+/* Head
+-------------------------------------------------------------- */
+
+.context-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rem 0;
+}
+
+.context-name {
+  margin: 0;
+  color: $color-primary;
+  font-weight: bold;
+  font-size: 2.4rem;
+  line-height: 1.16em;
+}
+
+.context-close {
+  margin-right: -.2rem;
+  padding: .2rem;
+  border: none;
+  border-radius: .3rem;
+  background: none;
+}
+
+.context-close__icon {
+  padding: 1.1rem;
+  border-radius: .3rem;
+  background-color: $color-grey-3;
+  color: rgba($color-primary, .8);
+  font-size: 0;
+}
+
+.context-close__label {
+  margin-top: .4rem;
+  color: rgba($color-primary, .8);
+  font-size: 1.2rem;
+}
+
+/* Content
+-------------------------------------------------------------- */
+
+.context-content {
+  padding-bottom: 8rem;
+  color: $color-primary;
+  font-size: 1.6rem;
+  line-height: 1.55em;
+}
+
+.context-content a {
+  text-decoration: underline;
+}
+
+.context-content .txtbig {
+  font-size: 1.8rem;
+}
+
+.context-content hr {
+  position: relative;
+  margin: 4rem 0;
+  height: .1rem;
+  border: none;
+  background: #d8d8d8;
+}
+
+.context-content hr::before {
+  position: absolute;
+  top: -1.3rem;
+  left: calc(50% - 1.5rem);
+  width: 3rem;
+  height: 2.7rem;
+  background: $color-bg no-repeat url("/assets/img/separator-tentacle.svg");
+  background-size: 100% 100%;
+  content: "";
+}
+
+.context-content h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: $color-secondary;
+  font-weight: bold;
+  font-size: 1.6rem;
+}
