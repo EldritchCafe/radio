@@ -3,4 +3,21 @@
 /* ----------------------------------------------------------- */
 
 @media (max-width: $xsmall) {
+  /* Player
+    -------------------------------------------------------------- */
+
+  .player {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .playerMini {
+    align-self: center;
+    margin-bottom: 2rem;
+    width: 16rem;
+  }
+
+  .track--active::before {
+    display: none;
+  }
 }
