@@ -1,0 +1,41 @@
+/* ----------------------------------------------------------- */
+/* == Settings page */
+/* ----------------------------------------------------------- */
+
+.settings {
+  padding-bottom: 4rem;
+}
+
+.settings-line {
+  display: flex;
+  margin-bottom: 4rem;
+  min-width: 0;
+}
+
+.settings-main {
+  flex-grow: 1;
+  font-size: 1.4rem;
+}
+
+/* Side
+-------------------------------------------------------------- */
+
+.settings-side {
+  flex-shrink: 0;
+  margin-right: 2rem;
+  width: 16rem;
+}
+
+.settings-side__title {
+  margin-bottom: .5rem;
+  color: $color-secondary;
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 1.55em;
+}
+
+.settings-side__subtitle {
+  color: rgba($color-primary, .8);
+  font-size: 1.3rem;
+  line-height: 1.38em;
+}

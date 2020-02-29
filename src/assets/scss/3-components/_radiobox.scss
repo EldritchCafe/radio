@@ -14,6 +14,7 @@
   width: 100%;
   border: $input-border;
   border-radius: $input-border-radius;
+  background: $input-background-color;
 }
 
 .radiobox--full {
@@ -32,21 +33,17 @@
   align-items: center;
   flex-grow: 1;
   margin: 0;
-  padding: 1rem 1.8rem;
+  padding: .5rem 1rem;
   min-height: 4rem;
   width: 50%;
+  border-radius: $input-border-radius;
   text-align: center;
+  white-space: nowrap;
   font-weight: normal;
-  transition: all .05s ease-in;
+  line-height: 1.1em;
+  transition: all .1s ease-in;
 }
 
-.radiobox input:first-child + label {
-  border-radius: ($input-border-radius - .2rem) 0 0 ($input-border-radius - .2rem);
-}
-
-.radiobox label:last-child {
-  border-radius: 0 ($input-border-radius - .2rem) ($input-border-radius - .2rem) 0;
-}
 
 /* Checked state */
 

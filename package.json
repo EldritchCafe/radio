@@ -34,7 +34,8 @@
     "route-parser": "0.0.5",
     "svelte-pipeable-store": "^1.0.3",
     "svelte-portal": "^0.1.0",
-    "svelte-routing": "^1.4.0"
+    "svelte-routing": "^1.4.0",
+    "svelte-tags-input": "^1.0.16"
   },
   "staticFiles": {
     "staticPath": "public",

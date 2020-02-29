@@ -10,7 +10,7 @@
 
 $input-border-radius: .3rem;
 $input-border: .1rem solid #d8d8d8;
-$input-background-color: #fff;
+$input-background-color: #f1f1f1;
 $input-hover: 5%;
 $input-placeholder-color: #c4c1be;
 $input-error: #ff3860;
@@ -109,6 +109,8 @@ input {
   border: $input-border;
   border-radius: $input-border-radius;
   background: $input-background-color;
+  color: $color-secondary;
+  line-height: 1.3em;
 }
 
 input[readonly] {

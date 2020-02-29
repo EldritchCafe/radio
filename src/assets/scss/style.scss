@@ -82,6 +82,7 @@
 // --------------------------------------------------------------
 
 @import "6-pages/context";
+@import "6-pages/settings";
 
 
 // --------------------------------------------------------------
@@ -91,7 +92,7 @@
 // Tips: load vendor from your package manager and override CSS here (e.g. o-vendor-name.scss)
 // In this context, "o" means "override" and you can use it as a convention.
 
-// @import "7-vendors/o-vendor.scss";
+@import "7-vendors/o-tags.scss";
 
 
 // --------------------------------------------------------------

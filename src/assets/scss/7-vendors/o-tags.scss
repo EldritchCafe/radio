@@ -1,0 +1,42 @@
+/* ----------------------------------------------------------- */
+/* == tags input override */
+/* ----------------------------------------------------------- */
+div.svelte-tags-input-layout:nth-child(n) {
+  padding-right: 2rem;
+  padding-left: 1.5rem;
+  border: $input-border;
+  border-radius: $input-border-radius;
+  background: $input-background-color;
+}
+
+div.svelte-tags-input-layout:nth-child(n):hover {
+  border: $input-border;
+}
+
+input.svelte-tags-input:nth-child(n) {
+  padding: .35rem .5rem;
+  min-width: 0;
+  box-shadow: none;
+  font-family: inherit;
+  line-height: 1.5em;
+}
+
+span.svelte-tags-input-tag:nth-child(n) {
+  padding: 0;
+  padding-left: .9rem;
+  background-color: $color-primary;
+  font-size: 1.3rem;
+  font-family: inherit;
+}
+
+span.svelte-tags-input-tag-remove:nth-child(n) {
+  margin-left: .3rem;
+  padding: .5rem;
+  padding-left: .5rem;
+  font-size: 1.6rem;
+  line-height: 1em;
+}
+
+span.svelte-tags-input-tag-remove:hover {
+  background-color: rgba(#000, .3);
+}
