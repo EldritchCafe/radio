@@ -2,6 +2,10 @@ import getUrls from 'get-urls'
 import { execPipe, asyncFilter, asyncMap, map, take, filter, asyncFlatMap, toArray } from 'iter-tools'
 import { share } from '/routes.js'
 
+const intersection = (xs, ys) => xs.filter(x => ys.includes(x))
+const difference = (xs, ys) => xs.filter(x => !ys.includes(x))
+const symmetricDifference = (xs, ys) => [...difference(xs, ys), ...difference(ys, xs)]
+
 export const tap = f => x => {
     f(x)
     return x

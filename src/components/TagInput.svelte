@@ -14,14 +14,19 @@
 
     $: tags = value
 
+    const update = () => {
+        value = tags
+        dispatch('change', tags)
+    }
+
     const add = tag => {
         tags = [...tags, tag]
-        dispatch('change', tags)
+        update()
     }
 
     const remove = index => {
         tags = [...tags.slice(0, index), ...tags.slice(index + 1)]
-        dispatch('change', tags)
+        update()
     }
 
     const onKeyDown = event => {
