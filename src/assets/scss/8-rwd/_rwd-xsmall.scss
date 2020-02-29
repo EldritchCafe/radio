@@ -20,4 +20,26 @@
   .track--active::before {
     display: none;
   }
+
+  .playerSticky .controls__volume,
+  .playerSticky .playerProgress,
+  .playerSticky__referer {
+    display: none;
+  }
+
+  .playerSticky__cover {
+    margin-right: 1rem;
+  }
+
+  .playerSticky .controls {
+    margin-right: 1rem;
+  }
+
+  .playerSticky .controls__prevnext {
+    display: none;
+  }
+
+  .playerSticky__infos {
+    margin-right: 0;
+  }
 }
