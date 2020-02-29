@@ -17,9 +17,7 @@
                 <div class="settings-side__subtitle">What hashtags are fetched</div>
             </div>
             <div class="settings-main">
-                <Tags
-                    allowPaste={true}
-                />
+                <TagInput on:change={e => a = e.detail} value={a}/>
             </div>
         </div>
         <div class="settings-line">
@@ -48,7 +46,10 @@
 <script>
     import Portal from 'svelte-portal'
     import ContextPage from '/components/ContextPage'
-    import Tags from "svelte-tags-input";
+    import TagInput from '/components/TagInput'
+
+    let a = ['I', 'love', 'u']
+    $: console.log(a)
 
     let open = false
 
