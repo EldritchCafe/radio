@@ -5,17 +5,18 @@
     import { loadIframeApi, STATE } from '/services/youtube.js'
     import { queue } from '/services/misc.js'
 
-    let element
-    let player
-    let animationFrameId
-
-    let currentTime
-    let duration
-
     // input props
     export let id
     export let paused
     export let volume
+
+    let element
+    let player
+    let animationFrameId
+
+    let loaded = false
+    let currentTime = null
+    let duration = null
 
     const dispatch = createEventDispatcher()
 
@@ -28,8 +29,11 @@
     const { enqueue, run } = queue()
 
     export const load = (id) => enqueue((player) => {
+        loaded = false
         currentTime = null
         duration = null
+
+        dispatch('loadstart')
 
         player.cueVideoById(id)
 
@@ -77,23 +81,30 @@
                     break
 
                 case STATE.PLAYING:
-                    dispatch('play')
-
                     const newDuration = player.getDuration()
 
                     if (duration !== newDuration) {
                         duration = newDuration
-                        dispatch('durationchange', duration)
+                    }
+
+                    if (loaded) {
+                        dispatch('play')
                     }
 
                     break
 
                 case STATE.PAUSED:
-                    dispatch('pause')
+                    if (loaded) {
+                        dispatch('pause')
+                    }
 
                     break
 
                 case STATE.CUED:
+                    if (!loaded) {
+                        loaded = true
+                    }
+
                     dispatch('canplay')
 
                     break

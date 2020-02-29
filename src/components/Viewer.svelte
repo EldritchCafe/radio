@@ -7,6 +7,7 @@
             class="playerBig__iframe"
             paused={$paused}
             volume={$volume}
+            on:loadstart={onLoadStart}
             on:canplay={onCanPlay}
             on:play={onPlay}
             on:pause={onPause}
@@ -113,20 +114,24 @@
     const loading = getContext('loading')
     const selectNext = getContext('selectNext')
 
-    let ready = null
+    let ready = false
     let currentTime = null
     let duration = null
+
+    const onLoadStart = () => {
+        ready = false
+    }
 
     const onCanPlay = () => {
         ready = true
     }
 
     const onPlay = () => {
-        // $paused = false
+        $paused = false
     }
 
     const onPause = () => {
-        // $paused = true
+        $paused = true
     }
 
     const onTimeUpdate = event => {
