@@ -1,7 +1,16 @@
 /* ----------------------------------------------------------- */
-/* == tags input override */
+/* == tags input */
 /* ----------------------------------------------------------- */
-div.svelte-tags-input-layout:nth-child(n) {
+/* main */
+
+
+/* svelte-tags-input-layout */
+
+.svelte-tags-input-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0 .5rem .5rem .5rem;
   padding-right: 2rem;
   padding-left: 1.5rem;
   border: $input-border;
@@ -9,34 +18,49 @@ div.svelte-tags-input-layout:nth-child(n) {
   background: $input-background-color;
 }
 
-div.svelte-tags-input-layout:nth-child(n):hover {
-  border: $input-border;
-}
+/* svelte-tags-input */
 
-input.svelte-tags-input:nth-child(n) {
+.svelte-tags-input {
+  flex: 1;
+  margin: 0;
+  margin-top: 5px;
   padding: .35rem .5rem;
   min-width: 0;
+  border: none;
   box-shadow: none;
-  font-family: inherit;
   line-height: 1.5em;
 }
 
-span.svelte-tags-input-tag:nth-child(n) {
+.svelte-tags-input:focus {
+  outline: 0;
+}
+
+/* svelte-tags-input-tag */
+
+.svelte-tags-input-tag {
+  display: flex;
+  margin-top: .5rem;
+  margin-right: .5rem;
   padding: 0;
   padding-left: .9rem;
+  border-radius: .2rem;
   background-color: $color-primary;
+  color: #fff;
+  list-style: none;
+  white-space: nowrap;
   font-size: 1.3rem;
   font-family: inherit;
 }
 
-span.svelte-tags-input-tag-remove:nth-child(n) {
+.svelte-tags-input-tag-remove {
   margin-left: .3rem;
   padding: .5rem;
   padding-left: .5rem;
   font-size: 1.6rem;
   line-height: 1em;
+  cursor: pointer;
 }
 
-span.svelte-tags-input-tag-remove:hover {
+.svelte-tags-input-tag-remove:hover {
   background-color: rgba(#000, .3);
 }

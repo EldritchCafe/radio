@@ -48,7 +48,7 @@
     import ContextPage from '/components/ContextPage'
     import TagInput from '/components/TagInput'
 
-    let a = ['I', 'love', 'u']
+    let a = ['np', 'tootradio', 'pouetradio']
     $: console.log(a)
 
     let open = false

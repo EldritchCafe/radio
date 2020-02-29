@@ -1,9 +1,8 @@
-<div class="">
+<div class="svelte-tags-input-layout">
     {#each tags as tag, index}
-        <span>{tag} <span class="" on:click={() => remove(index)}>×</span></span>
+        <span class="svelte-tags-input-tag">{tag} <span class="svelte-tags-input-tag-remove" on:click={() => remove(index)}>×</span></span>
     {/each}
-
-    <input type="text" on:keydown={onKeyDown} />
+    <input type="text" class="svelte-tags-input" on:keydown={onKeyDown} />
 </div>
 
 <script>
