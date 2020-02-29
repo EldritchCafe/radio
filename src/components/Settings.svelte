@@ -1,7 +1,7 @@
 <button class="header__sideBtn" on:click={() => openPage()}>Settings</button>
 <Portal target="{document.body}">
     <ContextPage name="Settings" open={open} on:close={closePage}>
-    <div class="settings">
+    <form class="settings">
         <div class="settings-line">
             <div class="settings-side">
                 <div class="settings-side__title">Instance</div>
@@ -40,7 +40,8 @@
                 </div>
             </div>
         </div>
-    </div>
+        <button class="btn btn--primary w100">Save the changes</button>
+    </form>
     </ContextPage>
 </Portal>
 
@@ -49,7 +50,7 @@
     import ContextPage from '/components/ContextPage'
     import Tags from "svelte-tags-input";
 
-    let open = true
+    let open = false
 
     let openPage = () => {
         open = true
