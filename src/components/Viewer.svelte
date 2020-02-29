@@ -122,11 +122,11 @@
     }
 
     const onPlay = () => {
-        $paused = false
+        // $paused = false
     }
 
     const onPause = () => {
-        $paused = true
+        // $paused = true
     }
 
     const onTimeUpdate = event => {
