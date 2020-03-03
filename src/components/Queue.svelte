@@ -27,8 +27,8 @@
 
     <div class="queue__section">
         <div class="queue__sectionTitle">History</div>
-        {#each history as track}
-            <div class="track" class:track--active={track === $current} class:track--playing={!$paused}>
+        {#each history as track, i (track.referer.url)}
+            <div class="track track--history" class:track--active={track === $current} class:track--playing={!$paused}>
                 <div class="track__main" on:click={() => select(track)}>
                     <div class="track__title">{track.media.title}</div>
                     <div class="track__subtitle">

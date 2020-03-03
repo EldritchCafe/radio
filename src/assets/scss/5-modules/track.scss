@@ -7,6 +7,20 @@
   display: flex;
   margin-right: -1rem;
   padding: 1rem 0;
+  transform-origin: center;
+  animation: trackIn .3s;
+}
+
+@keyframes trackIn {
+  from {
+    opacity: 0;
+    transform: scale(.7, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .track--active::before {
@@ -34,6 +48,7 @@
 
 .track__title {
   overflow: hidden;
+  min-height: 1.14em;
   color: $color-secondary;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -47,8 +62,10 @@
 
 .track__subtitle {
   margin-top: .2rem;
+  min-height: 1.5em;
   color: $color-grey-1;
   font-size: 1.2rem;
+  line-height: 1.5em;
 }
 
 .track__username {
