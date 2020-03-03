@@ -9,15 +9,17 @@
 
 $notif-success: #00d1b2;
 $notif-warning: #ffdd57;
-$notif-error: #ff3860;
+$notif-error: rgba(#da0000, .15);
 
 /* ----------------------------------------------------------- */
 /* == module */
 /* ----------------------------------------------------------- */
 
 .notif {
-  padding: 1em;
-  border-radius: 4px;
+  margin-top: .5rem;
+  padding: .5em 1em;
+  border-radius: .3rem;
+  font-size: 1.3rem;
 }
 
 .notif--success {
@@ -32,5 +34,5 @@ $notif-error: #ff3860;
 
 .notif--error {
   background-color: $notif-error;
-  color: #fff;
+  color: #9e0000;
 }

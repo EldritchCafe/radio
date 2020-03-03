@@ -9,7 +9,8 @@
                 <div class="settings-side__subtitle">The mastodon instance from the toods are fetched</div>
             </div>
             <div class="settings-main">
-                <input class="f-size-full" type="text" id="domain" name="domain" on:change={handleChange} bind:value={$form.domain}>
+                <input class="f-size-full error" type="text" id="domain" name="domain" on:change={handleChange} bind:value={$form.domain}>
+                <div class="notif notif--error">Le format n'est pas bon, déso</div>
             </div>
             {#if $errors.domain}
                 <span>{$errors.domain}</span>

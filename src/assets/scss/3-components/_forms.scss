@@ -113,6 +113,10 @@ input {
   line-height: 1.3em;
 }
 
+input.error {
+  border-color: #da0000;
+}
+
 input[readonly] {
   background: #f1f1f1;
 }
