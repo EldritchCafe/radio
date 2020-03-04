@@ -18,6 +18,10 @@
   background: $input-background-color;
 }
 
+.svelte-tags-input-layout:focus-within {
+  box-shadow: $focus-ring;
+}
+
 /* svelte-tags-input */
 
 .svelte-tags-input {
@@ -33,6 +37,7 @@
 
 .svelte-tags-input:focus {
   outline: 0;
+  box-shadow: none;
 }
 
 /* svelte-tags-input-tag */
