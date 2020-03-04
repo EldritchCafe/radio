@@ -7,8 +7,9 @@
 /* == configuration */
 /* ----------------------------------------------------------- */
 
-$notif-success: #00d1b2;
-$notif-warning: #ffdd57;
+$notif-info: rgba(#0064da, .15);
+$notif-success: rgba(#00da64, .15);
+$notif-warning: rgba(#da6900, .15);
 $notif-error: rgba(#da0000, .15);
 
 /* ----------------------------------------------------------- */
@@ -22,14 +23,19 @@ $notif-error: rgba(#da0000, .15);
   font-size: 1.3rem;
 }
 
+.notif--info {
+  background-color: $notif-info;
+  color: #183fc8;
+}
+
 .notif--success {
   background-color: $notif-success;
-  color: #fff;
+  color: #0f4014;
 }
 
 .notif--warning {
   background-color: $notif-warning;
-  color: #fff;
+  color: #402c0f;
 }
 
 .notif--error {
