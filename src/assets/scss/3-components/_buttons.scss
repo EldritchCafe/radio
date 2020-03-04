@@ -42,6 +42,11 @@ $btn-radius: .2rem;
   box-shadow: $focus-ring;
 }
 
+.btn:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
 /* colors
 -------------------------------------------------------------- */
 
