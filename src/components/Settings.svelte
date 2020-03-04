@@ -94,7 +94,7 @@
 
     const hashtagsValue = writable($hashtags)
     const hashtagsState = derived([hashtagsValue], ([$hashtagsValue]) => {
-        if ($hashtagsValue.some(hashtag => !/[a-z0-9]+/i.test(hashtag))) {
+        if ($hashtagsValue.some(hashtag => !/^[a-z0-9]+$/i.test(hashtag))) {
             return { valid: false, error: 'Hashtags can only contains alphanumeric characters.' }
         } else if ($hashtagsValue.length === 0) {
             return { valid: false, error: 'At least one hashtag is required.' }
