@@ -14,19 +14,14 @@
 
     $: tags = value
 
-    const update = () => {
-        value = tags
-        dispatch('change', tags)
-    }
-
     const add = tag => {
         tags = [...tags, tag]
-        update()
+        dispatch('change', tags)
     }
 
     const remove = index => {
         tags = [...tags.slice(0, index), ...tags.slice(index + 1)]
-        update()
+        dispatch('change', tags)
     }
 
     const onKeyDown = event => {
@@ -34,6 +29,12 @@
 
         switch (keyCode) {
             case 13:
+                if (value === '') {
+                    break
+                }
+
+            case 32:
+            case 188:
                 event.preventDefault()
 
                 if (value !== '' && tags.indexOf(value) === -1) {

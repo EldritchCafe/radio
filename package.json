@@ -32,11 +32,9 @@
     "iter-tools": "^7.0.0-rc.0",
     "regenerator-runtime": "^0.13.3",
     "route-parser": "0.0.5",
-    "svelte-forms-lib": "^1.0.4",
     "svelte-pipeable-store": "^1.0.3",
     "svelte-portal": "^0.1.0",
-    "svelte-routing": "^1.4.0",
-    "yup": "^0.28.1"
+    "svelte-routing": "^1.4.0"
   },
   "staticFiles": {
     "staticPath": "public",

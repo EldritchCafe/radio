@@ -9,12 +9,17 @@
                 <div class="settings-side__subtitle">The mastodon instance from the toods are fetched</div>
             </div>
             <div class="settings-main">
-                <input class="f-size-full error" type="text" id="domain" name="domain" on:change={handleChange} bind:value={$form.domain}>
-                <div class="notif notif--error">Le format n'est pas bon, déso</div>
+                <input
+                    class="f-size-full"
+                    type="text" id="domain"
+                    name="domain"
+                    on:change={event => $domainValue = event.target.value}
+                    value={$domainValue}
+                >
+                {#if !$domainState.valid}
+                    <div class="notif notif--error">{$domainState.error}</div>
+                {/if}
             </div>
-            {#if $errors.domain}
-                <span>{$errors.domain}</span>
-            {/if}
         </div>
         <div class="settings-line">
             <div class="settings-side">
@@ -22,11 +27,17 @@
                 <div class="settings-side__subtitle">What hashtags are fetched</div>
             </div>
             <div class="settings-main">
-                <TagInput on:change={handleCustomChange('hashtags')} bind:value={$form.hashtags} />
+                <TagInput
+                    on:change={event => $hashtagsValue = event.detail}
+                    value={$hashtagsValue}
+                />
+                {#if !$hashtagsState.valid}
+                    <div class="notif notif--error">{$hashtagsState.error}</div>
+                {/if}
+                {#if $hashtagsValue.length > 5}
+                    <div class="notif notif--warning">Too many hashtags can impair performances and network consumption.</div>
+                {/if}
             </div>
-            <!-- {#if $errors.hashtags}
-                <span>{$errors.hashtags}{console.log($errors.hashtags)}</span>
-            {/if} -->
         </div>
         <!-- <div class="settings-line">
             <div class="settings-side">
@@ -46,15 +57,14 @@
                 </div>
             </div>
         </div> -->
-        <button class="btn btn--primary w100" type="submit">Save the changes</button>
+        <button class="btn btn--primary w100" type="submit" disabled={!$valid}>Save the changes</button>
     </form>
     </ContextPage>
 </Portal>
 
 <script>
     import { getContext } from 'svelte'
-    import { createForm } from 'svelte-forms-lib'
-    import * as yup from 'yup'
+    import { writable, derived } from 'svelte/store'
     import Portal from 'svelte-portal'
     import ContextPage from '/components/ContextPage'
     import TagInput from '/components/TagInput'
@@ -62,44 +72,49 @@
     const domain = getContext('domain')
     const hashtags = getContext('hashtags')
 
-    const {
-        form,
-        errors,
-        handleChange,
-        handleSubmit
-    } = createForm({
-        initialValues: {
-            domain: $domain,
-            hashtags: $hashtags
-        },
-        // validationSchema: yup.object().shape({
-        //     domain: yup.string()
-        //         .required()
-        //         .trim()
-        //         .test(
-        //             'is-valid-domain',
-        //             '${path} is not a valid domain',
-        //             async domain => (await fetch(`https://${domain}/api/v1/instance`)).status === 200
-        //         ),
-        //     // hashtags: yup.array()
-        //         // .required()
-        //         // .of(yup.string()
-        //         //     .ensure()
-        //         //     .required()
-        //         //     .trim()
-        //         //     .matches('/[a-z0-9]+/i')
-        //         // )
-        //         // .min(1)
-        //         // .min(5)
-        // }),
-        onSubmit: values => {
-            $domain = values.domain
-            $hashtags = values.hashtags
-            location.reload() // for now
+    const domainValue = writable($domain)
+    const domainState = derived([domainValue], async ([$domainValue], set) => {
+        if ($domainValue === '') {
+            set({ valid: false, error: 'A Mastodon instance\'s domain is required.' })
+        } else {
+            try {
+                const response = await fetch(`https://${$domainValue}/api/v1/instance`)
+                const instance = await response.json()
+
+                if (response.ok) {
+                    set({ valid: true, error: null })
+                } else {
+                    set({ valid: false, error: 'Domain is not a mastodon instance.' })
+                }
+            } catch (error) {
+                set({ valid: false, error: 'Network error when accessing domain. This might be an internet access problem or a typing mistake.' })
+            }
+        }
+    }, { valid: false, error: '' })
+
+    const hashtagsValue = writable($hashtags)
+    const hashtagsState = derived([hashtagsValue], ([$hashtagsValue]) => {
+        if ($hashtagsValue.some(hashtag => !/[a-z0-9]+/i.test(hashtag))) {
+            return { valid: false, error: 'Hashtags can only contains alphanumeric characters.' }
+        } else if ($hashtagsValue.length === 0) {
+            return { valid: false, error: 'At least one hashtag is required.' }
+        } else {
+            return { valid: true, error: null }
         }
     })
 
-    const handleCustomChange = name => event => handleChange({ target: { name, value: event.detail } })
+    const valid = derived([domainState, hashtagsState], states => states.every(state => state.valid))
+
+    const handleSubmit = event => {
+        event.preventDefault()
+
+        if ($valid) {
+            $domain = $domainValue
+            $hashtags = $hashtagsValue
+            location.reload() // for now
+        }
+    }
+
 
     let open = false
 
