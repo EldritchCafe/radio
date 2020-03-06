@@ -81,8 +81,14 @@
 
                         $iterator.next().then(({ done, value }) => {
                             enqueueing.set(false)
-                            $next = value
-                            set($next)
+
+                            if (done) {
+                                console.log('done')
+                                set(null)
+                            } else {
+                                $next = value
+                                set($next)
+                            }
                         }).catch(console.error)
                     }
                 })
