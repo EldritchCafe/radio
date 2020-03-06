@@ -116,7 +116,7 @@ export async function* hashtagsTimelineIterator (domain, hashtags) {
             .filter(({ result }) => !result.done)
 
         if (results.length > 0) {
-            const sorted = results.sort((a, b) => b.result.value.referer.date - a.result.value.referrer.date)
+            const sorted = results.sort((a, b) => b.result.value.referer.date - a.result.value.referer.date)
             const { index, result: { value } } = sorted[0]
 
             promises[index] = iterators[index].next()
