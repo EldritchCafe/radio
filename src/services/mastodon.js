@@ -119,7 +119,13 @@ export async function* hashtagsIterator(domain, hashtags) {
             if (buffer.length > 0) {
                 yield buffer.pop()
             } else {
-                yield (await timelineGenerator.next()).value
+                const { done, value } = await timelineGenerator.next()
+
+                if (done) {
+                    break
+                } else {
+                    yield value
+                }
             }
         }
     } finally {
