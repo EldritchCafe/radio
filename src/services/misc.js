@@ -1,10 +1,12 @@
-import getUrls from 'get-urls'
-import { execPipe, asyncFilter, asyncMap, map, take, filter, asyncFlatMap, toArray } from 'iter-tools'
+import { execPipe, asyncFilter, asyncMap } from 'iter-tools'
 import { share } from '/routes.js'
 
 const intersection = (xs, ys) => xs.filter(x => ys.includes(x))
 const difference = (xs, ys) => xs.filter(x => !ys.includes(x))
 const symmetricDifference = (xs, ys) => [...difference(xs, ys), ...difference(ys, xs)]
+
+
+export const mapNullable = (nullable, f) => nullable === null ? nullable : f(nullable)
 
 export const tap = f => x => {
     f(x)
@@ -62,40 +64,19 @@ export async function* tracksIterator(refererGenerator, cache) {
     try {
         yield* execPipe(
             refererGenerator,
-            asyncFilter(({ credentials: { domain, id } }) => notKnow(['referer', 'mastodon', domain, id])),
-            asyncFlatMap(referer => {
-                return execPipe(
-                    referer.content,
-                    getUrls,
-                    map(url => {
-                        const { hostname, pathname, searchParams } = new URL(url)
-
-                        if (['youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(hostname) && searchParams.has('v')) {
-                            return { url, credentials: { type: 'youtube', id: searchParams.get('v') } }
-                        } else if (hostname === 'youtu.be') {
-                            return { url, credentials: { type: 'youtube', id: pathname.substring(1) } }
-                        } else {
-                            return null
-                        }
-                    }),
-                    filter(media => media !== null),
-                    map(({ url, credentials }) => ({ referer, mediaUrl: url, mediaCredentials: credentials })),
-                    take(1),
-                    toArray
-                )
-            }),
-            asyncFilter(({ mediaCredentials: { id }}) => notKnow(['media', 'youtube', id])),
-            asyncMap(async ({ referer, mediaUrl, mediaCredentials }) => {
-                const metadata = await fetchMetadata(mediaCredentials)
+            asyncFilter(({ referer: { credentials: { domain, id } } }) => notKnow(['referer', 'mastodon', domain, id])),
+            asyncFilter(({ partialMedia: { credentials: { id } } }) => notKnow(['media', 'youtube', id])),
+            asyncMap(async ({ referer, partialMedia }) => {
+                const metadata = await fetchMetadata(partialMedia.credentials)
 
                 return {
                     shareUrl: `${location.origin}${share.reverse({ domain: referer.credentials.domain, id: referer.credentials.id })}`,
                     referer,
                     media: {
                         title: metadata.title,
-                        url: mediaUrl,
-                        cover: `https://img.youtube.com/vi/${mediaCredentials.id}/mqdefault.jpg`,
-                        credentials: mediaCredentials
+                        url: partialMedia.url,
+                        cover: `https://img.youtube.com/vi/${partialMedia.credentials.id}/mqdefault.jpg`,
+                        credentials: partialMedia.credentials
                     }
                 }
             })

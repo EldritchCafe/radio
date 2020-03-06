@@ -1,3 +1,7 @@
+import getUrls from 'get-urls'
+import { asyncMap, execPipe, map, findOr } from 'iter-tools'
+import { mapNullable } from '/services/misc.js'
+
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 
 function parseLinkHeader(linkHeader) {
@@ -15,7 +19,11 @@ export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statu
     .then(status => processStatus(domain, status))
 
 export async function* statusIterator({ domain, id }) {
-    yield await fetchStatus(domain, id)
+    const partialTrack = await fetchStatus(domain, id)
+
+    if (partialTrack !== null) {
+        yield partialTrack
+    }
 }
 
 export const hashtagStreamingObservable = (domain, hashtag) => {
@@ -63,7 +71,8 @@ export const hashtagsStreamingObservable = (domain, hashtags) => {
     })
 }
 
-export async function* hashtagTimelineIterator (domain, hashtag) {
+
+export async function* hashtagTimelineStatusesIterator (domain, hashtag) {
     let nextLink = `https://${domain}/api/v1/timelines/tag/${hashtag}?limit=40`
 
     while (nextLink) {
@@ -73,13 +82,29 @@ export async function* hashtagTimelineIterator (domain, hashtag) {
             ? parseLinkHeader(response.headers.get('link')).get('next')
             : null
 
-        const statuses = await response.json()
-
-        console.log(`Timeline ${domain} #${hashtag} : fetched ${statuses.length} statuses`)
-
-        yield* statuses.map(status => processStatus(domain, status))
+        yield* await response.json()
     }
 }
+
+export const hashtagTimelineIterator = (domain, hashtag) => execPipe(
+    hashtagTimelineStatusesIterator(domain, hashtag),
+    asyncMap(status => processStatus(domain, status)),
+    async function* (xs) {
+        let c = 0
+
+        for await (const x of xs) {
+            if (x === null) {
+                if (++c > 69) {
+                    console.log(`Not found any viable media on #${hashtag}.`)
+                    break
+                }
+            } else {
+                c = 0
+                yield x
+            }
+        }
+    }
+)
 
 export async function* hashtagsTimelineIterator (domain, hashtags) {
     const iterators = hashtags.map(hashtag => hashtagTimelineIterator(domain, hashtag))
@@ -91,7 +116,7 @@ export async function* hashtagsTimelineIterator (domain, hashtags) {
             .filter(({ result }) => !result.done)
 
         if (results.length > 0) {
-            const sorted = results.sort((a, b) => b.result.value.date - a.result.value.date)
+            const sorted = results.sort((a, b) => b.result.value.referer.date - a.result.value.referrer.date)
             const { index, result: { value } } = sorted[0]
 
             promises[index] = iterators[index].next()
@@ -134,11 +159,30 @@ export async function* hashtagsIterator(domain, hashtags) {
     }
 }
 
-const processStatus = (domain, status) => ({
-    username: status.account.username,
-    content: status.content,
-    date: new Date(status.created_at),
-    url: status.url,
-    credentials: { type: 'mastodon', domain, id: status.id }
-})
+const processStatus = (domain, status) => mapNullable(findMedia(status), partialMedia => ({
+    referer: {
+        username: status.account.username,
+        content: status.content,
+        date: new Date(status.created_at),
+        url: status.url,
+        credentials: { type: 'mastodon', domain, id: status.id }
+    },
+    partialMedia
+}))
 
+const findMedia = status => execPipe(
+    status.content,
+    getUrls,
+    map(url => {
+        const { hostname, pathname, searchParams } = new URL(url)
+
+        if (['youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(hostname) && searchParams.has('v')) {
+            return { url, credentials: { type: 'youtube', id: searchParams.get('v') } }
+        } else if (hostname === 'youtu.be') {
+            return { url, credentials: { type: 'youtube', id: pathname.substring(1) } }
+        } else {
+            return null
+        }
+    }),
+    findOr(null, x => x !== null)
+)
