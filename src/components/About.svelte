@@ -7,7 +7,7 @@
         <p>The app get all the publics publications that contains a media link and a music hashtag (you can configure it in the Settings). We support only Youtube links for now but more platforms are planned in the future.<br>
         We don’t own the musics rights so the songs are played on the original platform player.</p>
         <h2>How can I get my song be played on the radio?</h2>
-        <p>You have to make a public toot containing who of the hashtags configured on the app and a Youtube link.</p>
+        <p>You have to make a public toot containing one of the hashtags configured on the app and a Youtube link.</p>
         <h2>Can I use the radio on my phone?</h2>
         <p>It’s a webapp so it should be working, however since the Youtube Player allow us to play a song only when you’re on the web and stop when the screen turn off or when you’re on another app, it’s kind of unusable.<br>
         It’s kind of shitty but as long the Youtube have this behavior we don’t see a way to make a great experience for the radio on mobile devices.</p>
