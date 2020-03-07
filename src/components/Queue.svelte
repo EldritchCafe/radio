@@ -1,27 +1,31 @@
 <div>
     <div class="queue__section">
         <div class="queue__sectionTitle">Next song</div>
-        <div class="track">
-            <div class="track__main" on:click={() => select($next)}>
-                <div class="track__title" class:placeholder={!$next && $enqueueing}>
-                    {#if $next}{$next.media.title}{/if}
-                </div>
-                <div class="track__subtitle" class:placeholder={!$next && $enqueueing}>
-                {#if $next}
-                    shared by <span class="track__username">{$next.referer.username}</span> •
-                    <DistanceDate date={$next.referer.date} />
-                {/if}
-                </div>
-            </div>
-            {#if $next}
-                <Popper needOffset={true}>
-                    <button slot="btn" class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
-                    <div slot="content" class="contextMenu__list">
-                        <ContextMenu track={$next}></ContextMenu>
+        {#if $next || $enqueueing}
+            <div class="track">
+                <div class="track__main" on:click={() => select($next)}>
+                    <div class="track__title" class:placeholder={!$next && $enqueueing}>
+                        {#if $next}{$next.media.title}{/if}
                     </div>
-                </Popper>
-            {/if}
-        </div>
+                    <div class="track__subtitle" class:placeholder={!$next && $enqueueing}>
+                    {#if $next}
+                        shared by <span class="track__username">{$next.referer.username}</span> •
+                        <DistanceDate date={$next.referer.date} />
+                    {/if}
+                    </div>
+                </div>
+                {#if $next}
+                    <Popper needOffset={true}>
+                        <button slot="btn" class="track__menu" aria-label="track menu"><IconMenu></IconMenu></button>
+                        <div slot="content" class="contextMenu__list">
+                            <ContextMenu track={$next}></ContextMenu>
+                        </div>
+                    </Popper>
+                {/if}
+            </div>
+        {:else}
+            <div class="notif notif--warning">There is no more song to play. Reload the app or change your hashtags settings to get new songs.</div>
+        {/if}
     </div>
 
 
