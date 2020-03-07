@@ -1,4 +1,4 @@
-<span bind:this={btn} on:click={() => open()}>
+<span bind:this={btn} on:click={() => open()} class="popperMenu">
     <slot name="btn">
         <button>button</button>
     </slot>

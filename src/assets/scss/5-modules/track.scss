@@ -72,10 +72,13 @@
   text-transform: capitalize;
 }
 
+.track .popperMenu {
+  flex-shrink: 0;
+}
+
 .track__menu {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
   margin-left: 1rem;
   padding: 1rem;
   border: none;
