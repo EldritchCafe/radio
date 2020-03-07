@@ -18,7 +18,7 @@ export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statu
     .then(response => response.json())
 
 export async function* statusIterator({ domain, id }) {
-    const partialTrack = await fetchStatus(domain, id)
+    const partialTrack = processStatus(domain, await fetchStatus(domain, id))
 
     if (partialTrack !== null) {
         yield partialTrack

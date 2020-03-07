@@ -50,7 +50,7 @@ export const secondsToElapsedTime = (seconds) => {
         .join(':')
 }
 
-export async function* tracksIterator(refererGenerator, cache) {
+export async function* tracksIterator(partialTrackGenerator, cache) {
     const notKnow = (values) => {
         if (cache.has(values)) {
             console.log(`Drop already processed ${values.join(':')}`)
@@ -63,7 +63,7 @@ export async function* tracksIterator(refererGenerator, cache) {
 
     try {
         yield* execPipe(
-            refererGenerator,
+            partialTrackGenerator,
             asyncFilter(({ referer: { credentials: { domain, id } } }) => notKnow(['referer', 'mastodon', domain, id])),
             asyncFilter(({ partialMedia: { credentials: { id } } }) => notKnow(['media', 'youtube', id])),
             asyncMap(async ({ referer, partialMedia }) => {
@@ -82,7 +82,7 @@ export async function* tracksIterator(refererGenerator, cache) {
             })
         )
     } finally {
-        refererGenerator.return()
+        partialTrackGenerator.return()
     }
 }
 
