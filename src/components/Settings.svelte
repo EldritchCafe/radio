@@ -6,7 +6,7 @@
         <div class="settings-line">
             <div class="settings-side">
                 <div class="settings-side__title">Instance</div>
-                <div class="settings-side__subtitle">The mastodon instance from the toods are fetched</div>
+                <div class="settings-side__subtitle">The mastodon instance from the toots are fetched</div>
             </div>
             <div class="settings-main">
                 <input
