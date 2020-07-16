@@ -196,7 +196,7 @@ const findMedia = status => execPipe(
     map(url => {
         const { hostname, pathname, searchParams } = new URL(url)
 
-        if (['youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(hostname) && searchParams.has('v')) {
+        if (['youtube.com', 'm.youtube.com', 'music.youtube.com', 'invidio.us'].includes(hostname) && searchParams.has('v')) {
             return { url, credentials: { type: 'youtube', id: searchParams.get('v') } }
         } else if (hostname === 'youtu.be') {
             return { url, credentials: { type: 'youtube', id: pathname.substring(1) } }
