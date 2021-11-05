@@ -19,6 +19,7 @@
     "parcel-plugin-static-files-copy": "^2.3.1",
     "parcel-plugin-svelte": "^4.0.5",
     "postcss-input-range": "^4.0.0",
+    "posthtml-expressions": "^1.9.0",
     "sass": "^1.25.0",
     "svelte": "^3.18.2",
     "typescript": "^3.8.2"

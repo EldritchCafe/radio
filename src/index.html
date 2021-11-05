@@ -17,6 +17,11 @@
     <meta name="theme-color" content="#635776">
 </head>
 <body>
+    <if condition="INSTANCE">
+    <script>
+        window.instance = '{{ INSTANCE }}';
+    </script>
+    </if>
     <script src="main.js"></script>
 </body>
 </html>
