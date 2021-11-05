@@ -34,7 +34,7 @@
 
     const cache = new DeepSet()
 
-    const domain = writableStorage(localStorage, 'domain', window.instance || 'eldritch.cafe')
+    const domain = writableStorage(localStorage, 'domain', window.instance)
 
     const hashtags = writableStorage(localStorage, 'hashtags', [
         'np',
