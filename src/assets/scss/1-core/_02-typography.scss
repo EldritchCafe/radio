@@ -1,6 +1,7 @@
 /* ----------------------------------------------------------- */
 /* == typography */
 /* ----------------------------------------------------------- */
+@use 'sass:math';
 
 html {
   font-size: 62.5%;
@@ -9,7 +10,7 @@ html {
 }
 
 body {
-  font-size: $base-font / 10 + em;
+  font-size: math.div($base-font, 10) + em;
   line-height: $line-height;
 }
 

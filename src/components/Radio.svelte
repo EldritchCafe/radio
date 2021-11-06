@@ -19,13 +19,13 @@
 
 <script>
     import { setContext, onMount } from 'svelte'
-    import Header from '/components/layout/Header.svelte'
-    import Footer from '/components/layout/Footer.svelte'
-    import Queue from '/components/Queue.svelte'
-    import Viewer from '/components/Viewer.svelte'
-    import { get, writable, writableStorage, derived, scan, wait, startWith } from '/services/store.js'
-    import { radioIterator, radioShareIterator } from '/services/radio.js'
-    import DeepSet from '/services/deep-set.js'
+    import Header from '/src/components/layout/Header.svelte'
+    import Footer from '/src/components/layout/Footer.svelte'
+    import Queue from '/src/components/Queue.svelte'
+    import Viewer from '/src/components/Viewer.svelte'
+    import { get, writable, writableStorage, derived, scan, wait, startWith } from '/src/services/store.js'
+    import { radioIterator, radioShareIterator } from '/src/services/radio.js'
+    import DeepSet from '/src/services/deep-set.js'
 
     export let share
     export let large
@@ -34,7 +34,7 @@
 
     const cache = new DeepSet()
 
-    const domain = writableStorage(localStorage, 'domain', window.instance)
+    const domain = writableStorage(localStorage, 'domain', process.env.INSTANCE)
 
     const hashtags = writableStorage(localStorage, 'hashtags', [
         'np',

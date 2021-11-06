@@ -1,6 +1,7 @@
+import Observable from 'core-js-pure/features/observable'
 import getUrls from 'get-urls'
 import { asyncMap, execPipe, map, findOr } from 'iter-tools'
-import { mapNullable } from '/services/misc.js'
+import { mapNullable } from '/src/services/misc.js'
 
 const LINK_RE = /<(.+?)>; rel="(\w+)"/gi
 

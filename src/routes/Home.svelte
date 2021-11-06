@@ -1,5 +1,5 @@
 <Radio share={null} large={false} />
 
 <script>
-    import Radio from '/components/Radio.svelte'
+    import Radio from '/src/components/Radio.svelte'
 </script>

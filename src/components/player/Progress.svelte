@@ -19,7 +19,7 @@
     </div>
 </div>
 <script>
-    import { secondsToElapsedTime } from '/services/misc.js'
+    import { secondsToElapsedTime } from '/src/services/misc.js'
 
     export let ready
     export let currentTime

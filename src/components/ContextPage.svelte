@@ -17,7 +17,7 @@
 
 <script>
 	import { createEventDispatcher } from 'svelte'
-    import Close from '/components/icons/context/close'
+    import Close from '/src/components/icons/context/close'
 
 	const dispatch = createEventDispatcher();
 
@@ -29,7 +29,7 @@
         if (open) {
             const scrollPosition = window.scrollY
             document.body.setAttribute('data-scroll', scrollPosition)
-            document.body.classList.add('contextEnabled')            
+            document.body.classList.add('contextEnabled')
         } else {
             document.body.classList.remove('contextEnabled')
             const scrollPosition = document.body.getAttribute('data-scroll')

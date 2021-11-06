@@ -30,14 +30,14 @@
   left: -2.1rem;
   width: 1rem;
   height: 1rem;
-  background: no-repeat url("/assets/img/playbar.svg");
+  background: no-repeat url("/src/assets/img/playbar.svg");
   background-position: left center;
   background-size: 1rem 1rem;
   content: "";
 }
 
 .track--playing::before {
-  background-image: url("/assets/img/playbar-animate.svg");
+  background-image: url("/src/assets/img/playbar-animate.svg");
 }
 
 .track__main {

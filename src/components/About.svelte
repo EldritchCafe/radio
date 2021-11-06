@@ -18,7 +18,7 @@
 
 <script>
     import Portal from 'svelte-portal'
-    import ContextPage from '/components/ContextPage'
+    import ContextPage from '/src/components/ContextPage'
 
     let open = false
 

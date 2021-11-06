@@ -43,13 +43,13 @@
 
 <script>
     import { getContext } from 'svelte'
-    import Volume from '/components/Volume'
-    import PlayPause from '/components/icons/controls/PlayPause'
-    import Prev from '/components/icons/controls/Prev'
-    import Next from '/components/icons/controls/Next'
-    import IconMenu from '/components/icons/Menu'
-    import Popper from '/components/PopperMenu'
-    import ContextMenu from '/components/ContextMenu'
+    import Volume from '/src/components/Volume'
+    import PlayPause from '/src/components/icons/controls/PlayPause'
+    import Prev from '/src/components/icons/controls/Prev'
+    import Next from '/src/components/icons/controls/Next'
+    import IconMenu from '/src/components/icons/Menu'
+    import Popper from '/src/components/PopperMenu'
+    import ContextMenu from '/src/components/ContextMenu'
 
     const current = getContext('current')
     const paused = getContext('paused')

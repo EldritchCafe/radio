@@ -96,12 +96,12 @@
 
 <script>
     import { getContext } from 'svelte'
-    import Controls from '/components/Controls.svelte'
-    import IconReduce from '/components/icons/player/Reduce.svelte'
-    import IconExpand from '/components/icons/player/Expand.svelte'
-    import IconHeart from '/components/icons/Heart.svelte'
-    import YoutubePlayer from '/components/YoutubePlayer'
-    import Progress from '/components/player/Progress'
+    import Controls from '/src/components/Controls.svelte'
+    import IconReduce from '/src/components/icons/player/Reduce.svelte'
+    import IconExpand from '/src/components/icons/player/Expand.svelte'
+    import IconHeart from '/src/components/icons/Heart.svelte'
+    import YoutubePlayer from '/src/components/YoutubePlayer'
+    import Progress from '/src/components/player/Progress'
 
     export let large
     export let sticky

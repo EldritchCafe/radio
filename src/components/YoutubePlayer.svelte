@@ -2,8 +2,8 @@
 
 <script>
     import { createEventDispatcher, onMount, onDestroy } from 'svelte'
-    import { loadIframeApi, STATE } from '/services/youtube.js'
-    import { queue } from '/services/misc.js'
+    import { loadIframeApi, STATE } from '/src/services/youtube.js'
+    import { queue } from '/src/services/misc.js'
 
     // input props
     export let id

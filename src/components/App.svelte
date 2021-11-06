@@ -6,9 +6,9 @@
 
 <script>
     import { Router, Route } from 'svelte-routing'
-    import { home, share } from '/routes.js'
-    import Home from '/routes/Home.svelte'
-    import Share from '/routes/Share.svelte'
+    import { home, share } from '/src/routes.js'
+    import Home from '/src/routes/Home.svelte'
+    import Share from '/src/routes/Share.svelte'
 
     const pair = (duplex, component) => ({ duplex, component })
 

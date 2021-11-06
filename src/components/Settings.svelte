@@ -66,8 +66,8 @@
     import { getContext } from 'svelte'
     import { writable, derived } from 'svelte/store'
     import Portal from 'svelte-portal'
-    import ContextPage from '/components/ContextPage'
-    import TagInput from '/components/TagInput'
+    import ContextPage from '/src/components/ContextPage'
+    import TagInput from '/src/components/TagInput'
 
     const domain = getContext('domain')
     const hashtags = getContext('hashtags')

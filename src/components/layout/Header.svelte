@@ -11,7 +11,7 @@
 </header>
 
 <script>
-    import logo from '/assets/img/logo.svg'
-    import About from '/components/About'
-    import Settings from '/components/Settings'
+    import logo from '/src/assets/img/logo.svg'
+    import About from '/src/components/About'
+    import Settings from '/src/components/Settings'
 </script>

@@ -1,4 +1,5 @@
 // important: nth-child(n) is used to keep same specificity between grid (equal and unequal)
+@use 'sass:math';
 
 .grid {
   display: flex;
@@ -79,20 +80,20 @@
 
   // with gutter
   @else {
-    $g : $gutter / 2;
+    $g : math.div($gutter, 2);
 
     &>* {
       margin-bottom: $mb;
     }
 
     & > *:nth-child(odd) {
-      $size : ($column1 * 100%) / ($column1 + $column2);
+      $size : math.div($column1 * 100%, $column1 + $column2);
 
       width: calc(#{$size} - #{$g} - .01px); // .01px = $bugfix IE
     }
 
     & > *:nth-child(even) {
-      $size : ($column2 * 100%) / ($column1 + $column2);
+      $size : math.div($column2 * 100%, $column1 + $column2);
 
       margin-left: $gutter;
       width: calc(#{$size} - #{$g} - .01px); // .01px = $bugfix IE

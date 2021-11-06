@@ -1,7 +1,7 @@
 <Radio share={refererCredentials} large={large} />
 
 <script>
-    import Radio from '/components/Radio.svelte'
+    import Radio from '/src/components/Radio.svelte'
 
     export let domain
     export let id

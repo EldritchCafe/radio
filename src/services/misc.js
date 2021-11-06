@@ -1,5 +1,5 @@
 import { execPipe, asyncFilter, asyncMap } from 'iter-tools'
-import { share } from '/routes.js'
+import { share } from '/src/routes.js'
 
 const intersection = (xs, ys) => xs.filter(x => ys.includes(x))
 const difference = (xs, ys) => xs.filter(x => !ys.includes(x))

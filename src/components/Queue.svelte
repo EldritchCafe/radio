@@ -61,10 +61,10 @@
 
 <script>
     import { getContext } from 'svelte'
-    import DistanceDate from '/components/DistanceDate'
-    import IconMenu from '/components/icons/Menu'
-    import Popper from '/components/PopperMenu'
-    import ContextMenu from '/components/ContextMenu'
+    import DistanceDate from '/src/components/DistanceDate'
+    import IconMenu from '/src/components/icons/Menu'
+    import Popper from '/src/components/PopperMenu'
+    import ContextMenu from '/src/components/ContextMenu'
 
     const current = getContext('current')
     const enqueueing = getContext('enqueueing')

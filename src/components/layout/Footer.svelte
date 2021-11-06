@@ -4,5 +4,5 @@
 </footer>
 
 <script>
-    import eldritchSky from '/assets/img/eldritch-sky.svg'
+    import eldritchSky from '/src/assets/img/eldritch-sky.svg'
 </script>

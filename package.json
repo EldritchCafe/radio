@@ -2,43 +2,43 @@
   "name": "eldritch-cafe-radio",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "build": "parcel build src/index.html -d public",
+    "build": "parcel build src/index.html",
     "dev": "parcel src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EldritchCafe/radio.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/preset-env": "^7.8.3",
-    "autoprefixer": "^9.7.4",
-    "parcel": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.3.1",
-    "parcel-plugin-svelte": "^4.0.5",
-    "postcss-input-range": "^4.0.0",
-    "posthtml-expressions": "^1.9.0",
-    "sass": "^1.25.0",
-    "svelte": "^3.18.2",
-    "typescript": "^3.8.2"
-  },
+  "browserslist": "> 0.25%, not dead",
   "dependencies": {
-    "@popperjs/core": "^2.0.6",
+    "@popperjs/core": "^2.10.2",
+    "@swc/helpers": "^0.2.13",
     "copy-to-clipboard": "^3.2.1",
-    "core-js": "^3.6.4",
-    "date-fns": "^2.9.0",
+    "core-js-pure": "^3.19.1",
+    "date-fns": "^2.25.0",
     "get-urls": "^9.2.0",
-    "iter-tools": "^7.0.0-rc.0",
-    "regenerator-runtime": "^0.13.3",
+    "iter-tools": "^7.1.4",
+    "regenerator-runtime": "^0.13.9",
     "route-parser": "0.0.5",
+    "svelte": "^3.44.1",
     "svelte-pipeable-store": "^1.0.3",
     "svelte-portal": "^0.1.0",
-    "svelte-routing": "^1.4.0"
+    "svelte-routing": "^1.6.0",
+    "typescript": "^4.4.4"
   },
-  "staticFiles": {
-    "staticPath": "public",
-    "watcherGlob": "**"
+  "devDependencies": {
+    "@parcel/packager-raw-url": "^2.0.0",
+    "@parcel/transformer-sass": "^2.0.0",
+    "@parcel/transformer-webmanifest": "^2.0.0",
+    "autoprefixer": "^10.4.0",
+    "parcel": "^2.0.0",
+    "parcel-transformer-svelte": "^1.2.3",
+    "postcss": "^8.3.11",
+    "postcss-input-range": "^4.0.0"
   }
 }
