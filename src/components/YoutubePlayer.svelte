@@ -36,10 +36,6 @@
         dispatch('loadstart')
 
         player.cueVideoById(id)
-
-        if (!paused) {
-            player.playVideo()
-        }
     })
 
     export const play = () => enqueue((player) => {
@@ -103,6 +99,10 @@
                 case STATE.CUED:
                     if (!loaded) {
                         loaded = true
+                    }
+
+                    if (!paused) {
+                        player.playVideo()
                     }
 
                     dispatch('canplay')
