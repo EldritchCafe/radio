@@ -101,7 +101,8 @@
   width: 3rem;
   height: 2.7rem;
   background: $color-bg no-repeat url("/src/assets/img/separator-tentacle.svg");
-  background-size: 100% 100%;
+  background-size: auto 100%;
+  background-position: center;
   content: "";
 }
 
