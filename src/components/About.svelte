@@ -12,7 +12,7 @@
         <p>It’s a webapp so it should be working, however since the Youtube Player allows us to play a song only when you’re on the web and stops when the screen turns off or when you’re on another app, it’s kind of unusable.<br>
         It’s kind of shitty but as long Youtube has this behavior we don’t see a way to make a great experience for the radio on mobile devices.</p>
         <h2>How can I contact you? I’ve detected a problem, have an idea, or a kind message.</h2>
-        If you’re a developer you can create an issue on the <a href="https://github.com/EldritchCafe/radio" target="_blank">Github repo</a>. For anything else you can contact the maintainers <a href="https://eldritch.cafe/@milia" target="_blank">Milia</a> & <a href="https://glitch.social/@tixie" target="_blank">Tixie</a> on their Mastodon accounts.
+        If you’re a developer you can create an issue on the <a href="https://github.com/EldritchCafe/radio" target="_blank">Github repo</a>. For anything else you can contact the maintainers <a href="https://mastodon.guerilla.studio/@milia" target="_blank">Milia</a> & <a href="https://mastodon.guerilla.studio/@tixie" target="_blank">Tixie</a> on their Mastodon accounts.
     </ContextPage>
 </Portal>
 
