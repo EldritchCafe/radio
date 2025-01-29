@@ -15,7 +15,7 @@ function parseLinkHeader(linkHeader) {
     return links
 }
 
-export const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statuses/${id}`)
+const fetchStatus = (domain, id) => fetch(`https://${domain}/api/v1/statuses/${id}`)
     .then(response => response.json())
 
 export async function* statusIterator({ domain, id }) {
@@ -26,74 +26,7 @@ export async function* statusIterator({ domain, id }) {
     }
 }
 
-export const hashtagStreamingStatusesObservable = (domain, hashtag) => {
-    return new Observable(observer => {
-        const onOpen = () => {
-            console.log(`Streaming ${domain} #${hashtag} : open`)
-        }
-
-        const onStatus = event => {
-            const status = JSON.parse(event.data)
-            console.log(`Streaming ${domain} #${hashtag} : status ${status.id}`)
-            observer.next(status)
-        }
-
-        const onError = error => {
-            console.error(`Streaming ${domain} #${hashtag} : error`)
-            console.error(error)
-            observer.error(error)
-        }
-
-        const eventSource = new EventSource(`https://${domain}/api/v1/streaming/hashtag?tag=${hashtag}`)
-        eventSource.addEventListener('open', onOpen)
-        eventSource.addEventListener('update', onStatus)
-        eventSource.addEventListener('error', onError)
-
-        return () => {
-            console.log(`Streaming ${domain} #${hashtag} : closed`)
-            eventSource.removeEventListener('open', onOpen)
-            eventSource.removeEventListener('update', onStatus)
-            eventSource.removeEventListener('error', onError)
-            eventSource.close()
-        }
-    })
-}
-
-export const hashtagStreamingObservable = (domain, hashtag) => {
-    return new Observable(observer => {
-        const subscription = hashtagStreamingStatusesObservable(domain, hashtag).subscribe({
-            next: status => {
-                const partialMedia = processStatus(domain, status)
-
-                if (partialMedia !== null) {
-                    observer.next(partialMedia)
-                }
-            },
-            error: observer.error,
-            complete: observer.complete
-        })
-
-        return () => {
-            subscription.unsubscribe()
-        }
-    })
-}
-
-// don't handle correctly complete
-export const hashtagsStreamingObservable = (domain, hashtags) => {
-    return new Observable(observer => {
-        const subscriptions = hashtags
-            .map(hashtag => hashtagStreamingObservable(domain, hashtag))
-            .map(observable => observable.subscribe(observer))
-
-        return () => {
-            subscriptions.forEach(subscription => subscription.unsubscribe())
-        }
-    })
-}
-
-
-export async function* hashtagTimelineStatusesIterator (domain, hashtag) {
+async function* hashtagTimelineStatusesIterator (domain, hashtag) {
     let nextLink = `https://${domain}/api/v1/timelines/tag/${hashtag}?limit=40`
 
     while (nextLink) {
@@ -107,7 +40,7 @@ export async function* hashtagTimelineStatusesIterator (domain, hashtag) {
     }
 }
 
-export const hashtagTimelineIterator = (domain, hashtag) => execPipe(
+const hashtagTimelineIterator = (domain, hashtag) => execPipe(
     hashtagTimelineStatusesIterator(domain, hashtag),
     asyncMap(status => processStatus(domain, status)),
     async function* (xs) {
@@ -127,7 +60,7 @@ export const hashtagTimelineIterator = (domain, hashtag) => execPipe(
     }
 )
 
-export async function* hashtagsTimelineIterator (domain, hashtags) {
+async function* hashtagsTimelineIterator (domain, hashtags) {
     const iterators = hashtags.map(hashtag => hashtagTimelineIterator(domain, hashtag))
     const promises = iterators.map(iterator => iterator.next())
 
@@ -150,34 +83,37 @@ export async function* hashtagsTimelineIterator (domain, hashtags) {
 }
 
 export async function* hashtagsIterator(domain, hashtags) {
-    const buffer = []
+    return yield* hashtagsTimelineIterator(domain, hashtags)
 
-    const streamingSubscription = hashtagsStreamingObservable(domain, hashtags).subscribe({
-        next: value => buffer.push(value),
-        error: error => console.error(error),
-        complete: () => console.log('complete')
-    })
+    // Mastodon 4.2 require auth for the streaming timeline
+    // const buffer = []
 
-    const timelineGenerator = hashtagsTimelineIterator(domain, hashtags)
+    // const streamingSubscription = hashtagsStreamingObservable(domain, hashtags).subscribe({
+    //     next: value => buffer.push(value),
+    //     error: error => console.error(error),
+    //     complete: () => console.log('complete')
+    // })
 
-    try {
-        while (true) {
-            if (buffer.length > 0) {
-                yield buffer.pop()
-            } else {
-                const { done, value } = await timelineGenerator.next()
+    // const timelineGenerator = hashtagsTimelineIterator(domain, hashtags)
 
-                if (done) {
-                    break
-                } else {
-                    yield value
-                }
-            }
-        }
-    } finally {
-        streamingSubscription.unsubscribe()
-        timelineGenerator.return()
-    }
+    // try {
+    //     while (true) {
+    //         if (buffer.length > 0) {
+    //             yield buffer.pop()
+    //         } else {
+    //             const { done, value } = await timelineGenerator.next()
+
+    //             if (done) {
+    //                 break
+    //             } else {
+    //                 yield value
+    //             }
+    //         }
+    //     }
+    // } finally {
+    //     streamingSubscription.unsubscribe()
+    //     timelineGenerator.return()
+    // }
 }
 
 const processStatus = (domain, status) => mapNullable(findMedia(status), partialMedia => ({
@@ -207,3 +143,70 @@ const findMedia = status => execPipe(
     }),
     findOr(null, x => x !== null)
 )
+
+// Streaming hashtag endpoint is not public since Mastodon 4.2
+// const hashtagStreamingStatusesObservable = (domain, hashtag) => {
+//     return new Observable(observer => {
+//         const onOpen = () => {
+//             console.log(`Streaming ${domain} #${hashtag} : open`)
+//         }
+
+//         const onStatus = event => {
+//             const status = JSON.parse(event.data)
+//             console.log(`Streaming ${domain} #${hashtag} : status ${status.id}`)
+//             observer.next(status)
+//         }
+
+//         const onError = error => {
+//             console.error(`Streaming ${domain} #${hashtag} : error`)
+//             console.error(error)
+//             observer.error(error)
+//         }
+
+//         const eventSource = new EventSource(`https://${domain}/api/v1/streaming/hashtag?tag=${hashtag}`)
+//         eventSource.addEventListener('open', onOpen)
+//         eventSource.addEventListener('update', onStatus)
+//         eventSource.addEventListener('error', onError)
+
+//         return () => {
+//             console.log(`Streaming ${domain} #${hashtag} : closed`)
+//             eventSource.removeEventListener('open', onOpen)
+//             eventSource.removeEventListener('update', onStatus)
+//             eventSource.removeEventListener('error', onError)
+//             eventSource.close()
+//         }
+//     })
+// }
+
+// const hashtagStreamingObservable = (domain, hashtag) => {
+//     return new Observable(observer => {
+//         const subscription = hashtagStreamingStatusesObservable(domain, hashtag).subscribe({
+//             next: status => {
+//                 const partialMedia = processStatus(domain, status)
+
+//                 if (partialMedia !== null) {
+//                     observer.next(partialMedia)
+//                 }
+//             },
+//             error: observer.error,
+//             complete: observer.complete
+//         })
+
+//         return () => {
+//             subscription.unsubscribe()
+//         }
+//     })
+// }
+
+// don't handle correctly complete
+// const hashtagsStreamingObservable = (domain, hashtags) => {
+//     return new Observable(observer => {
+//         const subscriptions = hashtags
+//             .map(hashtag => hashtagStreamingObservable(domain, hashtag))
+//             .map(observable => observable.subscribe(observer))
+
+//         return () => {
+//             subscriptions.forEach(subscription => subscription.unsubscribe())
+//         }
+//     })
+// }
