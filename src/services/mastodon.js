@@ -1,5 +1,5 @@
 import Observable from 'core-js-pure/features/observable'
-import getUrls from 'get-urls'
+import extractUrls from 'extract-urls'
 import { asyncMap, execPipe, map, findOr } from 'iter-tools'
 import { mapNullable } from '/src/services/misc.js'
 
@@ -193,7 +193,7 @@ const processStatus = (domain, status) => mapNullable(findMedia(status), partial
 
 const findMedia = status => execPipe(
     status.content,
-    getUrls,
+    extractUrls,
     map(url => {
         const { hostname, pathname, searchParams } = new URL(url)
 

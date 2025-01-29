@@ -4,7 +4,7 @@
   ],
   "transformers": {
     "*.svelte": [
-      "parcel-transformer-svelte"
+      "parcel-transformer-svelte-v4"
     ]
   }
 }

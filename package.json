@@ -21,8 +21,9 @@
     "copy-to-clipboard": "^3.2.1",
     "core-js-pure": "^3.19.1",
     "date-fns": "^2.25.0",
-    "get-urls": "^9.2.0",
+    "extract-urls": "^1.4.1",
     "iter-tools": "^7.1.4",
+    "parcel-transformer-svelte-v4": "^1.2.3",
     "regenerator-runtime": "^0.13.9",
     "route-parser": "0.0.5",
     "svelte": "^3.44.1",
@@ -37,8 +38,7 @@
     "@parcel/transformer-webmanifest": "^2.0.0",
     "autoprefixer": "^10.4.0",
     "parcel": "^2.0.0",
-    "parcel-transformer-svelte": "^1.2.3",
     "postcss": "^8.3.11",
-    "postcss-input-range": "^4.0.0"
+    "postcss-input-range": "^6.0.0"
   }
 }
