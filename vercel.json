@@ -1,0 +1,6 @@
+{
+	"framework": "parcel",
+	"rewrites": [
+		{"source": "/share/:domain/:id", "destination": "/"}
+	]
+}
